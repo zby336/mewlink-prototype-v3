@@ -1,0 +1,13 @@
+node_modules/
+.vercel/
+deployment-files.json
+src/fonts.css
+src/react.production.min.js
+src/570e0863-c3b3-4d18-91c2-00a91f39bf26.woff2
+src/3eab49ec-2b1c-4773-9bc2-f90de4ac48e3.woff2
+src/5157e57e-5aa1-425e-9025-cef4b4f19b14.woff2
+src/8eba4765-e070-4821-b4ca-d43c99deab1a.woff2
+src/c09bea9e-e1da-4a3b-bb21-5fc66e6fb114.woff2
+src/388ee5c9-a2e5-4e0e-903a-7524c80ed98b.woff2
+src/535aeff3-ff06-4e38-ac39-1e922dc79f24.woff2
+src/react-dom.production.min.js

@@ -1,0 +1,64 @@
+{
+  "profiles": [
+    {
+      "cat": "tiger",
+      "count": "6 caregivers in the last 30 days",
+      "latestObservation": true,
+      "nextCaregiver": true,
+      "addCare": true
+    },
+    {
+      "cat": "kopi",
+      "count": "4 caregivers in the last 30 days",
+      "latestObservation": true,
+      "nextCaregiver": true,
+      "addCare": true
+    },
+    {
+      "cat": "oyen",
+      "count": "3 caregivers in the last 30 days",
+      "latestObservation": true,
+      "nextCaregiver": true,
+      "addCare": true
+    },
+    {
+      "cat": "milo",
+      "count": "3 caregivers in the last 30 days",
+      "latestObservation": true,
+      "nextCaregiver": true,
+      "addCare": true
+    },
+    {
+      "cat": "ash",
+      "count": "2 caregivers in the last 30 days",
+      "latestObservation": true,
+      "nextCaregiver": true,
+      "addCare": true
+    },
+    {
+      "cat": "bubu",
+      "count": "1 caregiver in the last 30 days",
+      "latestObservation": true,
+      "nextCaregiver": true,
+      "addCare": true
+    }
+  ],
+  "regression": [
+    {
+      "route": "cats",
+      "rendered": true,
+      "hasNavigation": true
+    },
+    {
+      "route": "community",
+      "rendered": true,
+      "hasNavigation": true
+    },
+    {
+      "route": "askmew",
+      "rendered": true,
+      "hasNavigation": true
+    }
+  ],
+  "kopiCountAfterSightOnly": "4 caregivers in the last 30 days"
+}

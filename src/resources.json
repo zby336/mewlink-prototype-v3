@@ -1,0 +1,171 @@
+[
+  {
+    "id": "8193565c-c163-467d-8bc7-238ec6a79b4d",
+    "mime": "text/javascript",
+    "compressed": true,
+    "path": "runtime.js"
+  },
+  {
+    "id": "69a6b24f-3ce6-436d-9ffd-7bf33fbe2c12",
+    "mime": "text/html",
+    "compressed": true,
+    "path": "Home.dc.html"
+  },
+  {
+    "id": "b1dc776d-d35a-4379-9854-47e328b9b3ce",
+    "mime": "text/css",
+    "compressed": true,
+    "path": "fonts.css",
+    "bundledParts": [
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-0.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-1.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-2.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-3.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-4.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-5.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-6.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-7.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-8.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-9.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-10.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-11.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-12.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-13.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-14.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-15.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-16.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-17.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-18.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-19.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-20.bin",
+      "vendor/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-21.bin"
+    ]
+  },
+  {
+    "id": "1036ed9f-3e3e-4b9a-9776-2114ce3b65b3",
+    "mime": "text/html",
+    "compressed": true,
+    "path": "App.dc.html"
+  },
+  {
+    "id": "1eb25b15-14fd-4762-9570-11e550f4e392",
+    "mime": "text/html",
+    "compressed": true,
+    "path": "CareUpdate.dc.html"
+  },
+  {
+    "id": "b95edfd3-1efd-4272-86e9-849a8d960e14",
+    "mime": "text/html",
+    "compressed": true,
+    "path": "PhotoUpload.dc.html"
+  },
+  {
+    "id": "6df2b439-670e-4bce-ae1f-656541523367",
+    "mime": "text/html",
+    "compressed": true,
+    "path": "AddCat.dc.html"
+  },
+  {
+    "id": "504b1907-3d9b-4f7a-a77c-bee0b12f452f",
+    "mime": "text/html",
+    "compressed": true,
+    "path": "MemoryEditor.dc.html"
+  },
+  {
+    "id": "23bf4ac2-71a9-4e57-b5e9-fb5c3df0740e",
+    "mime": "text/html",
+    "compressed": true,
+    "path": "Mew.dc.html"
+  },
+  {
+    "id": "00e04bdd-0262-4225-aab5-084a7e5d63b9",
+    "mime": "text/javascript",
+    "compressed": true,
+    "path": "react.production.min.js",
+    "bundledParts": [
+      "vendor/assets/00e04bdd-0262-4225-aab5-084a7e5d63b9-0.bin"
+    ]
+  },
+  {
+    "id": "26bc0067-6471-4d65-93ac-d6f6360add71",
+    "mime": "text/javascript",
+    "compressed": true,
+    "path": "react-dom.production.min.js",
+    "bundledParts": [
+      "vendor/assets/26bc0067-6471-4d65-93ac-d6f6360add71-0.bin",
+      "vendor/assets/26bc0067-6471-4d65-93ac-d6f6360add71-1.bin"
+    ]
+  },
+  {
+    "id": "570e0863-c3b3-4d18-91c2-00a91f39bf26",
+    "mime": "font/woff2",
+    "compressed": false,
+    "path": "570e0863-c3b3-4d18-91c2-00a91f39bf26.woff2",
+    "bundledParts": [
+      "vendor/assets/570e0863-c3b3-4d18-91c2-00a91f39bf26-0.bin"
+    ]
+  },
+  {
+    "id": "3eab49ec-2b1c-4773-9bc2-f90de4ac48e3",
+    "mime": "font/woff2",
+    "compressed": false,
+    "path": "3eab49ec-2b1c-4773-9bc2-f90de4ac48e3.woff2",
+    "bundledParts": [
+      "vendor/assets/3eab49ec-2b1c-4773-9bc2-f90de4ac48e3-0.bin"
+    ]
+  },
+  {
+    "id": "5157e57e-5aa1-425e-9025-cef4b4f19b14",
+    "mime": "font/woff2",
+    "compressed": false,
+    "path": "5157e57e-5aa1-425e-9025-cef4b4f19b14.woff2",
+    "bundledParts": [
+      "vendor/assets/5157e57e-5aa1-425e-9025-cef4b4f19b14-0.bin"
+    ]
+  },
+  {
+    "id": "8eba4765-e070-4821-b4ca-d43c99deab1a",
+    "mime": "font/woff2",
+    "compressed": false,
+    "path": "8eba4765-e070-4821-b4ca-d43c99deab1a.woff2",
+    "bundledParts": [
+      "vendor/assets/8eba4765-e070-4821-b4ca-d43c99deab1a-0.bin"
+    ]
+  },
+  {
+    "id": "c09bea9e-e1da-4a3b-bb21-5fc66e6fb114",
+    "mime": "font/woff2",
+    "compressed": false,
+    "path": "c09bea9e-e1da-4a3b-bb21-5fc66e6fb114.woff2",
+    "bundledParts": [
+      "vendor/assets/c09bea9e-e1da-4a3b-bb21-5fc66e6fb114-0.bin",
+      "vendor/assets/c09bea9e-e1da-4a3b-bb21-5fc66e6fb114-1.bin"
+    ]
+  },
+  {
+    "id": "388ee5c9-a2e5-4e0e-903a-7524c80ed98b",
+    "mime": "font/woff2",
+    "compressed": false,
+    "path": "388ee5c9-a2e5-4e0e-903a-7524c80ed98b.woff2",
+    "bundledParts": [
+      "vendor/assets/388ee5c9-a2e5-4e0e-903a-7524c80ed98b-0.bin",
+      "vendor/assets/388ee5c9-a2e5-4e0e-903a-7524c80ed98b-1.bin",
+      "vendor/assets/388ee5c9-a2e5-4e0e-903a-7524c80ed98b-2.bin",
+      "vendor/assets/388ee5c9-a2e5-4e0e-903a-7524c80ed98b-3.bin"
+    ]
+  },
+  {
+    "id": "535aeff3-ff06-4e38-ac39-1e922dc79f24",
+    "mime": "font/woff2",
+    "compressed": false,
+    "path": "535aeff3-ff06-4e38-ac39-1e922dc79f24.woff2",
+    "bundledParts": [
+      "vendor/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-0.bin",
+      "vendor/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-1.bin",
+      "vendor/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-2.bin",
+      "vendor/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-3.bin",
+      "vendor/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-4.bin",
+      "vendor/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-5.bin"
+    ]
+  }
+]

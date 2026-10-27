@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+<style>body{margin:0;background:#F1ECE2;font-family:"Atkinson Hyperlegible",system-ui,sans-serif;color:#33261D;-webkit-font-smoothing:antialiased}a{color:#9A6A12;text-decoration:none}a:hover{color:#33261D}*{box-sizing:border-box}</style>
+</helmet>
+<section id="t2" style="padding:{{ pad }};display:flex;flex-direction:column;gap:32px">
+  <div style="display:{{ d_head }};align-items:baseline;gap:12px">
+    <a href="#t2" style="font:700 11px ui-monospace,Menlo,monospace;padding:3px 8px;background:#33261D;color:#FBF8F1;border-radius:4px">3</a>
+    <span style="font:600 24px Newsreader,serif;color:#33261D">MewLink · 社区照护手记 v4</span>
+  </div>
+  <sc-if value="{{ showNotes }}" hint-placeholder-val="{{ true }}">
+    <div style="max-width:960px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:28px;font-size:14px;line-height:1.6;color:#6B5A4C">
+      <div style="display:flex;flex-direction:column;gap:6px"><b style="color:#33261D">视觉方向</b><span style="text-wrap:pretty">标题 Newsreader（温和的衬线，像手记），正文 Atkinson Hyperlegible（为低视力读者设计）。蜂蜜黄为主强调，鼠尾草绿与陶土橘只用于状态。</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><b style="color:#33261D">位置隐私</b><span style="text-wrap:pretty">示例中只用 Zone A–D 这类模糊区域代号，不出现楼号或具体点位。</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><b style="color:#33261D">照片</b><span style="text-wrap:pretty">猫咪照片统一 1:1 方形、圆角 16 裁切。当前为 Unsplash 原型示例图，之后替换为实地素材。Today 中的 Recent care notes 为原型示例数据。</span></div>
+      <div style="display:flex;flex-direction:column;gap:6px"><b style="color:#33261D">Tiger 详情页</b><span style="text-wrap:pretty">从 Cats 点 Tiger 进入。仅对可信照护圈可见，不含地图或精确定位。外观特征、观察记录和交接内容均为原型示例。每条观察单独保留并注明记录人，不自动合并；单人记录不标“已确认”。Photo diary 使用不同的 Unsplash 虎斑猫示例图，并非同一只猫，之后替换为实地照片。</span></div>
+    </div>
+  </sc-if>
+
+  <div style="display:flex;gap:44px;align-items:flex-start;flex-wrap:wrap">
+
+    <!-- TODAY -->
+    <div id="today" data-screen-label="01 Today" style="display:{{ d_today }};flex-direction:column;gap:12px">
+      <span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">01 · Today</span>
+      <div style="width:100vw;max-width:440px;height:100dvh;background:#FBF8F1;position:relative;overflow:hidden;display:flex;flex-direction:column">
+        <div style="height:54px;flex:none;padding:0 30px;display:none;justify-content:space-between;align-items:center;font:700 16px 'Atkinson Hyperlegible',sans-serif;position:relative"><span>9:41</span><span style="position:absolute;left:50%;top:11px;width:116px;height:32px;margin-left:-58px;border-radius:20px;background:#2B211A"></span><span style="display:flex;gap:6px;align-items:center"><span style="width:17px;height:11px;border-radius:2px;background:#33261D"></span><span style="width:25px;height:12px;border-radius:4px;border:1.5px solid #33261D;padding:1.5px"><span style="display:block;width:70%;height:100%;background:#33261D;border-radius:1.5px"></span></span></span></div>
+        <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:18px 24px 96px;display:flex;flex-direction:column;gap:40px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;align-items:center;gap:10px"><span style="font:500 34px/1.1 Newsreader,serif">Today</span><svg width="18" height="18" viewBox="0 0 24 24" style="flex:none;margin-top:4px"><path d="M4 20 V7 L9 11 H15 L20 7 V20 Z" fill="none" stroke="#CDBEA8" stroke-width="1.4" stroke-linejoin="round"></path></svg></div>
+              <span style="font-size:15px;color:#6B5847">Mon, 12 Oct · Good morning, Mei Ling</span>
+            </div>
+            <div style="width:40px;height:40px;flex:none;border-radius:50%;background:#F4E6C3;color:#6E5214;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">ML</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:28px">
+            <div style="background:#F8E9DF;border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:14px;cursor:pointer">
+              <span style="font-size:14px;font-weight:700;color:#9A4A26">Needs a check · Zone A</span>
+              <div style="display:flex;gap:14px;align-items:center">
+                <div role="img" aria-label="Tiger" style="width:64px;height:64px;flex:none;border-radius:16px;background:#EFE7D9 center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=240&amp;h=240&amp;fit=crop&amp;crop=top&amp;q=70&amp;auto=format)"></div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:4px;min-width:0">
+                  <span style="font:600 22px Newsreader,serif">Tiger</span>
+                  <span style="font-size:17px;line-height:1.35;color:#33261D;text-wrap:balance">A small cut near one ear</span>
+                  <span style="font-size:15px;color:#6B4A36">{{ topNote }}</span>
+                </div>
+                <span style="flex:none;font-size:20px;color:#A07A62">›</span>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ claimTop }}" style="flex:1;min-width:0;white-space:nowrap;height:46px;padding:0 10px;border-radius:14px;background:#3B2A20;border:1.5px solid #3B2A20;color:#FFFBF3;font:700 16px 'Atkinson Hyperlegible',sans-serif;cursor:pointer" style-active="background:#5A4334;border-color:#5A4334">{{ topCta }}</button>
+                <button onClick="{{ openHelp }}" style="flex:1;min-width:0;white-space:nowrap;height:46px;padding:0 10px;border-radius:14px;background:#FFFBF3;border:1px solid #8C6E5A;color:#33261D;font:700 16px 'Atkinson Hyperlegible',sans-serif;cursor:pointer" style-active="background:#F1E8DC">{{ helpCta }}</button>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:22px;padding:0 4px">
+              <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer"><span style="font-size:17px;font-weight:700;color:#33261D">2 more follow-ups</span><span style="font-size:18px;color:#776455">→</span></div>
+              <div style="height:1px;background:#E8DFD1"></div>
+              <div style="display:flex;flex-direction:column;gap:16px">
+                <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:15px;font-weight:700;color:#6B5847">Recent care notes</span></div>
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <div style="align-self:stretch;flex:none;display:flex;flex-direction:column;align-items:center"><div style="width:36px;height:36px;flex:none;border-radius:50%;background:#F1ECE2;color:#5C4A3C;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">RK</div><div style="flex:1;width:1px;background:#DCCFBD;margin:4px 0 -12px"></div></div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:14px;color:#776455">7:40 · Ravi</span><span style="font-size:16px;line-height:1.4;color:#33261D;text-wrap:pretty">Saw Oyen and Milo, both ate well.</span></div>
+                </div>
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <div style="width:36px;height:36px;flex:none;border-radius:50%;background:#F1ECE2;color:#5C4A3C;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">AS</div>
+                  <div style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-size:14px;color:#776455">Yesterday · Aisha</span><span style="font-size:16px;line-height:1.4;color:#33261D;text-wrap:pretty">Noticed a small cut near Tiger’s ear.</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="#careupdate" style="position:absolute;left:24px;right:24px;bottom:100px;text-decoration:none;height:56px;border:none;border-radius:28px;background:#E3AE45;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer"><span style="font-size:22px;line-height:1;font-weight:400">+</span>Add care update</a>
+        <sc-if value="{{ helpOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;z-index:5;background:rgba(51,38,29,.28);display:flex;flex-direction:column;justify-content:flex-end">
+            <div onClick="{{ closeHelp }}" style="flex:1"></div>
+            <div style="background:#FBF8F1;border-radius:28px 28px 0 0;padding:12px 22px 34px;display:flex;flex-direction:column;gap:16px">
+              <span style="align-self:center;width:40px;height:5px;border-radius:3px;background:#DCD2C2"></span>
+              <div style="display:flex;flex-direction:column;gap:4px">
+                <span style="font:500 24px Newsreader,serif">Ask for help</span>
+                <span style="font-size:15px;color:#6B5847">Draft to <b style="color:#33261D">#need-help</b> · nothing is posted until you send</span>
+              </div>
+              <textarea value="{{ helpText }}" onChange="{{ onHelpText }}" rows="5" style="width:100%;resize:none;border-radius:16px;border:1px solid #E0D5C3;background:#FFFFFF;padding:14px 16px;font:400 17px/1.5 'Atkinson Hyperlegible',sans-serif;color:#33261D;outline:none"></textarea>
+              <span style="font-size:14px;line-height:1.45;color:#776455">Exact locations aren’t included. Caregivers in the channel can message you for details.</span>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ closeHelp }}" style-active="background:#F1E8DC" style="flex:1;height:52px;border-radius:16px;background:transparent;border:none;color:#5C4636;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Cancel</button>
+                <button onClick="{{ sendHelp }}" style-active="background:#CF9A32" style="flex:1.4;white-space:nowrap;height:52px;border-radius:16px;background:#E3AE45;border:none;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Send to #need-help</button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <div style="height:84px;flex:none;background:#FBF8F1;border-top:1px solid #EDE5D7;padding:8px 12px 0;display:grid;grid-template-columns:repeat(4,1fr);position:relative">
+          <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#33261D"><span style="width:52px;height:30px;border-radius:15px;background:#F4E6C3;display:flex;align-items:center;justify-content:center"><span style="width:18px;height:18px;border-radius:50%;border:2px solid #8A6418"></span></span><span style="font-size:13px;font-weight:700">Today</span></a>
+          <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 20 V7 L9 11 H15 L20 7 V20 Z" fill="none" stroke="#8C7A6A" stroke-width="2" stroke-linejoin="round"></path></svg></span><span style="font-size:13px">Cats</span></a>
+          <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center;gap:2px"><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8C7A6A"></span><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Community</span></a>
+          <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:21px;height:17px;border-radius:7px 7px 7px 2px;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Ask Mew</span></a>
+          <span style="position:absolute;left:50%;bottom:7px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#33261D;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;display:none"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CATS -->
+    <div id="cats" data-screen-label="02 Cats" style="display:{{ d_cats }};flex-direction:column;gap:12px">
+      <span style="font:700 12px ui-monospace,Menlo,monospace;color:#7D6B5C;display:none">02 · Cats</span>
+      <div style="width:100vw;max-width:440px;height:100dvh;background:#FAF6EF;position:relative;overflow:hidden;display:flex;flex-direction:column">
+        <div style="height:54px;flex:none;padding:0 30px;display:none;justify-content:space-between;align-items:center;font:700 16px 'Atkinson Hyperlegible',sans-serif;position:relative"><span>9:41</span><span style="position:absolute;left:50%;top:11px;width:116px;height:32px;margin-left:-58px;border-radius:20px;background:#2B211A"></span><span style="display:flex;gap:6px;align-items:center"><span style="width:17px;height:11px;border-radius:2px;background:#2A1F18"></span><span style="width:25px;height:12px;border-radius:4px;border:1.5px solid #2A1F18;padding:1.5px"><span style="display:block;width:70%;height:100%;background:#2A1F18;border-radius:1.5px"></span></span></span></div>
+        <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:14px 22px 16px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;color:#7D6B5C">{{ catCount }} cats in this care circle</span><div style="display:flex;gap:8px;align-items:center"><a href="#addcat" aria-label="Add a cat" style="width:44px;height:44px;border-radius:50%;background:#2A1F18;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(51,38,29,0.2)"><svg width="20" height="20" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round"></path></svg></a><button onClick="{{ toggleSearch }}" aria-label="Search cats" style="width:44px;height:44px;padding:0;border-radius:50%;border:none;background:{{ searchBtnBg }};display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="#2A1F18" stroke-width="2"></circle><path d="M15 15 L20 20" stroke="#2A1F18" stroke-width="2.2" stroke-linecap="round"></path></svg></button><a href="#me" aria-label="My profile" style="width:44px;height:44px;border-radius:50%;background:#FBE7BA;color:#7A5410;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;text-decoration:none">ML</a></div></div>
+            <span style="font:500 30px/1 Newsreader,serif">Cats</span>
+          </div>
+          <sc-if value="{{ searchOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="height:48px;flex:none;border-radius:14px;background:#FFFFFF;border:1px solid #E6DCCB;display:flex;align-items:center;gap:10px;padding:0 14px"><svg width="18" height="18" viewBox="0 0 24 24" style="flex:none"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="#8C7A6A" stroke-width="2"></circle><path d="M15 15 L20 20" stroke="#8C7A6A" stroke-width="2.2" stroke-linecap="round"></path></svg><input placeholder="Search by name" style="flex:1;min-width:0;border:none;outline:none;background:transparent;font:400 17px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18"></input></div>
+          </sc-if>
+          <div style="display:flex;gap:8px">
+            <sc-for list="{{ filters }}" as="f" hint-placeholder-count="3">
+              <button onClick="{{ f.pick }}" style="height:44px;padding:0 16px;border-radius:999px;font:{{ f.weight }} 15px 'Atkinson Hyperlegible',sans-serif;cursor:pointer;border:1.5px solid {{ f.border }};background:{{ f.bg }};color:{{ f.fg }}">{{ f.label }}</button>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;padding-top:4px">
+            <sc-for list="{{ cats }}" as="c" hint-placeholder-count="5">
+              <div onClick="{{ c.open }}" style="padding:12px;border-radius:18px;background:#FFFFFF;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06);display:flex;align-items:flex-start;gap:14px;cursor:pointer" style-active="background:#FBF3E4">
+                <div role="img" aria-label="{{ c.name }}" style="width:64px;height:64px;flex:none;border-radius:14px;background:#EFE7D9 center/cover no-repeat url({{ c.photo }})"></div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:2px;min-width:0">
+                  <div style="display:flex;align-items:baseline;gap:8px"><span style="flex:1;font:600 21px/1.15 Newsreader,serif">{{ c.name }}</span><span style="flex:none;font-size:14px;color:{{ c.whenFg }};font-weight:{{ c.whenW }}">{{ c.when }}</span></div>
+                  <span style="font-size:15px;line-height:1.4;color:#5E4D40;text-wrap:pretty">{{ c.last }}</span>
+                  <sc-if value="{{ c.hasTag }}" hint-placeholder-val="{{ false }}"><span style="align-self:flex-start;margin-top:4px;padding:4px 10px;border-radius:10px;background:{{ c.tagBg }};font-size:13px;line-height:1.35;color:{{ c.tagFg }};font-weight:700">{{ c.follow }}</span></sc-if>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="height:84px;flex:none;background:#FAF6EF;border-top:1px solid #EFE8DC;padding:8px 12px 0;display:grid;grid-template-columns:repeat(4,1fr);position:relative">
+          <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#7D6B5C"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:18px;height:18px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Today</span></a>
+          <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#2A1F18"><span style="width:52px;height:30px;border-radius:15px;background:#FBE7BA;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 20 V7 L9 11 H15 L20 7 V20 Z" fill="none" stroke="#8A6418" stroke-width="2" stroke-linejoin="round"></path></svg></span><span style="font-size:13px;font-weight:700">Cats</span></a>
+          <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#7D6B5C"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center;gap:2px"><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8C7A6A"></span><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Community</span></a>
+          <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#7D6B5C"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:21px;height:17px;border-radius:7px 7px 7px 2px;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Ask Mew</span></a>
+          <span style="position:absolute;left:50%;bottom:7px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#2A1F18;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;display:none"></span>
+        </div>
+      </div>
+    </div>
+
+        <!-- TIGER DETAIL -->
+    <div id="tiger" data-screen-label="02b Tiger" style="display:{{ d_tiger }};flex-direction:column;gap:12px">
+      <span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">02b · Cats › Tiger</span>
+      <div style="width:100vw;max-width:440px;height:100dvh;background:#FBF8F1;position:relative;overflow:hidden;display:flex;flex-direction:column">
+        <div style="height:54px;flex:none;padding:0 30px;display:none;justify-content:space-between;align-items:center;font:700 16px 'Atkinson Hyperlegible',sans-serif;position:relative"><span>9:41</span><span style="position:absolute;left:50%;top:11px;width:116px;height:32px;margin-left:-58px;border-radius:20px;background:#2B211A"></span><span style="display:flex;gap:6px;align-items:center"><span style="width:17px;height:11px;border-radius:2px;background:#33261D"></span><span style="width:25px;height:12px;border-radius:4px;border:1.5px solid #33261D;padding:1.5px"><span style="display:block;width:70%;height:100%;background:#33261D;border-radius:1.5px"></span></span></span></div>
+        <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:4px 22px 100px;display:flex;flex-direction:column;gap:28px">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <a href="#cats" style="align-self:flex-start;height:44px;margin-left:-8px;padding:0 10px 0 4px;display:flex;align-items:center;gap:2px;color:#5C4636;font-size:17px;font-weight:700"><span style="font-size:26px;line-height:1;margin-top:-3px">‹</span>Cats</a>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span style="font:500 34px/1.1 Newsreader,serif">Tiger</span>
+              <span style="font-size:15px;color:#6B5847">Shared care profile · visible to this care circle only</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <div onClick="{{ openMainPhoto }}" role="img" aria-label="Photo of Tiger" style="height:210px;border-radius:22px;background:#EFE7D9 center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=720&amp;h=440&amp;fit=crop&amp;crop=entropy&amp;q=75&amp;auto=format);cursor:zoom-in"></div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="display:flex;align-items:baseline;gap:10px"><span style="font:600 20px Newsreader,serif">Tiger</span><span style="font-size:15px;color:#776455">Zone A</span></div>
+              <span style="font-size:14px;color:#776455">Recorded by caregivers</span>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <span style="padding:4px 11px;border-radius:999px;border:1px solid #E6DCCB;font-size:15px;color:#4A382B">Brown tabby, striped tail</span>
+                <span style="padding:4px 11px;border-radius:999px;border:1px solid #E6DCCB;font-size:15px;color:#4A382B">Ear-tipped</span>
+                <span style="padding:4px 11px;border-radius:999px;border:1px solid #E6DCCB;font-size:15px;color:#4A382B">Shy at first, then calm</span>
+              </div>
+            </div>
+          </div>
+          <mew-caregivers cat-id="tiger"></mew-caregivers>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:15px;font-weight:700;color:#6B5847">Latest observation</span>
+            <div style="background:#F8E9DF;border-radius:22px;padding:16px 18px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:14px;color:#86563A">Yesterday · Aisha</span>
+              <span style="font:500 20px/1.3 Newsreader,serif;text-wrap:pretty">Observed a small cut near one ear</span>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="padding:2px 9px;border-radius:999px;font-size:14px;background:#FBF3EC;color:#9A4A26">Needs follow-up</span><span style="font-size:14px;color:#6B4A36">Caregiver observation, not a diagnosis</span></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:15px;font-weight:700;color:#6B5847">For the next caregiver</span>
+            <div style="background:#FBF1D9;border-radius:22px;padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;flex-direction:column;gap:8px;font-size:16px;line-height:1.45;color:#33261D">
+                <div style="display:flex;gap:10px"><span style="flex:none;width:6px;height:6px;margin-top:9px;border-radius:50%;background:#B8862A"></span><span>Look at the cut. Is it clean, or swollen?</span></div>
+                <div style="display:flex;gap:10px"><span style="flex:none;width:6px;height:6px;margin-top:9px;border-radius:50%;background:#B8862A"></span><span>Note whether he eats his usual amount.</span></div>
+                <div style="display:flex;gap:10px"><span style="flex:none;width:6px;height:6px;margin-top:9px;border-radius:50%;background:#B8862A"></span><span>Add a photo if he lets you close.</span></div>
+              </div>
+              <button onClick="{{ toggleTigerOffer }}" style="height:46px;border-radius:14px;background:#3B2A20;border:none;color:#FFFBF3;font:700 16px 'Atkinson Hyperlegible',sans-serif;cursor:pointer;white-space:nowrap" style-active="background:#5A4334">{{ tigerOfferCta }}</button>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;font-weight:700;color:#6B5847">Photo diary</span><a href="#diary" style="height:44px;display:flex;align-items:center;font-size:15px;font-weight:700;color:#5C4636">View all →</a></div>
+            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px">
+              <sc-for list="{{ diaryPreview }}" as="p" hint-placeholder-count="3">
+                <a href="#diary" style="display:flex;flex-direction:column;gap:6px;color:#33261D">
+                  <div role="img" aria-label="Photo from {{ p.date }}" style="aspect-ratio:1;border-radius:14px;background:#EFE7D9 center/cover no-repeat url({{ p.thumb }})"></div>
+                  <span style="font-size:14px;color:#776455">{{ p.date }}</span>
+                </a>
+              </sc-for>
+            </div>
+            <a href="#upload" style="height:46px;border-radius:14px;border:1px solid #8C6E5A;background:#FFFBF3;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:700;color:#33261D"><span style="font-size:20px;line-height:1;font-weight:400">+</span>Add photo</a>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <span style="font-size:15px;font-weight:700;color:#6B5847">Observation log</span>
+            <div style="display:flex;flex-direction:column">
+              <span style="font-size:14px;font-weight:700;color:#776455;padding-bottom:2px">Yesterday</span>
+              <sc-for list="{{ logDiffer }}" as="e" hint-placeholder-count="2">
+                <div onClick="{{ e.open }}" style="padding:14px 0;display:flex;gap:12px;align-items:flex-start;border-top:1px solid #E8DFD1;cursor:pointer">
+                  <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                    <span style="font-size:14px;color:#776455">{{ e.when }} · <b style="color:#4A382B">{{ e.who }}</b></span>
+                    <span style="font-size:16px;line-height:1.45;color:#33261D;text-wrap:pretty">{{ e.note }}</span>
+                  </div>
+                  <sc-if value="{{ e.hasPhoto }}" hint-placeholder-val="{{ false }}"><div onClick="{{ e.openPhoto }}" role="img" aria-label="Photo by {{ e.who }}" style="width:52px;height:52px;flex:none;border-radius:12px;background:#EFE7D9 center/cover no-repeat url({{ e.thumb }});cursor:zoom-in"></div></sc-if>
+                </div>
+              </sc-for>
+              <div style="border-top:1px solid #E8DFD1;padding:12px 0 18px;display:flex;align-items:center;gap:10px"><span style="flex:none;width:6px;height:6px;border-radius:50%;background:#B8862A"></span><span style="font-size:15px;line-height:1.4;color:#6B4A36">Next visit: check the ear in better light.</span></div>
+              <div style="border-top:1px solid #E8DFD1;padding-top:6px"><span style="height:44px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:700;color:#5C4636;cursor:pointer">2 earlier notes<span style="font-size:18px;font-weight:400;color:#776455">→</span></span></div>
+            </div>
+          </div>
+        </div>
+        <a href="#careupdate" style="position:absolute;left:24px;right:24px;bottom:100px;text-decoration:none;height:56px;border:none;border-radius:28px;background:#E3AE45;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 6px 18px rgba(140,100,24,.18)"><span style="font-size:22px;line-height:1;font-weight:400">+</span>Add care update</a>
+        <sc-if value="{{ photoOpen }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closePhoto }}" style="position:absolute;inset:0;z-index:6;background:rgba(30,22,17,.92);display:flex;flex-direction:column;justify-content:center;gap:16px;padding:0 16px;cursor:zoom-out">
+            <div role="img" aria-label="Photo" style="height:420px;border-radius:18px;background:center/contain no-repeat url({{ photoUrl }})"></div>
+            <span style="align-self:center;font-size:15px;color:#E9DFD2">{{ photoCaption }} · tap to close</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ noteOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;z-index:6;background:rgba(51,38,29,.28);display:flex;flex-direction:column;justify-content:flex-end">
+            <div onClick="{{ closeNote }}" style="flex:1"></div>
+            <div style="background:#FBF8F1;border-radius:28px 28px 0 0;padding:12px 22px 34px;display:flex;flex-direction:column;gap:14px">
+              <span style="align-self:center;width:40px;height:5px;border-radius:3px;background:#DCD2C2"></span>
+              <span style="font-size:15px;color:#6B5847">{{ note.when }} · {{ note.who }}</span>
+              <span style="font-size:17px;line-height:1.55;color:#33261D;text-wrap:pretty">{{ note.full }}</span>
+              <button onClick="{{ closeNote }}" style="height:52px;border-radius:16px;background:#FFFBF3;border:1px solid #8C6E5A;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Close</button>
+            </div>
+          </div>
+        </sc-if>
+        <div style="height:84px;flex:none;background:#FBF8F1;border-top:1px solid #EDE5D7;padding:8px 12px 0;display:grid;grid-template-columns:repeat(4,1fr);position:relative">
+          <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:18px;height:18px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Today</span></a>
+          <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#33261D"><span style="width:52px;height:30px;border-radius:15px;background:#F4E6C3;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 20 V7 L9 11 H15 L20 7 V20 Z" fill="none" stroke="#8A6418" stroke-width="2" stroke-linejoin="round"></path></svg></span><span style="font-size:13px;font-weight:700">Cats</span></a>
+          <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center;gap:2px"><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8C7A6A"></span><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Community</span></a>
+          <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:21px;height:17px;border-radius:7px 7px 7px 2px;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Ask Mew</span></a>
+          <span style="position:absolute;left:50%;bottom:7px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#33261D;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;display:none"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- PHOTO DIARY -->
+    <div id="diary" data-screen-label="02c Photo diary" style="display:{{ d_diary }};flex-direction:column;gap:12px">
+      <span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">02c · Tiger › Photo diary</span>
+      <div style="width:100vw;max-width:440px;height:100dvh;background:#FBF8F1;position:relative;overflow:hidden;display:flex;flex-direction:column">
+        <div style="height:54px;flex:none;padding:0 30px;display:none;justify-content:space-between;align-items:center;font:700 16px 'Atkinson Hyperlegible',sans-serif;position:relative"><span>9:41</span><span style="position:absolute;left:50%;top:11px;width:116px;height:32px;margin-left:-58px;border-radius:20px;background:#2B211A"></span><span style="display:flex;gap:6px;align-items:center"><span style="width:17px;height:11px;border-radius:2px;background:#33261D"></span><span style="width:25px;height:12px;border-radius:4px;border:1.5px solid #33261D;padding:1.5px"><span style="display:block;width:70%;height:100%;background:#33261D;border-radius:1.5px"></span></span></span></div>
+        <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:4px 22px 32px;display:flex;flex-direction:column;gap:22px">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <a href="#tiger" style="height:44px;margin-left:-8px;padding:0 10px 0 4px;display:flex;align-items:center;gap:2px;color:#5C4636;font-size:17px;font-weight:700"><span style="font-size:26px;line-height:1;margin-top:-3px">‹</span>Tiger</a>
+              <a href="#upload" style="height:44px;padding:0 14px;border-radius:22px;border:1px solid #8C6E5A;background:#FFFBF3;display:flex;align-items:center;gap:6px;font-size:16px;font-weight:700;color:#33261D"><span style="font-size:20px;line-height:1;font-weight:400">+</span>Add photo</a>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <span style="font:500 34px/1.1 Newsreader,serif">Photo diary</span>
+              <span style="font-size:15px;line-height:1.45;color:#6B5847">Tiger · photos from 4 caregivers. Each caption is the photographer’s own words.</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column">
+            <sc-for list="{{ diary }}" as="d" hint-placeholder-count="4">
+              <div style="display:flex;flex-direction:column;gap:10px;padding:18px 0;border-top:1px solid {{ d.divider }}">
+                <sc-if value="{{ d.showMonth }}" hint-placeholder-val="{{ false }}"><span style="font:600 18px Newsreader,serif;color:#6B5847">{{ d.month }}</span></sc-if>
+                <div onClick="{{ d.openPhoto }}" role="img" aria-label="Photo from {{ d.date }}" style="height:230px;border-radius:20px;background:#EFE7D9 center/cover no-repeat url({{ d.img }});cursor:zoom-in"></div>
+                <div style="display:flex;flex-direction:column;gap:4px;padding:0 2px">
+                  <span style="font-size:14px;color:#776455">{{ d.date }} · <b style="color:#4A382B">{{ d.who }}</b></span>
+                  <span style="font:500 18px/1.4 Newsreader,serif;color:#33261D;text-wrap:pretty">“{{ d.caption }}”</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{ photoOpen }}" hint-placeholder-val="{{ false }}">
+          <div onClick="{{ closePhoto }}" style="position:absolute;inset:0;z-index:6;background:rgba(30,22,17,.92);display:flex;flex-direction:column;justify-content:center;gap:16px;padding:0 16px;cursor:zoom-out">
+            <div role="img" aria-label="Photo" style="height:420px;border-radius:18px;background:center/contain no-repeat url({{ photoUrl }})"></div>
+            <span style="align-self:center;font-size:15px;color:#E9DFD2">{{ photoCaption }} · tap to close</span>
+          </div>
+        </sc-if>
+        <div style="height:84px;flex:none;background:#FBF8F1;border-top:1px solid #EDE5D7;padding:8px 12px 0;display:grid;grid-template-columns:repeat(4,1fr);position:relative">
+          <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:18px;height:18px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Today</span></a>
+          <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#33261D"><span style="width:52px;height:30px;border-radius:15px;background:#F4E6C3;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 20 V7 L9 11 H15 L20 7 V20 Z" fill="none" stroke="#8A6418" stroke-width="2" stroke-linejoin="round"></path></svg></span><span style="font-size:13px;font-weight:700">Cats</span></a>
+          <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center;gap:2px"><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8C7A6A"></span><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Community</span></a>
+          <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:21px;height:17px;border-radius:7px 7px 7px 2px;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Ask Mew</span></a>
+          <span style="position:absolute;left:50%;bottom:7px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#33261D;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;display:none"></span>
+        </div>
+      </div>
+    </div>
+
+<!-- COMMUNITY -->
+    <div id="community" data-screen-label="03 Community" style="display:{{ d_community }};flex-direction:column;gap:12px">
+      <span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">03 · Community</span>
+      <div style="width:100vw;max-width:440px;height:100dvh;background:#FBF8F1;position:relative;overflow:hidden;display:flex;flex-direction:column">
+        <div style="height:54px;flex:none;padding:0 30px;display:none;justify-content:space-between;align-items:center;font:700 16px 'Atkinson Hyperlegible',sans-serif;position:relative"><span>9:41</span><span style="position:absolute;left:50%;top:11px;width:116px;height:32px;margin-left:-58px;border-radius:20px;background:#2B211A"></span><span style="display:flex;gap:6px;align-items:center"><span style="width:17px;height:11px;border-radius:2px;background:#33261D"></span><span style="width:25px;height:12px;border-radius:4px;border:1.5px solid #33261D;padding:1.5px"><span style="display:block;width:70%;height:100%;background:#33261D;border-radius:1.5px"></span></span></span></div>
+        <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:14px 22px 16px;display:flex;flex-direction:column;gap:14px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;color:#6B5847">Your care circle</span><div style="width:40px;height:40px;border-radius:50%;background:#F4E6C3;color:#6E5214;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">ML</div></div>
+            <span style="font:500 34px/1.1 Newsreader,serif">Community</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div style="display:flex;align-items:baseline;gap:10px"><span style="font:600 20px Newsreader,serif">Care channels</span><span style="font-size:14px;color:#776455">Members only</span></div>
+              <a href="#thread" onClick="{{ newPost }}" style="height:44px;display:flex;align-items:center;gap:4px;font-size:15px;font-weight:700;color:#5C4636"><span style="font-size:19px;font-weight:400;line-height:1">+</span>New post</a>
+            </div>
+            <div style="display:flex;flex-direction:column">
+              <sc-for list="{{ channels }}" as="ch" hint-placeholder-count="3">
+                <a href="#thread" onClick="{{ ch.open }}" style="min-height:68px;padding:11px 14px;margin:0 -14px;border-radius:16px;display:flex;flex-direction:column;gap:6px;background:{{ ch.bg }};border-top:1px solid {{ ch.divider }};color:#33261D">
+                  <div style="display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:17px;font-weight:700">{{ ch.name }}</span><span style="font-size:14px;color:#776455">{{ ch.time }}</span><sc-if value="{{ ch.hasNew }}" hint-placeholder-val="{{ false }}"><span style="min-width:24px;height:24px;padding:0 8px;border-radius:12px;background:#5E7A4F;color:#FFFFFF;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center">{{ ch.unread }}</span></sc-if></div>
+                  <span style="font-size:16px;line-height:1.45;color:#4A382B;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden"><b>{{ ch.who }}:</b> {{ ch.text }}</span>
+                </a>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:baseline;gap:10px"><span style="font:600 20px Newsreader,serif">Outreach drafts</span><span style="font-size:14px;color:#776455">Not sent</span></div>
+            <div style="background:#FFFFFF;border:1px solid #EDE5D7;border-radius:22px;padding:16px 18px;display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;align-items:center;gap:10px"><span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:15px;font-weight:700;color:#4A382B">To residents · Zone B</span><span style="flex:none;padding:2px 9px;border-radius:999px;font-size:13px;background:#F1ECE2;color:#6B5B4E">Draft</span></div>
+              <span style="font-size:16px;line-height:1.5;color:#4A382B;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">{{ outreachText }}</span>
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+                <a href="#review" onClick="{{ openReview }}" style="height:46px;padding:0 18px;border-radius:14px;background:#FFFBF3;border:1px solid #8C6E5A;color:#33261D;font-size:16px;font-weight:700;display:flex;align-items:center;white-space:nowrap">Review draft</a>
+                <a href="#review" onClick="{{ openRefine }}" style="height:44px;display:flex;align-items:center;gap:6px;font-size:15px;color:#6B5847;white-space:nowrap"><dc-import name="Mew" mood="source" size="{{ 26 }}" hint-size="26px,26px"></dc-import>Refine with Mew</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="height:84px;flex:none;background:#FBF8F1;border-top:1px solid #EDE5D7;padding:8px 12px 0;display:grid;grid-template-columns:repeat(4,1fr);position:relative">
+          <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:18px;height:18px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Today</span></a>
+          <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 20 V7 L9 11 H15 L20 7 V20 Z" fill="none" stroke="#8C7A6A" stroke-width="2" stroke-linejoin="round"></path></svg></span><span style="font-size:13px">Cats</span></a>
+          <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#33261D"><span style="width:52px;height:30px;border-radius:15px;background:#F4E6C3;display:flex;align-items:center;justify-content:center;gap:2px"><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8A6418"></span><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8A6418"></span></span><span style="font-size:13px;font-weight:700">Community</span></a>
+          <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:21px;height:17px;border-radius:7px 7px 7px 2px;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Ask Mew</span></a>
+          <span style="position:absolute;left:50%;bottom:7px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#33261D;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;display:none"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- REVIEW DRAFT -->
+    <div id="review" data-screen-label="03c Review draft" style="display:{{ d_review }};flex-direction:column;gap:12px">
+      <span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">03c · Community › Review draft</span>
+      <div style="width:100vw;max-width:440px;height:100dvh;background:#FBF8F1;position:relative;overflow:hidden;display:flex;flex-direction:column">
+        <div style="height:54px;flex:none;padding:0 30px;display:none;justify-content:space-between;align-items:center;font:700 16px 'Atkinson Hyperlegible',sans-serif;position:relative"><span>9:41</span><span style="position:absolute;left:50%;top:11px;width:116px;height:32px;margin-left:-58px;border-radius:20px;background:#2B211A"></span><span style="display:flex;gap:6px;align-items:center"><span style="width:17px;height:11px;border-radius:2px;background:#33261D"></span><span style="width:25px;height:12px;border-radius:4px;border:1.5px solid #33261D;padding:1.5px"><span style="display:block;width:70%;height:100%;background:#33261D;border-radius:1.5px"></span></span></span></div>
+        <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:4px 22px 20px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <a href="#community" style="align-self:flex-start;height:44px;margin-left:-8px;padding:0 10px 0 4px;display:flex;align-items:center;gap:2px;color:#5C4636;font-size:17px;font-weight:700"><span style="font-size:26px;line-height:1;margin-top:-3px">‹</span>Community</a>
+            <span style="font:500 28px/1.1 Newsreader,serif">Review draft</span>
+            <span style="font-size:15px;color:#6B5847">To residents · Zone B · not sent</span>
+          </div>
+          <textarea value="{{ outreachText }}" onChange="{{ onOutreach }}" rows="8" style="width:100%;resize:none;border-radius:18px;border:1px solid #E0D5C3;background:#FFFFFF;padding:16px;font:400 17px/1.55 'Atkinson Hyperlegible',sans-serif;color:#33261D;outline:none"></textarea>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:15px;font-weight:700;color:#6B5847">Before you send</span>
+            <div style="display:flex;gap:10px;font-size:15px;line-height:1.45;color:#4A382B"><span style="flex:none;width:6px;height:6px;margin-top:8px;border-radius:50%;background:#B8862A"></span><span>No exact feeding spots, block numbers or times.</span></div>
+            <div style="display:flex;gap:10px;font-size:15px;line-height:1.45;color:#4A382B"><span style="flex:none;width:6px;height:6px;margin-top:8px;border-radius:50%;background:#B8862A"></span><span>No caregivers’ names or phone numbers unless they agreed.</span></div>
+          </div>
+          <a href="#review" onClick="{{ openRefine }}" style="align-self:flex-start;height:44px;display:flex;align-items:center;gap:6px;font-size:15px;color:#6B5847"><dc-import name="Mew" mood="source" size="{{ 26 }}" hint-size="26px,26px"></dc-import>Refine with Mew</a>
+          <button onClick="{{ askSendDraft }}" style="margin-top:auto;flex:none;height:56px;border:none;border-radius:16px;background:{{ sendBtnBg }};color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">{{ sendBtnLabel }}</button>
+        </div>
+        <sc-if value="{{ refineOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;z-index:6;background:rgba(51,38,29,.28);display:flex;flex-direction:column;justify-content:flex-end">
+            <div onClick="{{ closeRefine }}" style="flex:1"></div>
+            <div style="background:#FBF8F1;border-radius:28px 28px 0 0;padding:12px 22px 34px;display:flex;flex-direction:column;gap:14px">
+              <span style="align-self:center;width:40px;height:5px;border-radius:3px;background:#DCD2C2"></span>
+              <div style="display:flex;align-items:center;gap:10px"><dc-import name="Mew" mood="thinking" size="{{ 34 }}" hint-size="34px,34px"></dc-import><div style="display:flex;flex-direction:column"><span style="font-size:13px;color:#776455">Ask Mew · suggestion</span><span style="font-size:17px;font-weight:700">A calmer wording</span></div></div>
+              <div style="background:#F1ECE2;border-radius:16px;padding:14px 16px;font-size:16px;line-height:1.55;color:#33261D">{{ refineText }}</div>
+              <span style="font-size:14px;line-height:1.4;color:#776455">Your draft stays as it is unless you choose to use this.</span>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ closeRefine }}" style="flex:1;height:52px;border-radius:16px;background:transparent;border:none;color:#5C4636;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Keep mine</button>
+                <button onClick="{{ useRefine }}" style="flex:1.3;white-space:nowrap;height:52px;border-radius:16px;background:#FFFBF3;border:1px solid #8C6E5A;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Use this wording</button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;z-index:6;background:rgba(51,38,29,.28);display:flex;flex-direction:column;justify-content:flex-end">
+            <div onClick="{{ closeConfirm }}" style="flex:1"></div>
+            <div style="background:#FBF8F1;border-radius:28px 28px 0 0;padding:12px 22px 34px;display:flex;flex-direction:column;gap:14px">
+              <span style="align-self:center;width:40px;height:5px;border-radius:3px;background:#DCD2C2"></span>
+              <span style="font:500 24px Newsreader,serif">Send to residents in Zone B?</span>
+              <span style="font-size:16px;line-height:1.5;color:#4A382B">This message will leave the care circle. You can’t unsend it.</span>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ closeConfirm }}" style="flex:1;height:52px;border-radius:16px;background:transparent;border:none;color:#5C4636;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Not yet</button>
+                <button onClick="{{ confirmSend }}" style="flex:1.3;height:52px;border-radius:16px;background:#E3AE45;border:none;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Send now</button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <div style="height:84px;flex:none;background:#FBF8F1;border-top:1px solid #EDE5D7;padding:8px 12px 0;display:grid;grid-template-columns:repeat(4,1fr);position:relative">
+          <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:18px;height:18px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Today</span></a>
+          <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 20 V7 L9 11 H15 L20 7 V20 Z" fill="none" stroke="#8C7A6A" stroke-width="2" stroke-linejoin="round"></path></svg></span><span style="font-size:13px">Cats</span></a>
+          <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#33261D"><span style="width:52px;height:30px;border-radius:15px;background:#F4E6C3;display:flex;align-items:center;justify-content:center;gap:2px"><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8A6418"></span><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8A6418"></span></span><span style="font-size:13px;font-weight:700">Community</span></a>
+          <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:21px;height:17px;border-radius:7px 7px 7px 2px;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Ask Mew</span></a>
+          <span style="position:absolute;left:50%;bottom:7px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#33261D;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;display:none"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- THREAD -->
+    <div id="thread" data-screen-label="03b #need-help" style="display:{{ d_thread }};flex-direction:column;gap:12px">
+      <span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">03b · Community › #need-help</span>
+      <div style="width:100vw;max-width:440px;height:100dvh;background:#FBF8F1;position:relative;overflow:hidden;display:flex;flex-direction:column">
+        <div style="height:54px;flex:none;padding:0 30px;display:none;justify-content:space-between;align-items:center;font:700 16px 'Atkinson Hyperlegible',sans-serif;position:relative"><span>9:41</span><span style="position:absolute;left:50%;top:11px;width:116px;height:32px;margin-left:-58px;border-radius:20px;background:#2B211A"></span><span style="display:flex;gap:6px;align-items:center"><span style="width:17px;height:11px;border-radius:2px;background:#33261D"></span><span style="width:25px;height:12px;border-radius:4px;border:1.5px solid #33261D;padding:1.5px"><span style="display:block;width:70%;height:100%;background:#33261D;border-radius:1.5px"></span></span></span></div>
+        <div style="flex:none;padding:4px 22px 14px;display:flex;flex-direction:column;gap:4px;border-bottom:1px solid #EDE5D7">
+          <a href="#community" style="align-self:flex-start;height:44px;margin-left:-8px;padding:0 10px 0 4px;display:flex;align-items:center;gap:2px;color:#5C4636;font-size:17px;font-weight:700"><span style="font-size:26px;line-height:1;margin-top:-3px">‹</span>Community</a>
+          <span style="font:500 28px/1.1 Newsreader,serif">#need-help</span>
+          <span style="font-size:15px;color:#6B5847">Members only · Requests for help</span>
+        </div>
+        <div id="nh-scroll" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:12px 22px 16px;display:flex;flex-direction:column;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:36px;height:36px;flex:none;border-radius:50%;background:#F1ECE2;color:#5C4A3C;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">AS</div>
+            <span style="flex:1;font-size:15px;color:#776455"><b style="color:#33261D">Aisha</b> · 7:12am</span>
+            <span style="font-size:14px;color:#6B5847">{{ nhStatus }}</span>
+          </div>
+          <div style="display:flex;gap:12px;align-items:center">
+            <div role="img" aria-label="Tiger" style="width:44px;height:44px;flex:none;border-radius:12px;background:#EFE7D9 center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=200&amp;h=200&amp;fit=crop&amp;crop=top&amp;q=70&amp;auto=format)"></div>
+            <div style="display:flex;align-items:baseline;gap:8px"><span style="font:600 19px Newsreader,serif">Tiger</span><span style="font-size:14px;color:#776455">Zone A</span></div>
+          </div>
+          <span style="font-size:16px;line-height:1.5;color:#33261D;text-wrap:pretty">Looked like a small cut near one ear. I couldn’t get close enough to see it clearly.</span>
+          <span style="font-size:17px;font-weight:700;line-height:1.4;color:#33261D">Could someone check on him today?</span>
+          <div style="display:flex;flex-wrap:wrap;column-gap:14px;row-gap:4px">
+            <sc-for list="{{ nhSteps }}" as="s" hint-placeholder-count="3">
+              <div style="display:flex;align-items:center;gap:6px;font-size:14px;color:{{ s.fg }}"><span style="width:10px;height:10px;flex:none;border-radius:50%;border:1.5px solid {{ s.dotBorder }};background:{{ s.dot }}"></span><span style="font-weight:{{ s.weight }}">{{ s.label }}</span></div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ nhCanOffer }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:8px">
+              <button onClick="{{ nhToggleOffer }}" style="flex:1;min-width:0;white-space:nowrap;height:48px;border-radius:14px;background:#E3AE45;border:none;color:#33261D;font:700 16px 'Atkinson Hyperlegible',sans-serif;cursor:pointer" style-active="background:#CF9A32">Offer to check</button>
+              <button onClick="{{ nhReply }}" style="flex:none;white-space:nowrap;height:48px;padding:0 20px;border-radius:14px;background:#FFFBF3;border:1px solid #8C6E5A;color:#33261D;font:700 16px 'Atkinson Hyperlegible',sans-serif;cursor:pointer" style-active="background:#F1E8DC">Reply</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ nhCanObserve }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:center;gap:12px">
+              <button onClick="{{ openObs }}" style="flex:1;min-width:0;white-space:nowrap;height:48px;border-radius:14px;background:#E3AE45;border:none;color:#33261D;font:700 16px 'Atkinson Hyperlegible',sans-serif;cursor:pointer" style-active="background:#CF9A32">Add what you saw</button>
+              <button onClick="{{ nhToggleOffer }}" style="flex:none;height:48px;padding:0 6px;border:none;background:transparent;color:#5C4636;font:700 15px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Withdraw offer</button>
+            </div>
+          </sc-if>
+          <div id="nh-replies" style="margin:2px 0 0 17px;padding-left:20px;border-left:1px solid #DCCFBD;display:flex;flex-direction:column">
+            <sc-for list="{{ nhReplies }}" as="r" hint-placeholder-count="2">
+              <div style="padding:10px 0;display:flex;flex-direction:column;gap:3px;border-top:1px solid {{ r.divider }}">
+                <span style="font-size:14px;color:#776455"><b style="color:#33261D">{{ r.who }}</b> · {{ r.time }}<span style="color:{{ r.kindFg }};font-weight:700">{{ r.kind }}</span></span>
+                <span style="font-size:15px;line-height:1.45;color:#33261D;text-wrap:pretty">{{ r.text }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{ obsOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute;inset:0;z-index:6;background:rgba(51,38,29,.28);display:flex;flex-direction:column;justify-content:flex-end">
+            <div onClick="{{ closeObs }}" style="flex:1"></div>
+            <div style="background:#FBF8F1;border-radius:28px 28px 0 0;padding:12px 22px 34px;display:flex;flex-direction:column;gap:14px">
+              <span style="align-self:center;width:40px;height:5px;border-radius:3px;background:#DCD2C2"></span>
+              <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 24px Newsreader,serif">What did you see?</span><span style="font-size:15px;color:#6B5847">Goes to Tiger’s log and this thread when you save</span></div>
+              <textarea value="{{ obsText }}" onChange="{{ onObs }}" rows="4" placeholder="e.g. Checked his ear in daylight. Small, dry cut, no swelling I could see." style="width:100%;resize:none;border-radius:16px;border:1px solid #E0D5C3;background:#FFFFFF;padding:14px 16px;font:400 17px/1.5 'Atkinson Hyperlegible',sans-serif;color:#33261D;outline:none"></textarea>
+              <sc-if value="{{ obsHasSuggest }}" hint-placeholder-val="{{ false }}">
+                <div style="background:#F1ECE2;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+                  <span style="font-size:13px;color:#776455">Mew · tidied wording, your facts only</span>
+                  <span style="font-size:15px;line-height:1.5;color:#33261D">{{ obsSuggest }}</span>
+                  <div style="display:flex;gap:16px"><button onClick="{{ useObsSuggest }}" style="height:40px;padding:0;border:none;background:transparent;font:700 15px 'Atkinson Hyperlegible',sans-serif;color:#33261D;cursor:pointer">Use this</button><button onClick="{{ dropObsSuggest }}" style="height:40px;padding:0;border:none;background:transparent;font:400 15px 'Atkinson Hyperlegible',sans-serif;color:#6B5847;cursor:pointer">Ignore</button></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ obsCanTidy }}" hint-placeholder-val="{{ false }}">
+                <button onClick="{{ tidyObs }}" style="align-self:flex-start;height:44px;padding:0;border:none;background:transparent;display:flex;align-items:center;gap:6px;font:400 15px 'Atkinson Hyperlegible',sans-serif;color:#6B5847;cursor:pointer"><dc-import name="Mew" mood="thinking" size="{{ 26 }}" hint-size="26px,26px"></dc-import>Tidy up with Mew</button>
+              </sc-if>
+              <div style="display:flex;gap:8px">
+                <button onClick="{{ closeObs }}" style="flex:1;height:52px;border-radius:16px;background:transparent;border:none;color:#5C4636;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Cancel</button>
+                <button onClick="{{ saveObs }}" style="flex:1.3;height:52px;border-radius:16px;background:#E3AE45;border:none;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer;opacity:{{ obsSaveOp }}">Save observation</button>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <div style="flex:none;padding:10px 16px 12px;border-top:1px solid #EDE5D7;display:flex;gap:8px;align-items:center;background:#FBF8F1">
+          <input value="{{ draft }}" onChange="{{ onDraft }}" placeholder="{{ nhPlaceholder }}" style="flex:1;min-width:0;height:48px;border-radius:24px;border:1px solid #E0D5C3;background:#FFFFFF;padding:0 18px;font:400 16px 'Atkinson Hyperlegible',sans-serif;color:#33261D;outline:none"></input>
+          <button onClick="{{ sendPost }}" aria-label="Send" style="width:48px;height:48px;flex:none;border:none;border-radius:50%;background:{{ sendBg }};display:flex;align-items:center;justify-content:center;cursor:pointer"><div style="width:11px;height:11px;border:solid #33261D;border-width:2.5px 2.5px 0 0;transform:translate(-2px,0) rotate(45deg)"></div></button>
+        </div>
+        <div style="height:84px;flex:none;background:#FBF8F1;border-top:1px solid #EDE5D7;padding:8px 12px 0;display:grid;grid-template-columns:repeat(4,1fr);position:relative">
+          <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:18px;height:18px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Today</span></a>
+          <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 20 V7 L9 11 H15 L20 7 V20 Z" fill="none" stroke="#8C7A6A" stroke-width="2" stroke-linejoin="round"></path></svg></span><span style="font-size:13px">Cats</span></a>
+          <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#33261D"><span style="width:52px;height:30px;border-radius:15px;background:#F4E6C3;display:flex;align-items:center;justify-content:center;gap:2px"><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8A6418"></span><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8A6418"></span></span><span style="font-size:13px;font-weight:700">Community</span></a>
+          <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#776455"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:21px;height:17px;border-radius:7px 7px 7px 2px;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Ask Mew</span></a>
+          <span style="position:absolute;left:50%;bottom:7px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#33261D;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;display:none"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ASK MEW -->
+    <div id="askmew" data-screen-label="04 Ask Mew" style="display:{{ d_askmew }};flex-direction:column;gap:12px">
+      <span style="font:700 12px ui-monospace,Menlo,monospace;color:#7D6B5C;display:none">04 · Ask Mew</span>
+      <div style="width:100vw;max-width:440px;height:100dvh;background:#FAF6EF;position:relative;overflow:hidden;display:flex;flex-direction:column">
+        <div style="height:54px;flex:none;padding:0 30px;display:none;justify-content:space-between;align-items:center;font:700 16px 'Atkinson Hyperlegible',sans-serif;position:relative"><span>9:41</span><span style="position:absolute;left:50%;top:11px;width:116px;height:32px;margin-left:-58px;border-radius:20px;background:#2B211A"></span><span style="display:flex;gap:6px;align-items:center"><span style="width:17px;height:11px;border-radius:2px;background:#2A1F18"></span><span style="width:25px;height:12px;border-radius:4px;border:1.5px solid #2A1F18;padding:1.5px"><span style="display:block;width:70%;height:100%;background:#2A1F18;border-radius:1.5px"></span></span></span></div>
+        <div style="flex:1;min-height:0;padding:14px 22px 18px;display:flex;flex-direction:column;gap:18px">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:15px;color:#7D6B5C">Care guide</span><a href="#me" aria-label="My profile" style="width:44px;height:44px;border-radius:50%;background:#FBE7BA;color:#7A5410;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;text-decoration:none">ML</a></div>
+            <span style="font:500 30px/1 Newsreader,serif">Ask Mew</span>
+          </div>
+          <sc-if value="{{ askHome }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;gap:14px;align-items:center">
+            <dc-import name="Mew" mood="hello" size="{{ 100 }}" hint-size="100px,100px"></dc-import>
+            <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+              <span style="font:600 21px/1.25 Newsreader,serif">Hi, I’m Mew.</span>
+              <span style="font-size:16px;line-height:1.5;color:#5E4D40;text-wrap:pretty">I help with feeding, health signs, handovers and neighbours. For emergencies, call a vet.</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <span style="font:600 20px Newsreader,serif">You can ask</span>
+            <sc-for list="{{ prompts }}" as="p" hint-placeholder-count="3">
+              <div onClick="{{ p.fill }}" style="min-height:68px;border-radius:20px;background:#FFFFFF;border:1.5px solid {{ p.border }};box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06);padding:11px 16px;display:flex;align-items:center;gap:14px;cursor:pointer" style-hover="border-color:#E0C27A">
+                <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+                  <span style="font-size:14px;color:{{ p.fg }}">{{ p.topic }}</span>
+                  <span style="font-size:17px;line-height:1.4;text-wrap:pretty">{{ p.text }}</span>
+                </div>
+                <span style="flex:none;font-size:18px;color:#8C7A6A">→</span>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+          <sc-if value="{{ askChat }}" hint-placeholder-val="{{ false }}">
+            <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:16px;margin-top:-4px">
+              <button onClick="{{ askReset }}" style="align-self:flex-start;height:40px;padding:0;border:none;background:transparent;font:700 15px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;cursor:pointer">‹ New question</button>
+              <sc-for list="{{ askMsgs }}" as="m" hint-placeholder-count="2">
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="align-self:flex-end;max-width:85%;background:#2A1F18;color:#FFF8EC;border-radius:18px 18px 4px 18px;padding:10px 14px;font-size:16px;line-height:1.45;">{{ m.q }}</div>
+                  <sc-if value="{{ m.thinking }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;align-items:center;gap:10px"><dc-import name="Mew" mood="thinking" size="{{ 36 }}" hint-size="36px,36px"></dc-import><span style="font-size:15px;color:#7D6B5C">Mew is looking into it…</span></div>
+                  </sc-if>
+                  <sc-if value="{{ m.done }}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;gap:10px;align-items:flex-start">
+                      <dc-import name="Mew" mood="{{ m.mood }}" size="{{ 36 }}" hint-size="36px,36px"></dc-import>
+                      <div style="flex:1;min-width:0;background:#FFFFFF;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06);border-radius:4px 18px 18px 18px;padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+                        <span style="font-size:13px;color:#7D6B5C">Mew · suggestion, not a diagnosis</span>
+                        <span style="font-size:16px;line-height:1.5;color:#2A1F18;text-wrap:pretty">{{ m.a }}</span>
+                        <span style="font-size:14px;line-height:1.4;color:#6B5847">{{ m.note }}</span>
+                        <sc-if value="{{ m.hasAction }}" hint-placeholder-val="{{ false }}">
+                          <a href="#thread" onClick="{{ m.act }}" style="align-self:flex-start;height:44px;display:flex;align-items:center;font-size:15px;font-weight:700;color:#2A1F18">{{ m.actLabel }}  →</a>
+                        </sc-if>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+            </div>
+          </sc-if>
+          <div style="margin-top:auto;height:56px;flex:none;border-radius:28px;background:#FFFFFF;border:1.5px solid #E2D7C6;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06);display:flex;align-items:center;padding:0 6px 0 20px;gap:10px">
+            <input value="{{ askInput }}" onChange="{{ onAskInput }}" placeholder="Type your question" style="flex:1;min-width:0;height:44px;border:none;outline:none;background:transparent;font:400 17px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18"></input>
+            <div onClick="{{ askSend }}" role="button" aria-label="Send question" style="width:44px;height:44px;flex:none;border-radius:50%;background:#2A1F18;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:{{ askSendOp }}"><div style="width:11px;height:11px;border:solid #FAF6EF;border-width:2.5px 2.5px 0 0;transform:translate(-2px,0) rotate(45deg)"></div></div>
+          </div>
+        </div>
+        <div style="height:84px;flex:none;background:#FAF6EF;border-top:1px solid #EFE8DC;padding:8px 12px 0;display:grid;grid-template-columns:repeat(4,1fr);position:relative">
+          <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#7D6B5C"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><span style="width:18px;height:18px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Today</span></a>
+          <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#7D6B5C"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M4 20 V7 L9 11 H15 L20 7 V20 Z" fill="none" stroke="#8C7A6A" stroke-width="2" stroke-linejoin="round"></path></svg></span><span style="font-size:13px">Cats</span></a>
+          <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#7D6B5C"><span style="width:52px;height:30px;display:flex;align-items:center;justify-content:center;gap:2px"><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8C7A6A"></span><span style="width:12px;height:12px;border-radius:50%;border:2px solid #8C7A6A"></span></span><span style="font-size:13px">Community</span></a>
+          <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#2A1F18"><span style="width:52px;height:30px;border-radius:15px;background:#FBE7BA;display:flex;align-items:center;justify-content:center"><span style="width:21px;height:17px;border-radius:7px 7px 7px 2px;border:2px solid #8A6418"></span></span><span style="font-size:13px;font-weight:700">Ask Mew</span></a>
+          <span style="position:absolute;left:50%;bottom:7px;width:134px;height:5px;margin-left:-67px;border-radius:3px;background:#2A1F18;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;visibility:hidden;display:none"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMPONENTS -->
+    <div id="components" data-screen-label="05 Components" style="display:{{ d_components }};flex-direction:column;gap:12px">
+      <span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">05 · Shared components</span>
+      <div style="width:360px;background:#FBF8F1;border:1px solid #DCD2C2;border-radius:28px;padding:28px 24px;display:flex;flex-direction:column;gap:28px">
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:13px;font-weight:700;letter-spacing:.06em;color:#776455">BUTTONS</span>
+          <div style="height:56px;border-radius:16px;background:#E3AE45;color:#33261D;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700">Add a care note</div>
+          <div style="height:56px;border-radius:16px;background:#FFFFFF;border:1px solid #E0D5C3;color:#33261D;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700">Hand over care</div>
+          <div style="height:48px;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;color:#9A6A12">Not now</div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:13px;font-weight:700;letter-spacing:.06em;color:#776455">STATUS TAGS</span>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <span style="padding:3px 10px;border-radius:999px;font-size:14px;background:#E3EBDA;color:#4A6140">Doing well</span>
+            <span style="padding:3px 10px;border-radius:999px;font-size:14px;background:#F6E1D5;color:#9A4A26">Needs attention</span>
+            <span style="padding:3px 10px;border-radius:999px;font-size:14px;background:#F7E9C4;color:#7A5A12">Help requested</span>
+            <span style="padding:3px 10px;border-radius:999px;font-size:14px;background:#E3EBDA;color:#4A6140">Waiting to confirm</span>
+            <span style="padding:3px 10px;border-radius:999px;font-size:14px;background:#F7E9C4;color:#7A5A12">Handover</span>
+            <span style="padding:3px 10px;border-radius:999px;font-size:14px;background:#EFEAE2;color:#6B5B4E">Not seen</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:13px;font-weight:700;letter-spacing:.06em;color:#776455">CARD</span>
+          <div style="background:#FFFFFF;border:1px solid #EDE5D7;border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:6px">
+            <span style="font:600 19px Newsreader,serif">Card title</span>
+            <span style="font-size:15px;color:#776455">Supporting line, 15px</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <span style="font-size:13px;font-weight:700;letter-spacing:.06em;color:#776455">COLOUR</span>
+          <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:6px">
+            <span style="aspect-ratio:1;border-radius:12px;background:#FBF8F1;border:1px solid #DCD2C2"></span>
+            <span style="aspect-ratio:1;border-radius:12px;background:#F4E6C3"></span>
+            <span style="aspect-ratio:1;border-radius:12px;background:#E3AE45"></span>
+            <span style="aspect-ratio:1;border-radius:12px;background:#E3EBDA"></span>
+            <span style="aspect-ratio:1;border-radius:12px;background:#E9B79C"></span>
+            <span style="aspect-ratio:1;border-radius:12px;background:#33261D"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MEW STATES -->
+    <div id="mew" data-screen-label="06 Mew" style="display:{{ d_mew }};flex-direction:column;gap:12px">
+      <span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">06 · Mew, the care assistant</span>
+      <div style="width:400px;background:#FBF8F1;border:1px solid #DCD2C2;border-radius:28px;padding:28px 24px;display:flex;flex-direction:column;gap:22px">
+        <span style="font-size:15px;line-height:1.55;color:#5C4A3C;text-wrap:pretty">Mew only appears in Ask Mew and in short hints. Real cats are always shown as photos.</span>
+        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px">
+          <div style="background:#FFFFFF;border:1px solid #EDE5D7;border-radius:20px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><dc-import name="Mew" mood="hello" size="{{ 96 }}" hint-size="96px,96px"></dc-import><b style="font-size:15px">Hello</b><span style="font-size:14px;color:#776455">Welcome, first visit</span></div>
+          <div style="background:#FFFFFF;border:1px solid #EDE5D7;border-radius:20px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><dc-import name="Mew" mood="thinking" size="{{ 96 }}" hint-size="96px,96px"></dc-import><b style="font-size:15px">Thinking</b><span style="font-size:14px;color:#776455">While an answer loads</span></div>
+          <div style="background:#FFFFFF;border:1px solid #EDE5D7;border-radius:20px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><dc-import name="Mew" mood="source" size="{{ 96 }}" hint-size="96px,96px"></dc-import><b style="font-size:15px">See sources</b><span style="font-size:14px;color:#776455">Points to where advice came from</span></div>
+          <div style="background:#FFFFFF;border:1px solid #EDE5D7;border-radius:20px;padding:16px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center"><dc-import name="Mew" mood="unsure" size="{{ 96 }}" hint-size="96px,96px"></dc-import><b style="font-size:15px">Not sure</b><span style="font-size:14px;color:#776455">Suggests asking a vet or caregiver</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div id="upload" data-screen-label="Add photo flow" style="display:{{ d_upload }};flex-direction:column;gap:14px;padding-top:16px">
+    <div style="display:flex;flex-direction:column;gap:4px"><span style="font:600 20px Newsreader,serif;color:#33261D">Add photo · clickable flow</span><span style="font-size:14px;color:#6B5A4C">每个画板都可点击，并从对应步骤开始：选择来源 → 预览裁切 → 背景模糊 → 确认是否为 Tiger 并写一句说明 → 保存前检查 → 已保存。</span></div>
+    <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start">
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">P1 · Source</span><dc-import name="PhotoUpload App" start-step="{{ 0 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">P2 · Preview and crop</span><dc-import name="PhotoUpload App" start-step="{{ 1 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">P3 · Blur background</span><dc-import name="PhotoUpload App" start-step="{{ 2 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">P4 · Is this Tiger? + note</span><dc-import name="PhotoUpload App" start-step="{{ 3 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">P5 · Check before saving</span><dc-import name="PhotoUpload App" start-step="{{ 4 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">P6 · Saved</span><dc-import name="PhotoUpload App" start-step="{{ 5 }}" hint-size="392px,846px"></dc-import></div>
+    </div>
+  <div id="careupdate" data-screen-label="Care update flow" style="display:{{ d_careupdate }};flex-direction:column;gap:14px;padding-top:16px">
+    <div style="display:flex;flex-direction:column;gap:4px"><span style="font:600 20px Newsreader,serif;color:#33261D">Add care update · voice and photo helper</span><span style="font-size:14px;color:#6B5A4C;max-width:900px">每个画板都可点击，并从对应步骤开始。语音转写和 Mew 草稿均为原型示例内容，没有接入真实语音识别或诊断模型；Mew 只在用户点击 “Create draft with Mew” 后整理，所有字段可修改、删除或重新生成。保存前需确认，保存不会发布到频道；选择 “Not sure yet” 时保存为待确认观察，不进入 Tiger 档案。</span></div>
+    <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start">
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">C1 · Choose how to record</span><dc-import name="CareUpdate App" start-step="{{ 0 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">C2 · Record voice</span><dc-import name="CareUpdate App" start-step="{{ 1 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">C3 · Edit transcript</span><dc-import name="CareUpdate App" start-step="{{ 2 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">C4 · AI draft (editable)</span><dc-import name="CareUpdate App" start-step="{{ 3 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">C5 · Is this Tiger?</span><dc-import name="CareUpdate App" start-step="{{ 4 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">C6 · Check and save</span><dc-import name="CareUpdate App" start-step="{{ 5 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">C7 · Saved to log</span><dc-import name="CareUpdate App" start-step="{{ 6 }}" hint-size="392px,846px"></dc-import></div>
+    </div>
+  </div>
+  <div id="memory" data-screen-label="Photo diary memory" style="display:{{ d_memory }};flex-direction:column;gap:14px;padding-top:16px">
+    <div style="display:flex;flex-direction:column;gap:4px"><span style="font:600 20px Newsreader,serif;color:#33261D">Photo diary · Make a memory</span><span style="font-size:14px;color:#6B5A4C;max-width:900px">从护理记录保存后的 “Make a memory” 进入。贴纸可拖动、缩放、旋转、删除；拖到猫脸和耳朵区域会自动移开。按住 “Hold to see original” 预览原图。保存的是带贴纸的日记版本，原始照片保留在护理记录中。“Suggest with Mew” 只基于已保存的记录，用户可使用或忽略。默认仅照护圈可见，向外分享需另行确认。</span></div>
+    <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start">
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">M1 · Empty editor</span><dc-import name="MemoryEditor App" start-step="{{ 0 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">M2 · Stickers placed, one selected</span><dc-import name="MemoryEditor App" start-step="{{ 1 }}" hint-size="392px,846px"></dc-import></div>
+      <div style="display:flex;flex-direction:column;gap:10px"><span style="font:700 12px ui-monospace,Menlo,monospace;color:#776455;display:none">M3 · Saved to diary</span><dc-import name="MemoryEditor App" start-step="{{ 2 }}" hint-size="392px,846px"></dc-import></div>
+    </div>
+  </div>
+  </div>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showNotes&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Base extends DCLogic {
+  state = { tigerOffer: false, photo: null, note: null, claimed: false, filter: 'All', searchOpen: false, helpOpen: false, helpSent: false, helpText: '' };
+  renderVals() {
+    const tags = {
+      'Needs attention': ['#F6E1D5', '#9A4A26'],
+      'Help requested': ['#F7E9C4', '#7A5A12'],
+      'Waiting to confirm': ['#E3EBDA', '#4A6140'],
+      'Needs care': ['#F6E1D5', '#9A4A26'],
+      'Follow-up': ['#F6E1D5', '#9A4A26'],
+      'Not seen recently': ['#EFEAE2', '#6B5B4E'],
+      'Handover': ['#F7E9C4', '#7A5A12'],
+      'Doing well': ['#E3EBDA', '#4A6140'],
+      'Not seen': ['#EFEAE2', '#6B5B4E'],
+      'Fed': ['#E3EBDA', '#4A6140'],
+      'New': ['#E3EBDA', '#4A6140'],
+      'New sighting': ['#F7E9C4', '#7A5A12'],
+    };
+    const tg = t => ({ tag: t, tagBg: tags[t][0], tagFg: tags[t][1] });
+    const ph = id => 'https://images.unsplash.com/' + id + '?w=200&h=200&fit=crop&crop=entropy&q=70&auto=format';
+    const P = { tiger: ph('photo-1650535812141-04d564530b17'), kopi: ph('photo-1622015680443-cb4c5bec36b7'), oyen: ph('photo-1581536678522-afcf3257d780'), milo: ph('photo-1683989903370-9fe4f7c8e0c7'), ash: ph('photo-1557408938-0f220f49bca1') };
+    const claimed = this.state.claimed;
+    const follow = [
+      { cat: 'Kopi', photo: P.kopi, next: 'Next: someone to cover the 7pm feed', ...tg('Help requested') },
+      { cat: 'Ash', photo: P.ash, next: 'Next: Wei to confirm a sighting tonight', ...tg('Waiting to confirm') },
+    ].map((d, i) => ({ ...d, divider: i ? '#F1EBE0' : 'transparent' }));
+    const open = claimed ? 2 : 3;
+    const attentionText = open + ' items need attention';
+    const top = claimed
+      ? { topStatus: 'You offered', topFg: '#4A6140', topCta: 'Offered · Undo', topNote: 'You offered to check' }
+      : { topStatus: 'Zone A', topFg: '#9A4A26', topCta: 'Offer to check', topNote: 'Seen by Aisha yesterday' };
+    const claimTop = () => this.setState(s => ({ claimed: !s.claimed }));
+    const helpDraft = 'Tiger has a small cut near one ear. Aisha noticed it yesterday. Could someone check on him today?';
+    const helpUI = {
+      helpOpen: this.state.helpOpen, helpText: this.state.helpText,
+      helpCta: this.state.helpSent ? 'Help asked' : 'Ask for help',
+      openHelp: () => this.setState(s => ({ helpOpen: true, helpText: s.helpText || helpDraft })),
+      closeHelp: () => this.setState({ helpOpen: false }),
+      onHelpText: e => this.setState({ helpText: e.target.value }),
+      sendHelp: () => this.setState({ helpOpen: false, helpSent: true }),
+    };
+    const updates = [
+      { who: 'Ravi', when: '7:40am · Zone B', text: 'Fed Oyen and Milo. Both ate well and look relaxed.', ...tg('Fed') },
+    ];
+    const cq = id => 'https://images.unsplash.com/' + id + '?w=200&h=200&fit=crop&crop=top&q=70&auto=format';
+    const catData = [
+      { name: 'Tiger', photo: cq('photo-1650535812141-04d564530b17'), when: 'Yesterday', last: 'Aisha: looked like a small cut near one ear.', t: 'Follow-up', follow: 'Next: check the ear in better light' },
+      { name: 'Kopi', photo: cq('photo-1622015680443-cb4c5bec36b7'), when: '2h ago', last: 'Ravi: fed him, ate everything.', t: 'Handover', follow: 'Handover: someone to cover the 7pm feed Thu' },
+      { name: 'Oyen', photo: cq('photo-1581536678522-afcf3257d780'), when: '7:40am', last: 'Ravi: fed with Milo.', t: null },
+      { name: 'Milo', photo: cq('photo-1683989903370-9fe4f7c8e0c7'), when: '7:40am', last: 'Ravi: fed with Oyen.', t: null },
+      { name: 'Ash', photo: cq('photo-1557408938-0f220f49bca1'), when: '3 days ago', last: 'Wei: didn’t come out on the evening round.', t: 'Not seen recently', follow: 'Look out for him on your round' },
+    ];
+    const chData = {
+      'need-help': { name: '#need-help', about: 'Members only · requests that need a hand', unread: 2, posts: [
+        { who: 'Aisha', ini: 'AS', time: '7:12am', text: 'Can someone check on Tiger this morning? Small cut near his ear, I couldn’t get close enough to see well.', replies: [
+          { who: 'Wei', time: '7:30am', text: 'I couldn’t assess it last night, the light was too low.' },
+          { who: 'Mei Ling', time: '7:41am', text: 'I can go around 10. Will add a photo.' } ] },
+        { who: 'Ravi', ini: 'RK', time: 'Yesterday', text: 'Need someone to cover Kopi’s 7pm feed on Thursday.', replies: [] } ] },
+      'today-care': { name: '#today-care', about: 'Members only · daily feeding and visits', unread: 0, posts: [
+        { who: 'Ravi', ini: 'RK', time: '7:40am', text: 'Fed Oyen and Milo, both ate well. Bowls washed.', replies: [] },
+        { who: 'Wei', ini: 'WT', time: 'Yesterday', text: 'Evening round done. Ash didn’t come out again.', replies: [] } ] },
+      'cat-updates': { name: '#cat-updates', about: 'Members only · news about individual cats', unread: 1, posts: [
+        { who: 'Wei', ini: 'WT', time: 'Yesterday', text: 'Kopi’s vet check went well. Photos in the thread.', replies: [ { who: 'Aisha', time: 'Yesterday', text: 'Thank you for taking him!' } ] } ] },
+    };
+    const order = ['need-help', 'today-care', 'cat-updates'];
+    const channels = order.map((k, i) => { const c = chData[k]; const last = c.posts[0];
+      return { name: c.name, time: last.time, who: last.who, text: last.text, unread: c.unread, hasNew: c.unread > 0,
+        bg: k === 'need-help' ? '#EEF3E8' : 'transparent', divider: i > 1 ? '#E8DFD1' : 'transparent',
+        open: () => this.setState({ channel: k, draft: '' }) }; });
+    const draft = this.state.draft || '';
+    const offered = !!this.state.nhOffered;
+    const baseReplies = [
+      { who: 'Wei', time: '7:30am', text: 'I couldn’t assess it last night, the light was too low.', offered: false },
+      { who: 'Mei Ling', time: '7:41am', text: 'I can go around 10 and will add a care update after.', offered: true },
+    ];
+    const extra = (this.state.nhExtra || []);
+    const observed = this.state.nhObs;
+    const all = [...baseReplies, ...(offered ? [{ who: 'You', time: 'Now', text: 'I can check on him too.', offered: true }] : []), ...(observed ? [{ who: 'You', time: 'Now', text: observed, obs: true }] : []), ...extra]
+      .map(r => ({ ...r, kind: r.obs ? ' · added an observation' : r.offered ? ' · offered to check' : '', kindFg: r.obs ? '#4A6140' : '#7A5A12' }));
+    const nOffers = all.filter(r => r.offered).length;
+    const stepOn = { fg: '#33261D', dot: '#33261D', dotBorder: '#33261D', weight: 700 }, stepOff = { fg: '#776455', dot: 'transparent', dotBorder: '#B8A890', weight: 400 };
+    const nhSteps = [
+      { label: 'Asked', ...stepOn },
+      { label: nOffers + ' offered to check', ...(nOffers ? stepOn : stepOff) },
+      { label: observed ? 'Observation added' : 'No observation yet', ...(observed ? stepOn : stepOff) },
+    ];
+    const obsText = this.state.obsText || '';
+    const obsSuggestText = 'Checked his ear in daylight around 10am. The cut looks small and dry, with no swelling I could see. He ate all his food.';
+    const defaultOutreach = 'Hello neighbours, a few of us look after the community cats here and clean up after every feed. If anything about the feeding bothers you, please tell us and we’ll sort it out together.';
+    const refineText = 'Hello neighbours. A few of us care for the community cats in this area and clean up after every feed. If you have any concerns, we’d really like to hear them and work something out together.';
+    const outreachText = this.state.outreach ?? defaultOutreach;
+    const outreachUI = { outreachText, refineText,
+      onOutreach: e => this.setState({ outreach: e.target.value, sent: false }),
+      openReview: () => this.setState({ refineOpen: false }),
+      openRefine: () => this.setState({ refineOpen: true }),
+      refineOpen: !!this.state.refineOpen, closeRefine: () => this.setState({ refineOpen: false }),
+      useRefine: () => this.setState({ outreach: refineText, refineOpen: false }),
+      confirmOpen: !!this.state.confirmOpen,
+      askSendDraft: () => { if (!this.state.sent) this.setState({ confirmOpen: true }); },
+      closeConfirm: () => this.setState({ confirmOpen: false }),
+      confirmSend: () => this.setState({ confirmOpen: false, sent: true }),
+      sendBtnLabel: this.state.sent ? 'Sent to residents' : 'Send…', sendBtnBg: this.state.sent ? '#E3EBDA' : '#E3AE45' };
+    const answers = [
+      { a: 'Two days without eating is worth acting on today. Try a small amount of strong-smelling wet food, check water is available, and look for signs like hiding, drooling or a swollen face.', note: 'If he seems weak, is breathing oddly or won’t drink, contact a vet now.', mood: 'source', actLabel: 'Ask the care circle for help', post: 'Has anyone seen him eat in the last two days? I’d like someone to check on him today.' },
+      { a: 'A good handover is short: which cats, when they were last fed, anything unusual you noticed, and what the next person should look for.', note: 'Only you decide what goes into the care record.', mood: 'source' },
+      { a: 'Start by thanking them for raising it. Explain briefly that you clean up after every feed, ask what specifically bothers them, and offer to adjust the time or spot together.', note: 'You can draft this in Outreach and review it before sending.', mood: 'hello' },
+    ];
+    const generic = { a: 'I’m not sure I have enough detail to help with that. Could you tell me which cat, what you noticed, and when?', note: 'For anything urgent, contact a vet or the care circle.', mood: 'unsure' };
+    const askIn = this.state.askInput || '';
+    const askMsgs = (this.state.askMsgs || []).map((m, i) => { const r = m.pi != null ? answers[m.pi] : generic;
+      return { q: m.q, thinking: !m.ready, done: !!m.ready, a: r.a, note: r.note, mood: r.mood, hasAction: !!r.post, actLabel: r.actLabel || '',
+        act: () => this.setState({ draft: r.post, nhReplyMode: false }) }; });
+    const askUI = { askMsgs,
+      askHome: !(this.state.askMsgs || []).length, askChat: !!(this.state.askMsgs || []).length,
+      askInput: askIn, onAskInput: e => this.setState({ askInput: e.target.value, askPick: e.target.value.trim() ? this.state.askPick : null }),
+      askSendOp: askIn.trim() ? 1 : 0.45,
+      askSend: () => { const q = askIn.trim(); if (!q) return; const pi = this.state.askPick;
+        const list = [...(this.state.askMsgs || []), { q, pi, ready: false }]; const idx = list.length - 1;
+        this.setState({ askMsgs: list, askInput: '', askPick: null });
+        setTimeout(() => this.setState(s => ({ askMsgs: (s.askMsgs || []).map((m, i) => i === idx ? { ...m, ready: true } : m) })), 1100); },
+      askReset: () => this.setState({ askMsgs: [], askInput: '', askPick: null }),
+    };
+    const threadUI = {
+      draft, onDraft: e => this.setState({ draft: e.target.value }), sendBg: draft ? '#E3AE45' : '#EFE7D9',
+      nhReplies: all.map((r, i) => ({ ...r, divider: i ? '#EDE5D7' : 'transparent' })),
+      nhStatus: observed ? 'Observation added' : 'Open', nhSteps,
+      nhCanOffer: !offered && !observed, nhCanObserve: offered && !observed,
+      obsOpen: !!this.state.obsOpen, obsText, onObs: e => this.setState({ obsText: e.target.value }),
+      openObs: () => this.setState({ obsOpen: true }), closeObs: () => this.setState({ obsOpen: false, obsSuggest: false }),
+      obsCanTidy: !!obsText.trim() && !this.state.obsSuggest, obsHasSuggest: !!this.state.obsSuggest, obsSuggest: obsSuggestText,
+      tidyObs: () => this.setState({ obsSuggest: true }), useObsSuggest: () => this.setState({ obsText: obsSuggestText, obsSuggest: false }), dropObsSuggest: () => this.setState({ obsSuggest: false }),
+      obsSaveOp: obsText.trim() ? 1 : 0.45,
+      saveObs: () => { if (!obsText.trim()) return; this.setState({ nhObs: obsText.trim(), obsOpen: false, obsSuggest: false }, () => setTimeout(() => requestAnimationFrame(() => { const sc = document.getElementById('nh-scroll'); if (sc) sc.scrollTop = sc.scrollHeight; }), 30)); },
+      nhOfferCta: offered ? 'You offered · Undo' : 'Offer to check',
+      nhToggleOffer: () => this.setState(s => ({ nhOffered: !s.nhOffered }), () => setTimeout(() => requestAnimationFrame(() => { const sc = document.getElementById('nh-scroll'); if (sc) sc.scrollTop = sc.scrollHeight; }), 30)),
+      nhReply: () => this.setState({ nhReplyMode: true }),
+      nhPlaceholder: this.state.nhReplyMode ? 'Reply to Aisha' : 'Write to #need-help',
+      newPost: () => {},
+      sendPost: () => { if (!draft.trim()) return; this.setState(s => ({ draft: '', nhExtra: [...(s.nhExtra || []), { who: 'You', time: 'Now', text: draft.trim(), offered: false }] })); },
+    };
+
+    const f = this.state.filter;
+    let added = []; try { added = JSON.parse(localStorage.getItem('mewlink-added-cats') || '[]'); } catch (e) {}
+    const known = catData.map(c => c.name);
+    const allCats = [...added.filter(c => !c.sighting || !known.includes(c.name)).map(c => ({ ...c, t: tags[c.t] ? c.t : null })), ...catData];
+    let fedM = {}; try { const o = JSON.parse(localStorage.getItem('mewlink-fed') || '{}'); if (o.d === new Date().toDateString()) fedM = o.fed || {}; } catch (e) {}
+    const syncedCats = allCats.map(c => { const t = fedM[c.name.toLowerCase()]; return t ? { ...c, when: 'Fed ' + t, last: 'You: fed and shared a photo.', t: c.t === 'Not seen recently' ? null : c.t, fedNow: true } : c; });
+    const cats = syncedCats.filter(c => f === 'All' || c.t === f).map((c, i) => ({ ...c, ...(c.t ? tg(c.t) : {}), hasTag: !!c.t, whenFg: c.fedNow ? '#3E5A36' : '#7D6B5C', whenW: c.fedNow ? 700 : 400, open: () => { location.hash = window.MewLinkCare.profileHref(window.MewLinkCare.catIdForName(c.name)); }, divider: i ? '#E8DFD1' : 'transparent' }));
+    const filters = ['All', 'Follow-up', 'Handover'].map(label => ({
+      label, bg: f === label ? '#2A1F18' : '#FFFFFF', border: f === label ? '#2A1F18' : '#E2D7C6', fg: f === label ? '#FAF6EF' : '#2A1F18', weight: 700,
+      pick: () => this.setState({ filter: label }),
+    }));
+    const prompts = [
+      { topic: 'Health', fg: '#9A4A26', text: 'A cat hasn’t eaten for two days. What should I do?' },
+      { topic: 'Handover', fg: '#7A5A12', text: 'What should a good handover note include?' },
+      { topic: 'Neighbours', fg: '#4A6140', text: 'A resident is unhappy about feeding. How do I reply?' },
+    ];
+    const searchOpen = this.state.searchOpen;
+    const TP = q => 'https://images.unsplash.com/photo-1650535812141-04d564530b17?' + q;
+    const big = TP('w=900&q=80&auto=format');
+    const st = s => s === 'Confirmed' ? { stBg: '#E3EBDA', stFg: '#4A6140' } : { stBg: '#EFEAE2', stFg: '#5C4E43' };
+    const mk = (e, i) => ({ ...e, ...st(e.status), hasPhoto: !!e.thumb,
+      open: () => this.setState({ note: e }),
+      openPhoto: ev => { ev.stopPropagation(); this.setState({ photo: { url: big, caption: 'Photo by ' + e.who } }); } });
+    const logDiffer = [
+      { when: '6:10pm', who: 'Aisha', thumb: TP('w=200&h=200&fit=crop&crop=entropy&q=70&auto=format'), note: 'I noticed what looked like a small cut near one ear.', full: 'I noticed what looked like a small cut near one ear. He let me come fairly close and ate most of his food. I didn’t try to touch it.' },
+      { when: '8:30pm', who: 'Wei', note: 'I couldn’t assess the ear in the low light. Tiger ate about half.', full: 'I couldn’t assess the ear in the low light, and he kept his distance. Tiger ate about half his usual amount, then walked off calmly.' },
+    ].map(mk);
+    const logRest = [
+      { when: 'Sat', who: 'Ravi', thumb: 'https://images.unsplash.com/photo-1675504661658-33940d979a6a?w=200&h=200&fit=crop&crop=top&q=70&auto=format', note: 'Fed at the usual time. Coat and eyes looked normal to me.', full: 'Fed at the usual time. Coat and eyes looked normal to me.' },
+      { when: 'Thu', who: 'Mei Ling', note: 'Updated his ID photo and added “ear-tipped”.', full: 'Updated his ID photo and added “ear-tipped” to his description, checked with Ravi.' },
+    ].map(mk);
+    const nt = this.state.note;
+    const U = (id, q) => 'https://images.unsplash.com/' + id + '?' + q + '&fit=crop&crop=top&q=72&auto=format';
+    const diaryRaw = [
+      { month: 'October', date: '11 Oct', who: 'Aisha', pid: 'photo-1650535812141-04d564530b17', caption: 'Looked like a small cut near one ear. He let me come close.' },
+      { month: 'October', date: '4 Oct', who: 'Ravi', pid: 'photo-1675504661658-33940d979a6a', caption: 'Resting on the low wall after his meal.' },
+      { month: 'September', date: '21 Sep', who: 'Mei Ling', pid: 'photo-1645437136523-dd412d06a79f', caption: 'New ID photo. The ear tip is easy to see from this side.' },
+      { month: 'August', date: '2 Aug', who: 'Wei', pid: 'photo-1589872267076-a0859175685b', caption: 'First photo for the group. Shy, watched us from under a bench.' },
+    ];
+    const diary = diaryRaw.map((d, i) => ({ ...d, img: U(d.pid, 'w=720&h=460'), showMonth: i === 0 || diaryRaw[i - 1].month !== d.month, divider: i ? '#E8DFD1' : 'transparent',
+      openPhoto: () => this.setState({ photo: { url: U(d.pid, 'w=900'), caption: d.date + ' · ' + d.who } }) }));
+    const diaryPreview = diaryRaw.slice(0, 3).map(d => ({ date: d.date, thumb: U(d.pid, 'w=240&h=240') }));
+    const tigerUI = {
+      logDiffer, logRest, diary, diaryPreview,
+      tigerOfferCta: this.state.tigerOffer ? 'Offered · Undo' : 'Offer to check',
+      toggleTigerOffer: () => this.setState(s => ({ tigerOffer: !s.tigerOffer })),
+      openMainPhoto: () => this.setState({ photo: { url: big, caption: 'Tiger · ID photo' } }),
+      photoOpen: !!this.state.photo, photoUrl: this.state.photo ? this.state.photo.url : '', photoCaption: this.state.photo ? this.state.photo.caption : '',
+      closePhoto: () => this.setState({ photo: null }),
+      noteOpen: !!nt, note: nt ? { ...nt, ...st(nt.status) } : {}, closeNote: () => this.setState({ note: null }),
+    };
+    const promptsF = prompts.map((p, i) => ({ ...p, border: this.state.askPick === i ? '#C9A65A' : '#EDE5D7', fill: () => this.setState({ askInput: p.text, askPick: i, askPickText: p.text }) }));
+    return { catCount: 12 + added.filter(c => !c.sighting).length, ...askUI, ...outreachUI, ...threadUI, ...tigerUI, searchOpen, searchBtnBg: searchOpen ? '#FBE7BA' : 'transparent', toggleSearch: () => this.setState(s => ({ searchOpen: !s.searchOpen })), follow, attentionText, ...top, claimTop, ...helpUI, updates, cats, channels, filters, prompts: promptsF, showNotes: this.props.showNotes ?? true };
+  }
+}
+
+class Component extends Base {
+  constructor(p) { super(p); try { Object.assign(this.state, JSON.parse(p.preset || '{}')); } catch (e) {} }
+  renderVals() {
+    const v = super.renderVals(), o = this.props.only, ids = ["today","cats","tiger","diary","community","review","thread","askmew","components","mew","upload","careupdate","memory"];
+    const out = { ...v, pad: o ? '0' : '48px 56px 64px', d_head: o ? 'none' : 'flex', showNotes: o ? false : v.showNotes };
+    ids.forEach(i => { out['d_' + i] = !o || o === i ? 'flex' : 'none'; });
+    if (o === 'careupdate' || o === 'memory') out.d_upload = 'flex';
+    return out;
+  }
+}
+</script>
+</body>
+</html>

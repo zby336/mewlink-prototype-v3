@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="width:100vw;max-width:440px;height:100dvh;background:#FBF8F1;position:relative;overflow:hidden;display:flex;flex-direction:column;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;color:#33261D">
+  <div style="height:54px;flex:none;padding:0 30px;display:none;justify-content:space-between;align-items:center;font:700 16px 'Atkinson Hyperlegible',sans-serif;position:relative"><span>9:41</span><span style="position:absolute;left:50%;top:11px;width:116px;height:32px;margin-left:-58px;border-radius:20px;background:#2B211A"></span><span style="display:flex;gap:6px;align-items:center"><span style="width:17px;height:11px;border-radius:2px;background:#33261D"></span><span style="width:25px;height:12px;border-radius:4px;border:1.5px solid #33261D;padding:1.5px"><span style="display:block;width:70%;height:100%;background:#33261D;border-radius:1.5px"></span></span></span></div>
+
+  <sc-if value="{{ s0 }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;position:relative;display:flex;flex-direction:column">
+      <div style="padding:8px 22px;display:flex;flex-direction:column;gap:4px;opacity:.45"><span style="font-size:17px;font-weight:700;color:#5C4636">‹ Tiger</span><span style="font:500 34px/1.1 Newsreader,serif">Photo diary</span></div>
+      <div style="position:absolute;inset:0;background:rgba(51,38,29,.28);display:flex;flex-direction:column;justify-content:flex-end">
+        <div style="background:#FBF8F1;border-radius:28px 28px 0 0;padding:12px 22px 40px;display:flex;flex-direction:column;gap:14px">
+          <span style="align-self:center;width:40px;height:5px;border-radius:3px;background:#DCD2C2"></span>
+          <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 24px Newsreader,serif">Add a photo</span><span style="font-size:15px;color:#6B5847">For Tiger’s shared photo diary</span></div>
+          <button onClick="{{ pickCamera }}" style="height:60px;border-radius:16px;background:#FFFFFF;border:1px solid #E0D5C3;display:flex;align-items:center;gap:14px;padding:0 18px;font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#33261D;cursor:pointer" style-active="background:#F5EFE4"><span style="width:26px;height:20px;border:2px solid #5C4636;border-radius:6px;display:flex;align-items:center;justify-content:center"><span style="width:8px;height:8px;border-radius:50%;border:2px solid #5C4636"></span></span>Take a photo</button>
+          <button onClick="{{ pickAlbum }}" style="height:60px;border-radius:16px;background:#FFFFFF;border:1px solid #E0D5C3;display:flex;align-items:center;gap:14px;padding:0 18px;font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#33261D;cursor:pointer" style-active="background:#F5EFE4"><span style="width:24px;height:20px;border:2px solid #5C4636;border-radius:5px"></span>Choose from album</button>
+          <span style="font-size:14px;line-height:1.45;color:#776455">Visible to this care circle only. Location data is removed from every photo.</span>
+          <button onClick="{{ exitDone }}" style="height:48px;border:none;background:transparent;font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#5C4636;cursor:pointer">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ inFlow }}" hint-placeholder-val="{{ false }}">
+    <div style="height:52px;flex:none;padding:0 14px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center">
+      <button onClick="{{ back }}" style="justify-self:start;height:44px;padding:0 8px;border:none;background:transparent;font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#5C4636;cursor:pointer">‹ Back</button>
+      <span style="font-size:15px;color:#6B5847">{{ stepLabel }}</span>
+      <button onClick="{{ exitDone }}" style="justify-self:end;height:44px;padding:0 8px;border:none;background:transparent;font:400 17px 'Atkinson Hyperlegible',sans-serif;color:#6B5847;cursor:pointer">Cancel</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s1 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:6px 22px 34px;display:flex;flex-direction:column;gap:18px">
+      <span style="font:500 26px Newsreader,serif">Preview and crop</span>
+      <div style="height:400px;border-radius:20px;overflow:hidden;position:relative;background:#2B211A center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=800&amp;q=75&amp;auto=format)">
+        <div style="position:absolute;left:50%;top:50%;width:280px;height:{{ frameH }};transform:translate(-50%,-50%);border:2px solid #FFFBF3;border-radius:6px;box-shadow:0 0 0 999px rgba(30,22,17,.5)"></div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <sc-for list="{{ aspects }}" as="a" hint-placeholder-count="2">
+          <button onClick="{{ a.pick }}" style="height:44px;padding:0 16px;border-radius:999px;font:{{ a.weight }} 15px 'Atkinson Hyperlegible',sans-serif;border:1px solid {{ a.border }};background:{{ a.bg }};color:#33261D;cursor:pointer">{{ a.label }}</button>
+        </sc-for>
+      </div>
+      <span style="font-size:14px;color:#776455">Drag to adjust. Location data has been removed.</span>
+      <button onClick="{{ next }}" style="margin-top:auto;height:56px;border:none;border-radius:16px;background:#3B2A20;color:#FFFBF3;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer" style-active="background:#5A4334">Continue</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s2 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:6px 22px 34px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 26px Newsreader,serif">Blur the background?</span><span style="font-size:15px;line-height:1.45;color:#6B5847">Optional. Helps hide recognisable surroundings.</span></div>
+      <div style="height:340px;border-radius:20px;overflow:hidden;position:relative;background:#2B211A">
+        <div style="position:absolute;inset:-24px;background:center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=800&amp;q=75&amp;auto=format);filter:blur({{ blurPx }})"></div>
+        <div style="position:absolute;inset:0;background:center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=800&amp;q=75&amp;auto=format);-webkit-mask-image:radial-gradient(ellipse 42% 48% at 50% 52%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 42% 48% at 50% 52%,#000 55%,transparent 100%)"></div>
+      </div>
+      <button onClick="{{ toggleBlur }}" style="min-height:60px;border-radius:16px;background:#FFFFFF;border:1px solid #E0D5C3;display:flex;align-items:center;gap:14px;padding:0 18px;cursor:pointer;text-align:left">
+        <span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#33261D">Blur background</span><span style="font:400 14px 'Atkinson Hyperlegible',sans-serif;color:#776455">Tiger stays clear</span></span>
+        <span style="width:52px;height:32px;flex:none;border-radius:16px;background:{{ swBg }};padding:3px;display:flex;justify-content:{{ swJustify }}"><span style="width:26px;height:26px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></span>
+      </button>
+      <button onClick="{{ next }}" style="margin-top:auto;height:56px;border:none;border-radius:16px;background:#3B2A20;color:#FFFBF3;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer" style-active="background:#5A4334">Continue</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s3 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:6px 22px 34px;display:flex;flex-direction:column;gap:16px">
+      <span style="font:500 26px/1.2 Newsreader,serif">Is this Tiger?</span>
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="aspect-ratio:4/3;border-radius:14px;background:#EFE7D9 center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=320&amp;h=240&amp;fit=crop&amp;crop=top&amp;q=70&amp;auto=format)"></div><span style="font-size:14px;font-weight:700;color:#4A382B">Your photo</span></div>
+        <div style="display:flex;flex-direction:column;gap:6px"><div style="aspect-ratio:4/3;border-radius:14px;background:#EFE7D9 center/cover no-repeat url(https://images.unsplash.com/photo-1675504661658-33940d979a6a?w=320&amp;h=240&amp;fit=crop&amp;crop=top&amp;q=70&amp;auto=format)"></div><span style="font-size:14px;font-weight:700;color:#4A382B">Tiger’s reference photo</span></div>
+      </div>
+      <div style="background:#F1ECE2;border-radius:16px;padding:12px 14px;display:flex;gap:10px;align-items:flex-start">
+        <dc-import name="Mew" mood="thinking" size="{{ 34 }}" hint-size="34px,34px"></dc-import>
+        <div style="flex:1;display:flex;flex-direction:column;gap:3px;min-width:0">
+          <span style="font-size:13px;color:#776455">Ask Mew · AI suggestion</span>
+          <span style="font-size:16px;font-weight:700;color:#33261D">Possible match: Tiger</span>
+          <span style="font-size:15px;line-height:1.4;color:#4A382B;text-wrap:pretty">The coat markings look similar, but the ear is not clear in this photo. Please decide based on what you saw.</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:15px;font-weight:700;color:#6B5847">Your answer</span>
+        <sc-for list="{{ whoOpts }}" as="w" hint-placeholder-count="3">
+          <button onClick="{{ w.pick }}" style="min-height:52px;border-radius:16px;background:#FFFFFF;border:{{ w.border }};display:flex;align-items:center;gap:12px;padding:0 16px;cursor:pointer;text-align:left">
+            <span style="width:22px;height:22px;flex:none;border-radius:50%;border:2px solid #8C6E5A;display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:{{ w.dot }}"></span></span>
+            <span style="flex:1;font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#33261D">{{ w.label }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <button onClick="{{ nextIfWho }}" disabled="{{ whoDisabled }}" style="margin-top:auto;height:56px;flex:none;border:none;border-radius:16px;background:{{ revBg }};color:{{ revFg }};font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:{{ revCursor }}">{{ revLabel }}</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s6 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:6px 22px 34px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 26px/1.2 Newsreader,serif">Who is in the photo?</span><span style="font-size:15px;color:#6B5847">Pick a cat from this care circle, or save it as a new sighting.</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ otherOpts }}" as="o" hint-placeholder-count="5">
+          <button onClick="{{ o.pick }}" style="min-height:52px;border-radius:16px;background:#FFFFFF;border:{{ o.border }};display:flex;align-items:center;gap:12px;padding:0 16px;cursor:pointer;text-align:left">
+            <span style="width:22px;height:22px;flex:none;border-radius:50%;border:2px solid #8C6E5A;display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:{{ o.dot }}"></span></span>
+            <span style="flex:1;font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#33261D">{{ o.label }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <button onClick="{{ nextIfOther }}" style="margin-top:auto;height:56px;flex:none;border:none;border-radius:16px;background:{{ othBg }};color:{{ othFg }};font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Review</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s4 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:6px 22px 34px;display:flex;flex-direction:column;gap:18px">
+      <span style="font:500 26px Newsreader,serif">Check before saving</span>
+      <div style="height:200px;border-radius:20px;overflow:hidden;position:relative;background:#2B211A">
+        <div style="position:absolute;inset:-24px;background:center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=800&amp;q=75&amp;auto=format);filter:blur({{ blurPx }})"></div>
+        <div style="position:absolute;inset:0;background:center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=800&amp;q=75&amp;auto=format);-webkit-mask-image:radial-gradient(ellipse 42% 48% at 50% 52%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 42% 48% at 50% 52%,#000 55%,transparent 100%)"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:15px;color:#6B4A36">{{ destText }}</span>
+        <textarea value="{{ note }}" onChange="{{ onNote }}" rows="2" placeholder="One line: what you noticed, or what the next person should look for" style="width:100%;resize:none;border-radius:16px;border:1px solid #E0D5C3;background:#FFFFFF;padding:12px 14px;font:400 17px/1.45 'Atkinson Hyperlegible',sans-serif;color:#33261D;outline:none"></textarea>
+      </div>
+      <div style="background:#FBF1D9;border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:15px;font-weight:700;color:#33261D">Visible to this care circle only</span>
+        <span style="font-size:14px;line-height:1.4;color:#6B5847">No location is saved or shown with this photo.</span>
+      </div>
+      <button onClick="{{ save }}" style="margin-top:auto;height:56px;border:none;border-radius:16px;background:#E3AE45;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer" style-active="background:#CF9A32">Save photo</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s5 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;padding:80px 28px 40px;display:flex;flex-direction:column;align-items:center;gap:16px;text-align:center">
+      <div style="width:64px;height:64px;border-radius:50%;background:#E3EBDA;display:flex;align-items:center;justify-content:center"><div style="width:12px;height:22px;border:solid #4A6140;border-width:0 3px 3px 0;transform:translateY(-3px) rotate(45deg)"></div></div>
+      <span style="font:500 26px/1.25 Newsreader,serif;text-wrap:balance">{{ savedTitle }}</span>
+      <span style="font-size:16px;line-height:1.5;color:#6B5847;text-wrap:pretty">{{ savedBody }}</span>
+      <button onClick="{{ exitDone }}" style="margin-top:auto;align-self:stretch;height:56px;border-radius:16px;background:#FFFBF3;border:1px solid #8C6E5A;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Done</button>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:392,&quot;height&quot;:846},&quot;startStep&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[0,1,2,3,4,5],&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const s = p.startStep ?? 0;
+    this.state = { other: null, step: s, aspect: 'Square', blur: s >= 2, who: s >= 4 ? 'tiger' : null,
+      note: s >= 4 ? 'Ear looks cleaner today. He ate everything.' : '' };
+  }
+  renderVals() {
+    const { step, aspect, blur, who, note, other } = this.state;
+    const others = ['Kopi', 'Oyen', 'Milo', 'Ash', 'A cat not in this circle (new sighting)'];
+    const otherDest = other ? (other.startsWith('A cat') ? 'Saved as a new sighting. Not linked to any cat yet.' : 'Adds to ' + other + '’s photo diary') : '';
+    const go = n => () => this.setState({ step: n });
+    const whoMap = { tiger: 'Yes, it’s Tiger', not: 'No, not Tiger', unsure: 'Not sure yet' };
+    const dest = { tiger: 'Adds to Tiger’s photo diary', not: otherDest, unsure: 'Saved as “Not sure yet”. It won’t be added to Tiger’s profile until someone confirms.' };
+    return {
+      s0: step === 0, s1: step === 1, s2: step === 2, s3: step === 3, s4: step === 4, s5: step === 5, s6: step === 6,
+      inFlow: (step >= 1 && step <= 4) || step === 6, stepLabel: 'Step ' + (step === 6 ? 3 : step) + ' of 4',
+      pickCamera: go(1), pickAlbum: go(1), next: go(step + 1),
+      back: () => this.setState({ step: step === 6 ? 3 : step === 4 && who === 'not' ? 6 : Math.max(0, step - 1) }),
+      exitDone: () => { location.hash = "tiger"; }, cancel: () => this.setState({ step: 0, who: null, other: null, note: '', blur: false }),
+      frameH: aspect === 'Square' ? '280px' : '210px',
+      aspects: ['Square', '4:3'].map(l => ({ label: l, bg: aspect === l ? '#F4E6C3' : 'transparent', border: aspect === l ? '#C9A65A' : '#E0D6C6', weight: aspect === l ? 700 : 400, pick: () => this.setState({ aspect: l }) })),
+      blurPx: blur ? '10px' : '0px', swBg: blur ? '#7F9A6E' : '#D6CCBC', swJustify: blur ? 'flex-end' : 'flex-start',
+      toggleBlur: () => this.setState(s => ({ blur: !s.blur })),
+      whoOpts: Object.keys(whoMap).map(k => ({ label: whoMap[k], border: who === k ? '1.5px solid #3B2A20' : '1px solid #E0D5C3', dot: who === k ? '#3B2A20' : 'transparent', pick: () => this.setState({ who: k }) })),
+      note, onNote: e => this.setState({ note: e.target.value }),
+      whoDisabled: !who, revBg: who ? '#3B2A20' : '#E6DED2', revFg: who ? '#FFFBF3' : '#8C7A6A', revCursor: who ? 'pointer' : 'default',
+      revLabel: who === 'not' ? 'Choose who it is' : 'Review',
+      nextIfWho: () => { if (who) this.setState({ step: who === 'not' ? 6 : 4 }); },
+      otherOpts: others.map(o => ({ label: o, border: other === o ? '1.5px solid #3B2A20' : '1px solid #E0D5C3', dot: other === o ? '#3B2A20' : 'transparent', pick: () => this.setState({ other: o }) })),
+      othBg: other ? '#3B2A20' : '#E6DED2', othFg: other ? '#FFFBF3' : '#8C7A6A',
+      nextIfOther: () => { if (other) this.setState({ step: 4 }); },
+      noteShown: note || 'No note added', destText: who ? dest[who] : '',
+      save: go(5),
+      savedTitle: who === 'tiger' ? 'Added to Tiger’s photo diary' : who === 'not' && other && !other.startsWith('A cat') ? 'Added to ' + other + '’s photo diary' : 'Photo saved',
+      savedBody: who === 'tiger' ? 'Caregivers in this circle can now see it.' : who === 'unsure' ? 'It isn’t linked to Tiger yet. Someone in the care circle can confirm later.' : other && other.startsWith('A cat') ? 'Saved as a new sighting for the care circle to review.' : 'Caregivers in this circle can now see it.',
+    };
+  }
+}
+</script>
+</body>
+</html>

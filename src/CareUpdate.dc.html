@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="width:100vw;max-width:440px;height:100dvh;background:#FBF8F1;position:relative;overflow:hidden;display:flex;flex-direction:column;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;color:#33261D">
+  <div style="height:54px;flex:none;padding:0 30px;display:none;justify-content:space-between;align-items:center;font:700 16px 'Atkinson Hyperlegible',sans-serif;position:relative"><span>9:41</span><span style="position:absolute;left:50%;top:11px;width:116px;height:32px;margin-left:-58px;border-radius:20px;background:#2B211A"></span><span style="display:flex;gap:6px;align-items:center"><span style="width:17px;height:11px;border-radius:2px;background:#33261D"></span><span style="width:25px;height:12px;border-radius:4px;border:1.5px solid #33261D;padding:1.5px"><span style="display:block;width:70%;height:100%;background:#33261D;border-radius:1.5px"></span></span></span></div>
+  <div style="height:52px;flex:none;padding:0 14px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center">
+    <button onClick="{{ back }}" style="justify-self:start;height:44px;padding:0 8px;border:none;background:transparent;font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#5C4636;cursor:pointer;visibility:{{ backVis }}">‹ Back</button>
+    <span style="font-size:15px;color:#6B5847">{{ stepLabel }}</span>
+    <button onClick="{{ exitDone }}" style="justify-self:end;height:44px;padding:0 8px;border:none;background:transparent;font:400 17px 'Atkinson Hyperlegible',sans-serif;color:#6B5847;cursor:pointer">Cancel</button>
+  </div>
+
+  <sc-if value="{{ s0 }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;min-height:0;padding:4px 22px 30px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 28px/1.15 Newsreader,serif">Add care update</span><span style="font-size:15px;color:#6B5847">Use any of these. None are required.</span></div>
+      <button onClick="{{ goRecord }}" style="min-height:76px;border-radius:18px;background:#FFFFFF;border:1px solid #E0D5C3;display:flex;align-items:center;gap:14px;padding:0 16px;cursor:pointer;text-align:left">
+        <span style="width:44px;height:44px;flex:none;border-radius:50%;background:#F4E6C3;display:flex;align-items:center;justify-content:center"><span style="width:12px;height:18px;border-radius:6px;border:2px solid #5C4636"></span></span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#33261D">Record your voice</span><span style="font:400 14px 'Atkinson Hyperlegible',sans-serif;color:#776455">{{ voiceSub }}</span></span>
+        <span style="font-size:18px;color:#8C7A6A">›</span>
+      </button>
+      <button onClick="{{ togglePhoto }}" style="min-height:76px;border-radius:18px;background:#FFFFFF;border:1px solid #E0D5C3;display:flex;align-items:center;gap:14px;padding:0 16px;cursor:pointer;text-align:left">
+        <span style="width:44px;height:44px;flex:none;border-radius:12px;background:{{ photoTileBg }};display:flex;align-items:center;justify-content:center"><span style="width:20px;height:15px;border:2px solid #5C4636;border-radius:4px;opacity:{{ photoIconOp }}"></span></span>
+        <span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#33261D">Add a photo</span><span style="font:400 14px 'Atkinson Hyperlegible',sans-serif;color:#776455">{{ photoSub }}</span></span>
+      </button>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:15px;font-weight:700;color:#6B5847">Or type it</span>
+        <textarea value="{{ typed }}" onChange="{{ onTyped }}" rows="3" placeholder="What did you see?" style="width:100%;resize:none;border-radius:16px;border:1px solid #E0D5C3;background:#FFFFFF;padding:12px 14px;font:400 17px/1.5 'Atkinson Hyperlegible',sans-serif;color:#33261D;outline:none"></textarea>
+      </div>
+      <button onClick="{{ fromHub }}" style="margin-top:auto;height:56px;flex:none;border:none;border-radius:16px;background:{{ hubBg }};color:{{ hubFg }};font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Next</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s1 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;padding:4px 22px 30px;display:flex;flex-direction:column;align-items:center;gap:20px">
+      <span style="align-self:flex-start;font:500 28px/1.15 Newsreader,serif">Record your voice</span>
+      <span style="align-self:flex-start;font-size:15px;line-height:1.45;color:#6B5847">Say what you saw, in your own words. You can listen back before using it.</span>
+      <div style="height:64px;align-self:stretch;display:flex;align-items:center;justify-content:center;gap:4px">
+        <sc-for list="{{ bars }}" as="b" hint-placeholder-count="24"><span style="width:5px;border-radius:3px;height:{{ b.h }};background:{{ b.c }}"></span></sc-for>
+      </div>
+      <span style="font:500 34px Newsreader,serif;font-variant-numeric:tabular-nums">{{ timeText }}</span>
+      <button onClick="{{ recTap }}" aria-label="{{ recAria }}" style="width:112px;height:112px;border-radius:50%;border:none;background:{{ recBg }};display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 8px 22px rgba(140,100,24,.25)">
+        <span style="width:{{ recIconSize }};height:{{ recIconSize }};border-radius:{{ recIconRadius }};background:#33261D"></span>
+      </button>
+      <span style="font-size:16px;font-weight:700;color:#4A382B">{{ recHint }}</span>
+      <sc-if value="{{ recorded }}" hint-placeholder-val="{{ false }}">
+        <div style="align-self:stretch;display:flex;gap:8px">
+          <button onClick="{{ playTap }}" style="flex:1;height:52px;border-radius:16px;background:#FFFBF3;border:1px solid #8C6E5A;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">{{ playLabel }}</button>
+          <button onClick="{{ reRecord }}" style="flex:1;height:52px;border-radius:16px;background:transparent;border:1px solid #E0D5C3;color:#5C4636;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Record again</button>
+        </div>
+      </sc-if>
+      <button onClick="{{ useRecording }}" style="margin-top:auto;align-self:stretch;height:56px;flex:none;border:none;border-radius:16px;background:{{ useBg }};color:{{ useFg }};font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Use this recording</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s2 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;padding:4px 22px 30px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 28px/1.15 Newsreader,serif">Your words</span><span style="font-size:15px;color:#6B5847">Sample transcript for this prototype. Fix anything that’s wrong.</span></div>
+      <textarea value="{{ transcript }}" onChange="{{ onTranscript }}" rows="5" style="width:100%;resize:none;border-radius:16px;border:1px solid #E0D5C3;background:#FFFFFF;padding:14px 16px;font:400 17px/1.55 'Atkinson Hyperlegible',sans-serif;color:#33261D;outline:none"></textarea>
+      <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:12px"><div style="width:56px;height:56px;border-radius:12px;background:#EFE7D9 center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=200&amp;h=200&amp;fit=crop&amp;crop=top&amp;q=70&amp;auto=format)"></div><span style="font-size:15px;color:#6B5847">1 photo attached</span></div>
+      </sc-if>
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
+        <button onClick="{{ makeDraft }}" style="height:56px;border:none;border-radius:16px;background:#E3AE45;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-active="background:#CF9A32">Create draft with Mew</button>
+        <button onClick="{{ skipDraft }}" style="height:48px;border:none;background:transparent;color:#5C4636;font:700 16px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Write it myself instead</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s3 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:4px 22px 30px;display:flex;flex-direction:column;gap:14px">
+      <sc-if value="{{ drafting }}" hint-placeholder-val="{{ false }}">
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding-top:120px"><dc-import name="Mew" mood="thinking" size="{{ 72 }}" hint-size="72px,72px"></dc-import><span style="font-size:16px;color:#6B5847">Mew is sorting your words…</span></div>
+      </sc-if>
+      <sc-if value="{{ draftReady }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;gap:10px"><dc-import name="Mew" mood="source" size="{{ 30 }}" hint-size="30px,30px"></dc-import><span style="flex:1;font-size:14px;font-weight:700;color:#7A5A12">{{ draftLabel }}</span><button onClick="{{ regen }}" style="height:40px;padding:0;border:none;background:transparent;font:700 14px 'Atkinson Hyperlegible',sans-serif;color:#5C4636;cursor:pointer;visibility:{{ regenVis }}">Regenerate</button></div>
+        <sc-for list="{{ fields }}" as="f" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-size:15px;font-weight:700;color:{{ f.fg }}">{{ f.label }}</span><button onClick="{{ f.clear }}" style="height:36px;padding:0 4px;border:none;background:transparent;font:400 14px 'Atkinson Hyperlegible',sans-serif;color:#776455;cursor:pointer">Delete</button></div>
+            <textarea value="{{ f.value }}" onChange="{{ f.onChange }}" rows="2" placeholder="Empty" style="width:100%;resize:none;border-radius:14px;border:1px solid #E0D5C3;background:#FFFFFF;padding:10px 12px;font:400 16px/1.45 'Atkinson Hyperlegible',sans-serif;color:#33261D;outline:none"></textarea>
+          </div>
+        </sc-for>
+        <button onClick="{{ toggleSrc }}" style="align-self:flex-start;height:40px;padding:0;border:none;background:transparent;font:700 15px 'Atkinson Hyperlegible',sans-serif;color:#5C4636;cursor:pointer">{{ srcLabel }}</button>
+        <sc-if value="{{ srcOpen }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:14px;background:#F1ECE2"><sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}"><div style="width:52px;height:52px;flex:none;border-radius:10px;background:#EFE7D9 center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=200&amp;h=200&amp;fit=crop&amp;crop=top&amp;q=70&amp;auto=format)"></div></sc-if><span style="font-size:15px;line-height:1.45;color:#4A382B">“{{ transcript }}”</span></div>
+        </sc-if>
+        <button onClick="{{ toWho }}" style="margin-top:auto;height:56px;flex:none;border:none;border-radius:16px;background:#3B2A20;color:#FFFBF3;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Next</button>
+      </sc-if>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s4 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;padding:4px 22px 30px;display:flex;flex-direction:column;gap:16px">
+      <span style="font:500 28px/1.15 Newsreader,serif">Is this about {{ targetName }}?</span>
+      <div style="display:flex;gap:12px;align-items:center"><div style="width:64px;height:64px;border-radius:14px;background:#EFE7D9 center/cover no-repeat url(https://images.unsplash.com/photo-1650535812141-04d564530b17?w=200&amp;h=200&amp;fit=crop&amp;crop=top&amp;q=70&amp;auto=format)"></div><span style="font-size:15px;line-height:1.45;color:#6B5847">Only you can confirm which cat you saw.</span></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <sc-for list="{{ whoOpts }}" as="w" hint-placeholder-count="3">
+          <button onClick="{{ w.pick }}" style="min-height:56px;border-radius:16px;background:#FFFFFF;border:{{ w.border }};display:flex;align-items:center;gap:12px;padding:0 16px;cursor:pointer;text-align:left">
+            <span style="width:22px;height:22px;flex:none;border-radius:50%;border:2px solid #8C6E5A;display:flex;align-items:center;justify-content:center"><span style="width:10px;height:10px;border-radius:50%;background:{{ w.dot }}"></span></span>
+            <span style="flex:1;font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#33261D">{{ w.label }}</span>
+          </button>
+        </sc-for>
+      </div>
+      <button onClick="{{ toReview }}" style="margin-top:auto;height:56px;flex:none;border:none;border-radius:16px;background:{{ whoBg }};color:{{ whoFg }};font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Review</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s5 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:4px 22px 30px;display:flex;flex-direction:column;gap:14px">
+      <span style="font:500 28px/1.15 Newsreader,serif">Check before saving</span>
+      <span style="font-size:15px;color:#6B5847">{{ destText }}</span>
+      <div style="display:flex;flex-direction:column">
+        <sc-for list="{{ summary }}" as="f" hint-placeholder-count="3">
+          <div style="padding:10px 0;border-top:1px solid #E8DFD1;display:flex;flex-direction:column;gap:3px"><span style="font-size:14px;font-weight:700;color:{{ f.fg }}">{{ f.label }}</span><span style="font-size:16px;line-height:1.45;color:#33261D">{{ f.value }}</span></div>
+        </sc-for>
+      </div>
+      <div style="background:#FBF1D9;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:3px"><span style="font-size:15px;font-weight:700">Not shared to any channel</span><span style="font-size:14px;line-height:1.4;color:#6B5847">You can choose to share it after saving.</span></div>
+      <button onClick="{{ askSave }}" style="margin-top:auto;height:56px;flex:none;border:none;border-radius:16px;background:#E3AE45;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer" style-active="background:#CF9A32">Save care update</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ s6 }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;padding:30px 22px 30px;display:flex;flex-direction:column;gap:18px">
+      <div style="width:56px;height:56px;border-radius:50%;background:#E3EBDA;display:flex;align-items:center;justify-content:center"><div style="width:11px;height:20px;border:solid #4A6140;border-width:0 3px 3px 0;transform:translateY(-3px) rotate(45deg)"></div></div>
+      <span style="font:500 26px/1.25 Newsreader,serif">{{ savedTitle }}</span>
+      <div style="padding:14px 0;border-top:1px solid #E8DFD1;border-bottom:1px solid #E8DFD1;display:flex;flex-direction:column;gap:4px">
+        <span style="font-size:14px;color:#776455">Today 10:12am · <b style="color:#4A382B">You (Mei Ling)</b></span>
+        <span style="font-size:16px;line-height:1.45;color:#33261D">{{ savedLine }}</span>
+      </div>
+      <span style="font-size:15px;line-height:1.45;color:#6B5847">Not posted anywhere. Share only if the care circle needs to know.</span>
+      <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
+        <a href="#memory" style="height:52px;border-radius:16px;background:#FFFBF3;border:1px solid #8C6E5A;color:#33261D;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;text-decoration:none">Make a memory</a>
+        <button style="height:48px;border:none;background:transparent;color:#5C4636;font:700 16px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Share to #need-help…</button>
+        <button onClick="{{ exitDone }}" style="height:52px;border:none;background:transparent;color:#5C4636;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Done</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ confirmOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;inset:0;z-index:6;background:rgba(51,38,29,.28);display:flex;flex-direction:column;justify-content:flex-end">
+      <div onClick="{{ closeConfirm }}" style="flex:1"></div>
+      <div style="background:#FBF8F1;border-radius:28px 28px 0 0;padding:20px 22px 34px;display:flex;flex-direction:column;gap:14px">
+        <span style="font:500 24px Newsreader,serif">{{ confirmTitle }}</span>
+        <span style="font-size:16px;line-height:1.5;color:#4A382B">Caregivers in this circle will see it with your name and the time. It won’t be posted to a channel.</span>
+        <div style="display:flex;gap:8px">
+          <button onClick="{{ closeConfirm }}" style="flex:1;height:52px;border-radius:16px;background:transparent;border:none;color:#5C4636;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Not yet</button>
+          <button onClick="{{ doSave }}" style="flex:1.3;height:52px;border-radius:16px;background:#E3AE45;border:none;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Save</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:392,&quot;height&quot;:846},&quot;startStep&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[0,1,2,3,4,5,6],&quot;default&quot;:0,&quot;tsType&quot;:&quot;number&quot;}}">
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const target = window.MewLinkCare.allCats().find(c => c.id === (p.catId || 'tiger')) || window.MewLinkCare.CATS[0];
+    this.targetName = target.name; this.targetPhoto = target.photo;
+    const s = p.startStep ?? 0;
+    this.sample = 'I saw ' + this.targetName + ' today. He ate about half his food. There might be a mark near one ear.';
+    this.draft = {
+      observed: 'Saw ' + this.targetName + ' today; he ate about half his food.',
+      uncertain: 'There may be a mark near one ear; I could not tell what it was.',
+      next: 'Check the same ear and add a clearer observation if possible.',
+    };
+    this.state = { step: s, photo: s >= 2, recState: s >= 2 ? 'done' : 'idle', secs: s >= 2 ? 9 : 0, playing: false,
+      typed: '', transcript: s >= 2 ? this.sample : '', drafting: false, draftReady: s >= 3, manual: false,
+      ...(s >= 3 ? this.draft : { observed: '', uncertain: '', next: '' }),
+      who: s >= 5 ? 'tiger' : null, srcOpen: false, confirmOpen: false };
+  }
+  componentWillUnmount() { clearInterval(this.t); clearTimeout(this.d); }
+  renderVals() {
+    const st = this.state, s = st.step;
+    const go = n => () => this.setState({ step: n });
+    const fmt = n => '0:' + String(n).padStart(2, '0');
+    const recording = st.recState === 'rec', done = st.recState === 'done';
+    const heights = [10, 22, 34, 18, 42, 28, 50, 36, 20, 44, 30, 54, 26, 40, 16, 48, 32, 22, 38, 14, 30, 24, 12, 8];
+    const labels = { 1: 'Step 1 of 4', 2: 'Step 2 of 4', 3: 'Step 2 of 4', 4: 'Step 3 of 4', 5: 'Step 4 of 4' };
+    const whoMap = { tiger: 'Yes, it’s ' + this.targetName + '', not: 'No, another cat', unsure: 'Not sure yet' };
+    const fieldDefs = [['observed', 'Observed', '#4A6140'], ['uncertain', 'Uncertain', '#9A4A26'], ['next', 'For the next visit', '#7A5A12']];
+    const hasInput = done || st.photo || st.typed.trim();
+    const startDraft = () => { this.setState({ step: 3, drafting: true, draftReady: false, manual: false });
+      clearTimeout(this.d); this.d = setTimeout(() => this.setState({ drafting: false, draftReady: true, ...this.draft }), 1200); };
+    return {
+      targetName: this.targetName, targetPhoto: this.targetPhoto,
+      s0: s === 0, s1: s === 1, s2: s === 2, s3: s === 3, s4: s === 4, s5: s === 5, s6: s === 6,
+      stepLabel: labels[s] || '', backVis: s > 0 && s < 6 ? 'visible' : 'hidden',
+      back: () => this.setState({ step: s === 2 && !done ? 0 : s === 3 ? 2 : Math.max(0, s - 1) }),
+      exitDone: () => { location.hash = "today"; }, reset: () => { clearInterval(this.t); this.setState({ step: 0, photo: false, recState: 'idle', secs: 0, playing: false, typed: '', transcript: '', drafting: false, draftReady: false, observed: '', uncertain: '', next: '', who: null, confirmOpen: false }); },
+      goRecord: go(1), voiceSub: done ? 'Recorded ' + fmt(st.secs) + ' · tap to change' : 'Talk instead of typing',
+      togglePhoto: () => this.setState(x => ({ photo: !x.photo })),
+      photoSub: st.photo ? '1 photo attached · tap to remove' : 'Optional', photoTileBg: st.photo ? '#EFE7D9 center/cover no-repeat url(' + this.targetPhoto + ')' : '#F1ECE2', photoIconOp: st.photo ? 0 : 1,
+      typed: st.typed, onTyped: e => this.setState({ typed: e.target.value }),
+      hubBg: hasInput ? '#3B2A20' : '#E6DED2', hubFg: hasInput ? '#FFFBF3' : '#8C7A6A',
+      fromHub: () => { if (!hasInput) return; if (done) this.setState({ step: 2, transcript: st.transcript || this.sample }); else this.setState({ step: 2, transcript: st.typed }); },
+      bars: heights.map((hh, i) => ({ h: (recording || done ? hh : 6) + 'px', c: done && st.playing && i < 12 ? '#B8862A' : recording || done ? '#8C6E5A' : '#DCD2C2' })),
+      timeText: fmt(st.secs),
+      recBg: recording ? '#E9B79C' : '#E3AE45', recIconSize: recording ? '30px' : '36px', recIconRadius: recording ? '6px' : '50%',
+      recAria: recording ? 'Stop recording' : 'Start recording',
+      recHint: recording ? 'Recording… tap to stop' : done ? 'Recorded' : 'Tap to start',
+      recTap: () => {
+        if (recording) { clearInterval(this.t); this.setState({ recState: 'done', secs: Math.max(st.secs, 3) }); return; }
+        if (done) return;
+        this.setState({ recState: 'rec', secs: 0 }); clearInterval(this.t);
+        this.t = setInterval(() => this.setState(x => ({ secs: Math.min(x.secs + 1, 59) })), 1000);
+      },
+      recorded: done, playLabel: st.playing ? 'Pause' : 'Play back',
+      playTap: () => { this.setState(x => ({ playing: !x.playing })); clearTimeout(this.p); if (!st.playing) this.p = setTimeout(() => this.setState({ playing: false }), 2500); },
+      reRecord: () => { clearInterval(this.t); this.setState({ recState: 'idle', secs: 0, playing: false }); },
+      useBg: done ? '#3B2A20' : '#E6DED2', useFg: done ? '#FFFBF3' : '#8C7A6A',
+      useRecording: () => { if (done) this.setState({ step: 2, transcript: this.sample }); },
+      transcript: st.transcript, onTranscript: e => this.setState({ transcript: e.target.value }), hasPhoto: st.photo,
+      makeDraft: startDraft, regen: startDraft,
+      skipDraft: () => this.setState({ step: 3, drafting: false, draftReady: true, manual: true, observed: st.transcript, uncertain: '', next: '' }),
+      drafting: st.drafting, draftReady: st.draftReady,
+      draftLabel: st.manual ? 'Your own note' : 'AI draft · Review before saving', regenVis: st.manual ? 'hidden' : 'visible',
+      fields: fieldDefs.map(([k, label, fg]) => ({ label, fg, value: st[k], onChange: e => this.setState({ [k]: e.target.value }), clear: () => this.setState({ [k]: '' }) })),
+      srcOpen: st.srcOpen, srcLabel: st.srcOpen ? 'Hide what you said' : 'Compare with what you said',
+      toggleSrc: () => this.setState(x => ({ srcOpen: !x.srcOpen })),
+      toWho: go(4),
+      whoOpts: Object.keys(whoMap).map(k => ({ label: whoMap[k], border: st.who === k ? '1.5px solid #3B2A20' : '1px solid #E0D5C3', dot: st.who === k ? '#3B2A20' : 'transparent', pick: () => this.setState({ who: k }) })),
+      whoBg: st.who ? '#3B2A20' : '#E6DED2', whoFg: st.who ? '#FFFBF3' : '#8C7A6A',
+      toReview: () => { if (st.who) this.setState({ step: 5 }); },
+      destText: st.who === 'tiger' ? 'Goes to ' + this.targetName + '’s observation log.' : st.who === 'unsure' ? 'Saved as an unconfirmed observation. Not added to ' + this.targetName + '’s profile.' : 'Saved without a cat. You can link it later.',
+      summary: fieldDefs.filter(([k]) => st[k].trim()).map(([k, label, fg]) => ({ label, fg, value: st[k] })),
+      askSave: () => this.setState({ confirmOpen: true }), closeConfirm: () => this.setState({ confirmOpen: false }),
+      confirmOpen: st.confirmOpen, confirmTitle: st.who === 'tiger' ? 'Save to ' + this.targetName + '’s log?' : 'Save as unconfirmed?',
+      doSave: () => this.setState({ confirmOpen: false, step: 6 }),
+      savedTitle: st.who === 'tiger' ? 'Added to ' + this.targetName + '’s observation log' : 'Saved as an unconfirmed observation',
+      savedLine: st.observed || st.uncertain || st.next || st.transcript,
+    };
+  }
+}
+</script>
+</body>
+</html>

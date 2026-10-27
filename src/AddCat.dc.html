@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet"><style>html,body{margin:0;background:#FAF6EF}a{color:#9A6A12}a:hover{color:#33261D}</style></helmet>
+<div data-screen-label="02c Add a cat" style="width:100%;height:100dvh;max-width:440px;margin:0 auto;background:#FAF6EF;display:flex;flex-direction:column;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;color:#2A1F18;position:relative;overflow:hidden">
+  <div style="height:56px;flex:none;padding:0 12px;display:flex;align-items:center;justify-content:space-between">
+    <button onClick="{{ back }}" style="height:44px;padding:0 12px 0 6px;border:none;background:transparent;display:flex;align-items:center;gap:2px;font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#5C4636;cursor:pointer"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="#5C4636" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>{{ backLabel }}</button>
+    <span style="font-size:14px;color:#8F7E6F;padding-right:10px">{{ stepLabel }}</span>
+  </div>
+
+  <sc-if value="{{ isType }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:8px 22px 28px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;gap:22px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font:500 34px/1.1 Newsreader,serif">Add a cat</span>
+        <span style="font-size:16px;line-height:1.45;color:#6B5B4E;text-wrap:pretty">Which of these fits best?</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <button onClick="{{ pickJoin }}" style="text-align:left;padding:18px;border-radius:20px;border:1px solid #EFE8DC;background:#FFFFFF;box-shadow:0 2px 10px rgba(80,50,20,0.06);display:flex;gap:14px;align-items:flex-start;cursor:pointer;font-family:inherit;color:inherit" style-active="background:#FBF3E4">
+          <span style="width:48px;height:48px;flex:none;border-radius:14px;background:#FBE7BA;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 10V4.5l4 3h6l4-3V10a7 7 0 0 1-14 0z" fill="none" stroke="#8A6418" stroke-width="1.9" stroke-linejoin="round"></path><path d="M12 14.5v3M10.5 16h3" stroke="#8A6418" stroke-width="1.9" stroke-linecap="round"></path></svg></span>
+          <span style="display:flex;flex-direction:column;gap:4px"><span style="font:600 21px/1.2 Newsreader,serif">A cat in my area I’d like to feed</span><span style="font-size:15px;line-height:1.45;color:#6B5B4E;text-wrap:pretty">Pick from cats the circle already knows. They’ll show up in your Today cards.</span></span>
+        </button>
+        <button onClick="{{ pickSpot }}" style="text-align:left;padding:18px;border-radius:20px;border:1px solid #EFE8DC;background:#FFFFFF;box-shadow:0 2px 10px rgba(80,50,20,0.06);display:flex;gap:14px;align-items:flex-start;cursor:pointer;font-family:inherit;color:inherit" style-active="background:#FBF3E4">
+          <span style="width:48px;height:48px;flex:none;border-radius:14px;background:#F6E1D5;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="#9A4A26" stroke-width="1.9"></circle><path d="M15 15l5 5" stroke="#9A4A26" stroke-width="2.1" stroke-linecap="round"></path></svg></span>
+          <span style="display:flex;flex-direction:column;gap:4px"><span style="font:600 21px/1.2 Newsreader,serif">A new cat I spotted</span><span style="font-size:15px;line-height:1.45;color:#6B5B4E;text-wrap:pretty">You saw a cat nobody seems to know. It shows as a sighting until another member sees it too.</span></span>
+        </button>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isPick }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:8px 22px 120px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;gap:18px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font:500 30px/1.15 Newsreader,serif">Cats in your area</span>
+        <span style="font-size:16px;line-height:1.45;color:#6B5B4E;text-wrap:pretty">Choose the ones you can help feed. Their current caregivers will be told you’ve joined.</span>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <sc-for list="{{ zoneTabs }}" as="z" hint-placeholder-count="4">
+          <button onClick="{{ z.pick }}" style="height:40px;padding:0 14px;border-radius:999px;border:1px solid {{ z.border }};background:{{ z.bg }};font:{{ z.w }} 14px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;cursor:pointer">{{ z.label }}</button>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <sc-for list="{{ areaCats }}" as="c" hint-placeholder-count="4">
+          <button onClick="{{ c.toggle }}" style="text-align:left;padding:12px;border-radius:18px;border:1.5px solid {{ c.border }};background:{{ c.bg }};display:flex;align-items:center;gap:14px;cursor:pointer;font-family:inherit;color:inherit">
+            <span role="img" aria-label="{{ c.name }}" style="width:64px;height:64px;flex:none;border-radius:14px;background:#EFE7D9 center/cover no-repeat url({{ c.photo }})"></span>
+            <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font:600 21px/1.15 Newsreader,serif">{{ c.name }}</span><span style="font-size:14px;line-height:1.4;color:#6B5B4E">{{ c.meta }}</span><span style="font-size:14px;line-height:1.4;color:{{ c.needFg }};font-weight:700">{{ c.need }}</span></span>
+            <span style="width:28px;height:28px;flex:none;border-radius:50%;border:2px solid {{ c.checkBd }};background:{{ c.checkBg }};display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+          </button>
+        </sc-for>
+        <sc-if value="{{ noAreaCats }}" hint-placeholder-val="{{ false }}"><span style="padding:24px 0;text-align:center;font-size:15px;color:#8F7E6F">No cats logged in this zone yet.</span></sc-if>
+      </div>
+      <button onClick="{{ pickSpot }}" style="justify-self:center;height:44px;padding:0 12px;border:none;background:transparent;font:700 15px 'Atkinson Hyperlegible',sans-serif;color:#9A6A12;cursor:pointer">Can’t find them? Report a new cat</button>
+    </div>
+    <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 22px 28px;background:linear-gradient(rgba(250,246,239,0),#FAF6EF 30%)">
+      <button onClick="{{ joinDone }}" style="width:100%;height:54px;border-radius:16px;border:none;background:#33261D;opacity:{{ joinOp }};color:#FFFFFF;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(51,38,29,0.18)">{{ joinCta }}</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isForm }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:8px 22px 120px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;gap:24px">
+      <span style="font:500 30px/1.1 Newsreader,serif">{{ formTitle }}</span>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:15px;font-weight:700">Photo</span>
+        <label style="position:relative;width:100%;aspect-ratio:4/3;border-radius:20px;overflow:hidden;cursor:pointer;background:#F3ECE0;border:1.5px dashed {{ photoBorder }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:#6B5B4E">
+          <input type="file" accept="image/*" onChange="{{ onPhoto }}" style="display:none"></input>
+          <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;background:#EFE7D9 center/cover no-repeat url({{ photo }})"></div>
+            <span style="position:absolute;right:12px;bottom:12px;height:36px;padding:0 14px;border-radius:18px;background:rgba(42,31,24,0.78);color:#FFFFFF;font-size:14px;font-weight:700;display:flex;align-items:center">Change</span>
+          </sc-if>
+          <sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}">
+            <svg width="34" height="34" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z" fill="none" stroke="#8F7E6F" stroke-width="1.8" stroke-linejoin="round"></path><circle cx="12" cy="13" r="3.4" fill="none" stroke="#8F7E6F" stroke-width="1.8"></circle></svg>
+            <span style="font-size:16px;font-weight:700;color:#4A382B">Take or choose a photo</span>
+            <span style="font-size:14px;color:#8F7E6F">Face and ears visible if you can</span>
+          </sc-if>
+        </label>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:15px;font-weight:700">{{ nameLabel }}</span>
+        <input value="{{ name }}" onChange="{{ onName }}" placeholder="{{ namePh }}" style="height:52px;border-radius:14px;border:1px solid #E6DCCB;background:#FFFFFF;padding:0 16px;font:400 17px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;outline:none"></input>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:15px;font-weight:700">Coat</span>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ coats }}" as="o" hint-placeholder-count="7">
+            <button onClick="{{ o.pick }}" style="height:44px;padding:0 16px;border-radius:999px;border:1px solid {{ o.border }};background:{{ o.bg }};font:{{ o.w }} 15px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;cursor:pointer;display:flex;align-items:center;gap:8px"><span style="width:14px;height:14px;border-radius:50%;background:{{ o.sw }};border:1px solid rgba(0,0,0,0.12)"></span>{{ o.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:15px;font-weight:700">Ear tip</span><span style="font-size:14px;line-height:1.4;color:#8F7E6F;text-wrap:pretty">A clipped left ear usually means the cat has been sterilised.</span></div>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:4px;border-radius:16px;background:#F1EADF">
+          <sc-for list="{{ ears }}" as="o" hint-placeholder-count="3">
+            <button onClick="{{ o.pick }}" style="height:44px;border-radius:12px;border:none;background:{{ o.bg }};box-shadow:{{ o.sh }};font:{{ o.w }} 15px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;cursor:pointer">{{ o.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;flex-direction:column;gap:3px"><span style="font-size:15px;font-weight:700">Area</span><span style="font-size:14px;color:#8F7E6F">Only the zone is shared, never the exact spot.</span></div>
+        <div style="border-radius:18px;overflow:hidden;background:#F1E9DB;border:1px solid #E6DCCB">
+          <svg viewBox="0 0 320 220" style="display:block;width:100%;height:auto">
+            <path onClick="{{ zA.pick }}" d="M0 0H150L160 105L0 110Z" fill="{{ zA.fill }}" style="cursor:pointer;transition:fill .2s"></path>
+            <path onClick="{{ zB.pick }}" d="M150 0H320V100L160 105Z" fill="{{ zB.fill }}" style="cursor:pointer;transition:fill .2s"></path>
+            <path onClick="{{ zC.pick }}" d="M0 110L160 105L170 220H0Z" fill="{{ zC.fill }}" style="cursor:pointer;transition:fill .2s"></path>
+            <path onClick="{{ zD.pick }}" d="M160 105L320 100V220H170Z" fill="{{ zD.fill }}" style="cursor:pointer;transition:fill .2s"></path>
+            <rect x="18" y="138" width="54" height="64" rx="14" fill="#CFDDBF" opacity="0.85" style="pointer-events:none"></rect>
+            <path d="M232 220C240 190 268 176 286 150S318 120 320 118" fill="none" stroke="#BFD6DE" stroke-width="9" stroke-linecap="round" style="pointer-events:none"></path>
+            <g fill="none" stroke="#FFFFFF" stroke-linecap="round" style="pointer-events:none"><path d="M0 58H150M228 0L236 102M60 110L64 220M170 160H320M0 180H62" stroke-width="3.5" opacity="0.9"></path><path d="M150 0L160 105L170 220M0 110L160 105L320 100" stroke-width="8"></path></g>
+            <g style="pointer-events:none"><rect x="150" y="96" width="20" height="18" rx="5" fill="#2A1F18"></rect><text x="160" y="108.5" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="8" font-weight="700" fill="#FAF6EF">MRT</text><text x="45" y="174" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="9" fill="#5E7A4E">Park</text><circle cx="78" cy="40" r="15" fill="{{ zA.dot }}"></circle><text x="78" y="45" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="14" font-weight="700" fill="{{ zA.fg }}">A</text><circle cx="242" cy="54" r="15" fill="{{ zB.dot }}"></circle><text x="242" y="59" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="14" font-weight="700" fill="{{ zB.fg }}">B</text><circle cx="112" cy="162" r="15" fill="{{ zC.dot }}"></circle><text x="112" y="167" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="14" font-weight="700" fill="{{ zC.fg }}">C</text><circle cx="222" cy="140" r="15" fill="{{ zD.dot }}"></circle><text x="222" y="145" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="14" font-weight="700" fill="{{ zD.fg }}">D</text></g>
+          </svg>
+          <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;background:#FFFFFF;font-size:14px;color:#6B5B4E"><span style="font-weight:700;color:#2A1F18">{{ zoneCaption }}</span><span>{{ zoneHint }}</span></div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:15px;font-weight:700">How did they look?</span>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <sc-for list="{{ conds }}" as="o" hint-placeholder-count="5">
+            <button onClick="{{ o.pick }}" style="height:44px;padding:0 16px;border-radius:999px;border:1px solid {{ o.border }};background:{{ o.bg }};font:{{ o.w }} 15px 'Atkinson Hyperlegible',sans-serif;color:{{ o.fg }};cursor:pointer">{{ o.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:15px;font-weight:700">Note <span style="font-weight:400;color:#8F7E6F">· optional</span></span>
+        <textarea value="{{ note }}" onChange="{{ onNote }}" placeholder="{{ notePh }}" rows="3" style="border-radius:14px;border:1px solid #E6DCCB;background:#FFFFFF;padding:14px 16px;font:400 16px/1.45 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;outline:none;resize:none"></textarea>
+      </div>
+    </div>
+    <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 22px 28px;background:linear-gradient(rgba(250,246,239,0),#FAF6EF 30%);display:flex;flex-direction:column;gap:8px">
+      <sc-if value="{{ showMissing }}" hint-placeholder-val="{{ false }}"><span style="font-size:14px;color:#9A4A26;text-align:center">{{ missing }}</span></sc-if>
+      <button onClick="{{ next }}" style="height:54px;border-radius:16px;border:none;background:#33261D;opacity:{{ nextOp }};color:#FFFFFF;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(51,38,29,0.18)">Continue</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isMatch }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:8px 22px 28px;display:grid;grid-template-columns:minmax(0,1fr);align-content:start;gap:20px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font:500 30px/1.15 Newsreader,serif;text-wrap:pretty">Is it one of these?</span>
+        <span style="font-size:16px;line-height:1.45;color:#6B5B4E;text-wrap:pretty">{{ matchIntro }}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;background:#F3ECE0">
+        <div style="width:56px;height:56px;flex:none;border-radius:12px;background:#E6DCCB center/cover no-repeat url({{ photo }})"></div>
+        <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;color:#8F7E6F">Your photo</span><span style="font-size:16px;font-weight:700">{{ summary }}</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <sc-for list="{{ matches }}" as="m" hint-placeholder-count="2">
+          <div style="padding:12px;border-radius:18px;background:#FFFFFF;border:1px solid #EFE8DC;box-shadow:0 2px 10px rgba(80,50,20,0.06);display:flex;align-items:center;gap:14px">
+            <div role="img" aria-label="{{ m.name }}" style="width:72px;height:72px;flex:none;border-radius:14px;background:#EFE7D9 center/cover no-repeat url({{ m.photo }})"></div>
+            <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font:600 21px/1.15 Newsreader,serif">{{ m.name }}</span><span style="font-size:14px;line-height:1.4;color:#6B5B4E">{{ m.meta }}</span></div>
+            <button onClick="{{ m.pick }}" style="height:44px;padding:0 14px;flex:none;border-radius:12px;border:1px solid #E0D6C6;background:#FAF6EF;font:700 15px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;cursor:pointer">That’s them</button>
+          </div>
+        </sc-for>
+      </div>
+      <button onClick="{{ confirmNew }}" style="height:54px;border-radius:16px;border:none;background:#33261D;color:#FFFFFF;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer;box-shadow:0 6px 16px rgba(51,38,29,0.18)">No, it’s a new cat</button>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:24px 22px 28px;display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center">
+      <div style="position:relative;flex:none;width:168px;height:168px;margin-top:20px">
+        <div style="width:100%;height:100%;border-radius:32px;background:#EFE7D9 center/cover no-repeat url({{ donePhoto }});box-shadow:0 10px 28px rgba(80,50,20,0.16)"></div>
+        <span style="position:absolute;right:-10px;bottom:-10px;width:48px;height:48px;border-radius:50%;background:#4A7A4E;border:4px solid #FAF6EF;display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></span>
+      </div>
+      <div style="flex:none;display:flex;flex-direction:column;gap:8px;max-width:330px">
+        <span style="font:500 30px/1.15 Newsreader,serif;text-wrap:pretty">{{ doneTitle }}</span>
+        <span style="font-size:16px;line-height:1.5;color:#6B5B4E;text-wrap:pretty">{{ doneBody }}</span>
+      </div>
+      <span style="flex:none;height:32px;padding:0 14px;border-radius:16px;background:{{ doneTagBg }};color:{{ doneTagFg }};font-size:14px;font-weight:700;display:flex;align-items:center">{{ doneTag }}</span>
+      <div style="flex:1 0 0"></div>
+      <div style="flex:none;width:100%;display:flex;flex-direction:column;gap:10px">
+        <a href="#today" style="height:54px;border-radius:16px;background:#33261D;color:#FFFFFF;font-size:17px;font-weight:700;text-decoration:none;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(51,38,29,0.18)">Back to Today</a>
+        <button onClick="{{ restart }}" style="height:50px;border-radius:16px;border:1px solid #E0D6C6;background:transparent;font:700 16px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;cursor:pointer">Add another cat</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  myZone = (() => { try { return localStorage.getItem('mewlink-zone') || 'Zone A'; } catch (e) { return 'Zone A'; } })();
+  state = { step: 'type', pz: this.myZone, picked: [], kind: null, photo: null, name: '', coat: null, ear: null, zone: this.myZone, conds: [], note: '', tried: false, matched: null };
+  onPhoto = ev => {
+    const f = ev.target.files && ev.target.files[0]; if (!f) return;
+    const img = new Image(); const url = URL.createObjectURL(f);
+    img.onload = () => { const s = 480, c = document.createElement('canvas'); c.width = c.height = s;
+      const m = Math.min(img.width, img.height); c.getContext('2d').drawImage(img, (img.width - m) / 2, (img.height - m) / 2, m, m, 0, 0, s, s);
+      this.setState({ photo: c.toDataURL('image/jpeg', 0.75) }); URL.revokeObjectURL(url); };
+    img.src = url;
+  };
+  save(cat) {
+    try { const k = 'mewlink-added-cats', a = JSON.parse(localStorage.getItem(k) || '[]'); a.unshift(cat); localStorage.setItem(k, JSON.stringify(a.slice(0, 8))); } catch (e) {}
+  }
+  renderVals() {
+    const s = this.state, spot = s.kind === 'spot';
+    const ph = id => 'https://images.unsplash.com/' + id + '?w=200&h=200&fit=crop&crop=top&q=70&auto=format';
+    const known = [
+      { name: 'Oyen', photo: ph('photo-1581536678522-afcf3257d780'), coat: 'Orange', zone: 'Zone A', meta: 'Orange · ear tipped · Zone A · fed 7:40am' },
+      { name: 'Milo', photo: ph('photo-1683989903370-9fe4f7c8e0c7'), coat: 'Tabby', zone: 'Zone A', meta: 'Tabby · ear tipped · Zone A · fed 7:40am' },
+      { name: 'Ash', photo: ph('photo-1557408938-0f220f49bca1'), coat: 'Grey', zone: 'Zone B', meta: 'Grey · not seen for 3 days · Zone B', need: 'Not seen for 3 days', warn: 1 },
+      { name: 'Tiger', photo: ph('photo-1650535812141-04d564530b17'), coat: 'Orange', zone: 'Zone A', meta: 'Orange tabby · ear tipped · Zone A', need: 'Not fed yet today', warn: 1 },
+      { name: 'Bubu', photo: ph('photo-1514888286974-6c03e2ca1dba'), coat: 'Tabby', zone: 'Zone C', meta: 'Tabby · ear tipped · Zone C', need: 'Only 1 caregiver' },
+      { name: 'Kopi', photo: ph('photo-1622015680443-cb4c5bec36b7'), coat: 'Tabby', zone: 'Zone B', meta: 'Brown tabby · ear tipped · Zone B', need: 'Ravi is away until Fri' },
+    ];
+    const pill = (on, set, label, extra) => ({ label, bg: on ? '#FBE7BA' : '#FFFFFF', border: on ? '#D9A945' : '#E6DCCB', w: on ? 700 : 400, pick: set, ...(extra || {}) });
+    const sw = { Orange: '#E39A4B', Tabby: '#9C7B57', Black: '#2A2522', White: '#FBFAF6', Calico: 'conic-gradient(#E39A4B 0 33%,#2A2522 0 66%,#FBFAF6 0)', Tuxedo: 'linear-gradient(90deg,#2A2522 50%,#FBFAF6 50%)', Grey: '#9A9893' };
+    const coats = Object.keys(sw).map(c => pill(s.coat === c, () => this.setState({ coat: c }), c, { sw: sw[c] }));
+    const ears = ['Tipped', 'Not tipped', 'Not sure'].map(l => { const on = s.ear === l; return { label: l, bg: on ? '#FFFFFF' : 'transparent', sh: on ? '0 1px 4px rgba(80,50,20,0.14)' : 'none', w: on ? 700 : 400, pick: () => this.setState({ ear: l }) }; });
+    const zones = Object.fromEntries(['A', 'B', 'C', 'D'].map(k => { const on = s.zone === 'Zone ' + k;
+      return ['z' + k, { fill: on ? '#F3C96B' : '#F1E9DB', dot: on ? '#2A1F18' : '#FFFFFF', fg: on ? '#FAF6EF' : '#2A1F18', pick: () => this.setState({ zone: 'Zone ' + k }) }]; }));
+    const condList = ['Looks healthy', 'Thin', 'Injured', 'Kitten', 'Friendly'];
+    const conds = condList.map(c => { const on = s.conds.includes(c), warn = c === 'Injured' || c === 'Thin';
+      return pill(on, () => this.setState(st => ({ conds: on ? st.conds.filter(x => x !== c) : [...st.conds.filter(x => c === 'Looks healthy' ? !['Thin', 'Injured'].includes(x) : (warn ? x !== 'Looks healthy' : true)), c] })), c, { fg: on && warn ? '#9A4A26' : '#2A1F18', bg: on ? (warn ? '#F6E1D5' : '#FBE7BA') : '#FFFFFF', border: on ? (warn ? '#D98B66' : '#D9A945') : '#E6DCCB' }); });
+    const need = [!s.photo && 'a photo', !s.coat && 'coat', !s.zone && 'area', !spot && !s.name.trim() && 'a name'].filter(Boolean);
+    const ok = need.length === 0;
+    const name = s.name.trim() || (s.coat ? 'Unnamed ' + s.coat.toLowerCase() : 'Unnamed cat');
+    const matches = known.filter(k => k.zone === s.zone || k.coat === s.coat).slice(0, 3).map(k => ({ ...k,
+      pick: () => { this.save({ name: k.name, photo: k.photo, when: 'Just now', last: 'You: spotted ' + (s.conds.length ? s.conds.join(', ').toLowerCase() : 'in ' + s.zone) + '.', t: null, sighting: true }); this.setState({ step: 'done', matched: k }); } }));
+    const finish = () => {
+      const injured = s.conds.includes('Injured') || s.conds.includes('Thin');
+      const last = 'You: ' + (s.note.trim() || (spot ? 'spotted in ' + s.zone + '.' : 'added to the care circle.'));
+      this.save({ name, photo: s.photo, when: 'Just now', last, t: spot ? 'New sighting' : (injured ? 'Follow-up' : 'New'), follow: spot ? 'Waiting for one more member to see them' : (injured ? 'Next: check on ' + name + ' again soon' : 'You’re a caregiver') });
+      this.setState({ step: 'done', matched: null });
+    };
+    const steps = { type: '', pick: 'Step 2 of 2', form: 'Step 2 of 3', match: 'Step 3 of 3', done: '' };
+    const zoneTabs = ['Zone A', 'Zone B', 'Zone C', 'Zone D'].map(z => ({ label: z, bg: s.pz === z ? '#FBE7BA' : '#FFFFFF', border: s.pz === z ? '#D9A945' : '#E6DCCB', w: s.pz === z ? 700 : 400, pick: () => this.setState({ pz: z }) }));
+    const areaCats = known.filter(k => k.zone === s.pz).map(k => { const on = s.picked.includes(k.name);
+      return { ...k, need: k.need || 'Doing well', needFg: k.warn ? '#9A4A26' : '#4A6140', bg: on ? '#FFF8E8' : '#FFFFFF', border: on ? '#D9A945' : '#EFE8DC', checkBg: on ? '#33261D' : 'transparent', checkBd: on ? '#33261D' : '#D8CBB6',
+        toggle: () => this.setState(st => ({ picked: on ? st.picked.filter(x => x !== k.name) : [...st.picked, k.name] })) }; });
+    const pk = s.picked, pkName = pk.length === 1 ? pk[0] : pk.length === 2 ? pk.join(' and ') : pk.length + ' cats';
+    const m = s.matched, injured = s.conds.includes('Injured');
+    const reset = { step: 'type', pz: this.myZone, picked: [], kind: null, photo: null, name: '', coat: null, ear: null, zone: this.myZone, conds: [], note: '', tried: false, matched: null };
+    return {
+      isType: s.step === 'type', isForm: s.step === 'form', isMatch: s.step === 'match', isDone: s.step === 'done',
+      stepLabel: steps[s.step], backLabel: s.step === 'type' ? 'Close' : 'Back',
+      back: () => { const prev = { pick: 'type', form: s.kind === 'join' ? 'pick' : 'type', match: 'form' }[s.step]; if (prev) this.setState({ step: prev }); else if (history.length > 1) history.back(); else location.hash = 'today'; },
+      pickJoin: () => this.setState({ kind: 'join', step: 'pick' }), pickSpot: () => this.setState({ kind: 'spot', step: 'form' }),
+      isPick: s.step === 'pick', zoneTabs, areaCats, noAreaCats: areaCats.length === 0,
+      joinOp: pk.length ? 1 : 0.5, joinCta: pk.length ? 'Feed ' + pkName : 'Choose at least one cat',
+      joinDone: () => { if (!pk.length) return; try { const prev = JSON.parse(localStorage.getItem('mewlink-joined-cats') || '[]'); localStorage.setItem('mewlink-joined-cats', JSON.stringify([...new Set([...prev, ...pk])])); } catch (e) {} this.setState({ step: 'done', matched: null }); },
+      formTitle: spot ? 'Tell us what you saw' : 'About this cat',
+      nameLabel: spot ? 'Nickname · optional' : 'Name', namePh: spot ? 'Leave blank if you don’t know' : 'What do people call them?',
+      notePh: spot ? 'e.g. Near the bin centre around 8pm, kept their distance' : 'e.g. Eats dry food only, comes out after 7pm',
+      photo: s.photo, hasPhoto: !!s.photo, noPhoto: !s.photo, photoBorder: s.tried && !s.photo ? '#D98B66' : '#D8CBB6', onPhoto: this.onPhoto,
+      name: s.name, onName: e => this.setState({ name: e.target.value }), note: s.note, onNote: e => this.setState({ note: e.target.value }),
+      coats, ears, ...zones, conds, zoneCaption: s.zone ? s.zone + ' selected' : 'Tap a zone', zoneHint: s.zone === this.myZone ? 'Your zone' : 'Zones only',
+      showMissing: s.tried && !ok, missing: 'Still needed: ' + need.join(', '), nextOp: ok ? 1 : 0.5,
+      next: () => { if (!ok) return this.setState({ tried: true }); if (matches.length) this.setState({ step: 'match' }); else finish(); },
+      summary: name + ' · ' + (s.coat || '') + ' · ' + (s.zone || ''), matches,
+      matchIntro: 'These cats are already known nearby. Matching keeps one record per cat.',
+      confirmNew: finish,
+      donePhoto: s.kind === 'join' ? (known.find(k => k.name === pk[0]) || {}).photo : m ? m.photo : s.photo,
+      doneTitle: s.kind === 'join' ? 'You’re feeding ' + pkName : m ? 'Sighting added to ' + m.name : (spot ? 'Thanks for reporting' : name + ' is in the circle'),
+      doneBody: s.kind === 'join' ? 'They’ll appear in your Today cards when a feed is due. Exact spots unlock after 30 days of regular care.' : m ? 'Your photo and notes are on ' + m.name + '’s record. Caregivers will see it next time they check in.' : spot ? 'Members in ' + s.zone + ' will see this sighting. Once someone else sees the same cat, it becomes a full profile.' + (injured ? ' Because you marked them injured, it’s also posted to #need-help.' : '') : 'You’re listed as a caregiver. Others in ' + s.zone + ' can now see ' + name + ' and help with feeding.',
+      doneTag: s.kind === 'join' ? 'Caregiver · You' : m ? 'Updated' : (spot ? 'New sighting · 1 of 2 confirmations' : 'Caregiver · You'),
+      doneTagBg: spot && !m && s.kind !== 'join' ? '#F7E9C4' : '#E3EBDA', doneTagFg: spot && !m && s.kind !== 'join' ? '#7A5A12' : '#4A6140',
+      restart: () => this.setState(reset),
+    };
+  }
+}
+</script>
+</body>
+</html>

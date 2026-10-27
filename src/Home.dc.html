@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet"><style>@keyframes mlKen{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.14) translate(-2%,-2%)}}@keyframes mlRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}body{margin:0;background:#EDE6DA;font-family:"Atkinson Hyperlegible",system-ui,sans-serif;color:#2A1F18}a{color:#9A6A12;text-decoration:none}a:hover{color:#2A1F18}*{box-sizing:border-box}</style></helmet>
+<div style="width:100%;max-width:440px;height:100dvh;margin:0 auto;position:relative;overflow:hidden;background:#FAF6EF;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;color:#2A1F18">
+
+<sc-if value="{{ isWelcome }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="00 Welcome" style="height:100%;display:flex;flex-direction:column">
+    <div style="flex:1;min-height:0;display:flex;padding:6px">{{ collage }}</div>
+    <div style="padding:24px 24px 34px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font:500 40px/1.05 Newsreader,serif">MewLink</span>
+        <span style="font-size:18px;line-height:1.4;color:#5E4D40;text-wrap:pretty">Look after neighbourhood cats together with the people who already feed them.</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font-size:14px;font-weight:700;color:#6F5E50">Invite code</span>
+        <input value="{{ code }}" onChange="{{ onCode }}" placeholder="e.g. TPY-4821" style="height:54px;border-radius:16px;border:1.5px solid #E2D7C6;background:#fff;padding:0 16px;font:700 19px 'Atkinson Hyperlegible',sans-serif;letter-spacing:.08em;color:#2A1F18;outline:none"></input>
+      </div>
+      <button onClick="{{ joinWithCode }}" style="height:56px;border:none;border-radius:28px;background:#2A1F18;color:#FFF8EC;font:700 18px 'Atkinson Hyperlegible',sans-serif;cursor:pointer" style-active="background:#45362B">Join with invite</button>
+      <button onClick="{{ requestInvite }}" style="height:44px;border:none;background:transparent;color:#7A4E33;font:700 16px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">No code? Ask to join a circle near you</button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isJoin }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="00 Join" style="height:100%;display:flex;flex-direction:column">
+    <div style="height:56px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 12px">
+      <a href="#welcome" style="height:44px;padding:0 10px;display:flex;align-items:center;font-size:17px;font-weight:700;color:#7A4E33">‹ Back</a>
+      <span style="font-size:14px;color:#7D6B5C">{{ joinStepLabel }}</span>
+      <span style="width:64px"></span>
+    </div>
+    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:8px 24px 24px;display:flex;flex-direction:column;gap:26px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <span style="font:500 30px/1.15 Newsreader,serif">{{ joinTitle }}</span>
+        <span style="font-size:16px;line-height:1.45;color:#5E4D40;text-wrap:pretty">{{ joinSub }}</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:16px;font-weight:700">Which area do you usually walk?</span>
+        <div style="border-radius:18px;overflow:hidden;background:#F1E9DB;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06)">
+          <svg viewBox="0 0 320 220" style="display:block;width:100%;height:auto">
+            <rect x="0" y="0" width="320" height="220" fill="#F1E9DB"></rect>
+            <path onClick="{{ zA.pick }}" d="M0 0H150L160 105L0 110Z" fill="{{ zA.fill }}" style="cursor:pointer;transition:fill .2s"></path>
+            <path onClick="{{ zB.pick }}" d="M150 0H320V100L160 105Z" fill="{{ zB.fill }}" style="cursor:pointer;transition:fill .2s"></path>
+            <path onClick="{{ zC.pick }}" d="M0 110L160 105L170 220H0Z" fill="{{ zC.fill }}" style="cursor:pointer;transition:fill .2s"></path>
+            <path onClick="{{ zD.pick }}" d="M160 105L320 100V220H170Z" fill="{{ zD.fill }}" style="cursor:pointer;transition:fill .2s"></path>
+            <rect x="18" y="138" width="54" height="64" rx="14" fill="#CFDDBF" opacity="0.85" style="pointer-events:none"></rect>
+            <path d="M232 220C240 190 268 176 286 150S318 120 320 118" fill="none" stroke="#BFD6DE" stroke-width="9" stroke-linecap="round" style="pointer-events:none"></path>
+            <g fill="none" stroke="#FFFFFF" stroke-linecap="round" style="pointer-events:none">
+              <path d="M0 58H150M228 0L236 102M60 110L64 220M170 160H320M0 180H62" stroke-width="3.5" opacity="0.9"></path>
+              <path d="M150 0L160 105L170 220M0 110L160 105L320 100" stroke-width="8"></path>
+            </g>
+            <g style="pointer-events:none">
+              <rect x="150" y="96" width="20" height="18" rx="5" fill="#2A1F18"></rect>
+              <text x="160" y="108.5" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="8" font-weight="700" fill="#FAF6EF">MRT</text>
+              <text x="45" y="174" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="9" fill="#5E7A4E">Park</text>
+              <circle cx="78" cy="40" r="15" fill="{{ zA.dot }}"></circle><text x="78" y="45" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="14" font-weight="700" fill="{{ zA.fg }}">A</text>
+              <circle cx="242" cy="54" r="15" fill="{{ zB.dot }}"></circle><text x="242" y="59" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="14" font-weight="700" fill="{{ zB.fg }}">B</text>
+              <circle cx="112" cy="162" r="15" fill="{{ zC.dot }}"></circle><text x="112" y="167" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="14" font-weight="700" fill="{{ zC.fg }}">C</text>
+              <circle cx="222" cy="140" r="15" fill="{{ zD.dot }}"></circle><text x="222" y="145" text-anchor="middle" font-family="Atkinson Hyperlegible,sans-serif" font-size="14" font-weight="700" fill="{{ zD.fg }}">D</text>
+            </g>
+          </svg>
+          <div style="padding:10px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px;background:#FFFFFF;font-size:14px;color:#6B5B4E"><span style="font-weight:700;color:#2A1F18">{{ zoneCaption }}</span><span>Zones only, no exact spots</span></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:16px;font-weight:700">Do you have cats at home?</span>
+        <div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ homeOpts }}" as="o" hint-placeholder-count="2"><button onClick="{{ o.pick }}" style="height:44px;padding:0 16px;border-radius:22px;border:1.5px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};font:700 15px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">{{ o.label }}</button></sc-for></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:16px;font-weight:700">How long have you fed community cats?</span>
+        <div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ expOpts }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.pick }}" style="height:44px;padding:0 16px;border-radius:22px;border:1.5px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};font:700 15px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">{{ o.label }}</button></sc-for></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:16px;font-weight:700">Have you helped with TNR?</span>
+        <div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ tnrOpts }}" as="o" hint-placeholder-count="3"><button onClick="{{ o.pick }}" style="height:44px;padding:0 16px;border-radius:22px;border:1.5px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};font:700 15px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">{{ o.label }}</button></sc-for></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:16px;font-weight:700">How could you help? <span style="font-weight:400;color:#7D6B5C">Pick any</span></span>
+        <div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{ helpOpts }}" as="o" hint-placeholder-count="4"><button onClick="{{ o.pick }}" style="height:44px;padding:0 16px;border-radius:22px;border:1.5px solid {{ o.bd }};background:{{ o.bg }};color:{{ o.fg }};font:700 15px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">{{ o.label }}</button></sc-for></div>
+      </div>
+      <button onClick="{{ toggleAgree }}" style="display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px 16px;border-radius:16px;border:none;background:#fff;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06);cursor:pointer;font:400 15px/1.45 'Atkinson Hyperlegible',sans-serif;color:#2A1F18"><span style="flex:none;width:24px;height:24px;border-radius:7px;border:2px solid #8C6E5A;background:{{ agreeBg }};color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">{{ agreeMark }}</span><span>I will keep feeding spots and feeding times private, and won’t share them outside the circle.</span></button>
+    </div>
+    <div style="flex:none;padding:12px 24px 30px;border-top:1px solid #EFE8DC;display:flex;flex-direction:column;gap:8px">
+      <button onClick="{{ submitJoin }}" style="height:56px;border:none;border-radius:28px;background:{{ submitBg }};color:{{ submitFg }};font:700 18px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">{{ submitLabel }}</button>
+      <span style="font-size:14px;text-align:center;color:#7D6B5C">{{ submitHint }}</span>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="00 Joined" style="height:100%;display:flex;flex-direction:column;justify-content:center;padding:32px 28px;gap:22px">
+    <div role="img" aria-label="Oyen" style="width:120px;height:120px;border-radius:50%;border:4px solid #EFB241;background:#EFE7D9 center/cover url(https://images.unsplash.com/photo-1631044634756-5389f870aeed?w=300&amp;h=300&amp;fit=crop&amp;q=70&amp;auto=format)"></div>
+    <span style="font:500 34px/1.1 Newsreader,serif">{{ doneTitle }}</span>
+    <span style="font-size:17px;line-height:1.5;color:#5E4D40;text-wrap:pretty">{{ doneSub }}</span>
+    <a href="#today" style="height:56px;border-radius:28px;background:#2A1F18;color:#FFF8EC;font:700 18px 'Atkinson Hyperlegible',sans-serif;display:flex;align-items:center;justify-content:center">{{ doneCta }}</a>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isToday }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="01 Today" style="height:100%;display:flex;flex-direction:column">
+    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:22px;padding:14px 0 24px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0 20px">
+        <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 30px/1 Newsreader,serif">MewLink</span><span style="font-size:14px;color:#7D6B5C">Tue 21 Oct · Good morning, Mei Ling</span></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <a href="#addcat" aria-label="Add a cat" style="width:44px;height:44px;border-radius:50%;border:1.5px solid #E2D7C6;display:flex;align-items:center;justify-content:center;font-size:24px;color:#2A1F18">+</a>
+          <a href="#me" aria-label="My profile" style="width:44px;height:44px;border-radius:50%;background:#FBE7BA;color:#7A5410;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">ML</a>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;padding:0 20px">
+          <sc-for list="{{ stories }}" as="c" hint-placeholder-count="5">
+            <a href="{{ c.href }}" style="flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;color:#2A1F18">
+              <span style="width:68px;height:68px;border-radius:50%;padding:3px;background:{{ c.ring }}"><span role="img" aria-label="{{ c.name }}" style="display:block;width:100%;height:100%;border-radius:50%;border:3px solid #FAF6EF;background:#EFE7D9 center/cover url({{ c.photo }})"></span></span>
+              <span style="font-size:13px;font-weight:700">{{ c.name }}</span>
+              <span style="font-size:12px;color:{{ c.subFg }};margin-top:-4px">{{ c.sub }}</span>
+            </a>
+          </sc-for>
+        </div>
+        <button onClick="{{ toggleWhy }}" style="margin:0 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;padding:10px 14px;border-radius:14px;border:none;background:#F3ECE0;cursor:pointer;font:400 14px/1.4 'Atkinson Hyperlegible',sans-serif;color:#5E4D40"><span><b style="color:#2A1F18">Your list:</b> {{ listText }}</span><span style="flex:none;font-weight:700;color:#7A4E33">{{ whyLabel }}</span></button>
+        <sc-if value="{{ why }}" hint-placeholder-val="{{ false }}">
+          <div style="margin:0 20px;padding:14px 16px;border-radius:14px;background:#fff;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06);display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.45;color:#5E4D40">
+            <span><b style="color:#2A1F18">You fed them before.</b> Any cat you log a feeding for joins your list.</span>
+            <span><b style="color:#2A1F18">Seen in your area.</b> Cats other caregivers log in {{ myZone }} and the zones next to it.</span>
+            <span><b style="color:#2A1F18">Area only.</b> Exact spots unlock after 30 days of regular care. You’re on day 12.</span>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;padding:0 20px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <span style="font:500 24px Newsreader,serif">{{ deckTitle }}</span>
+          <span style="font-size:14px;color:#7D6B5C">{{ deckCount }}</span>
+        </div>
+        <sc-if value="{{ allFedCard }}" hint-placeholder-val="{{ false }}">
+          <div style="border-radius:28px;background:#FFFFFF;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06);padding:24px 20px 14px;display:flex;flex-direction:column;gap:18px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
+              <div style="display:flex;padding-left:14px">
+                <sc-for list="{{ fedCats }}" as="c" hint-placeholder-count="3"><span role="img" aria-label="{{ c.name }}" style="width:64px;height:64px;margin-left:-14px;border-radius:50%;border:3px solid #FFFFFF;box-shadow:0 0 0 2px #B9CBAE;background:#EFE7D9 center/cover url({{ c.photo }})"></span></sc-for>
+              </div>
+              <span style="font:500 26px/1.15 Newsreader,serif">Everyone on your list is fed</span>
+              <span style="font-size:15px;line-height:1.45;color:#6F5E50;text-wrap:pretty;max-width:300px">{{ fedSummary }}</span>
+            </div>
+            <sc-if value="{{ hasNearby }}" hint-placeholder-val="{{ false }}">
+              <div style="border-top:1px solid #EFE8DC;padding-top:16px;display:flex;flex-direction:column;gap:12px">
+                <span style="font-size:14px;font-weight:700;color:#6F5E50">Nearby and could use a hand</span>
+                <sc-for list="{{ nearby }}" as="n" hint-placeholder-count="1">
+                  <div style="display:flex;align-items:center;gap:12px">
+                    <span role="img" aria-label="{{ n.name }}" style="width:52px;height:52px;flex:none;border-radius:14px;background:#EFE7D9 center/cover url({{ n.photo }})"></span>
+                    <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font:600 19px Newsreader,serif">{{ n.name }} <span style="font:400 14px 'Atkinson Hyperlegible',sans-serif;color:#7D6B5C">· {{ n.zone }}</span></span><span style="font-size:14px;font-weight:700;color:#9A3F22">{{ n.status }}</span></span>
+                    <a href="#addcat" style="flex:none;height:44px;padding:0 16px;border-radius:22px;background:#2A1F18;color:#FFF8EC;font-size:15px;font-weight:700;display:flex;align-items:center;text-decoration:none">Help feed</a>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+            <button onClick="{{ reviewCards }}" style="height:44px;border:none;background:transparent;font:700 15px 'Atkinson Hyperlegible',sans-serif;color:#7A4E33;cursor:pointer">See today’s cards</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showPager }}" hint-placeholder-val="{{ true }}">
+        <div ref="{{ pagerRef }}" onScroll="{{ onPage }}" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:-4px -20px -18px;padding:4px 20px 18px;scroll-padding:0 20px">
+          <sc-for list="{{ pages }}" as="c" hint-placeholder-count="3">
+            <div data-page="1" style="flex:none;width:calc(100% - 24px);scroll-snap-align:start;display:flex;flex-direction:column;gap:12px">
+              <div role="img" aria-label="{{ c.name }}" style="height:430px;border-radius:28px;overflow:hidden;box-shadow:0 14px 30px rgba(42,31,24,.18);background:#EFE7D9 center/cover url({{ c.photo }});display:flex;flex-direction:column;justify-content:space-between">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:14px">
+                  <span style="padding:6px 12px;border-radius:999px;background:rgba(251,248,241,.94);font-size:13px;font-weight:700;color:#2A1F18">{{ c.why }}</span>
+                  <span style="flex:none;padding:6px 12px;border-radius:999px;background:{{ c.tnrBg }};font-size:13px;font-weight:700;color:{{ c.tnrFg }}">{{ c.tnr }}</span>
+                </div>
+                <div style="padding:60px 18px 18px;background:linear-gradient(transparent,rgba(30,22,16,.86));color:#FFFBF3;display:flex;flex-direction:column;gap:6px">
+                  <div style="display:flex;align-items:baseline;gap:10px"><span style="font:600 32px Newsreader,serif">{{ c.name }}</span><span style="font-size:15px">{{ c.zone }}</span></div>
+                  <span style="align-self:flex-start;padding:4px 10px;border-radius:999px;background:{{ c.statusBg }};color:#2A1F18;font-size:14px;font-weight:700">{{ c.statusText }}</span>
+                  <span style="font-size:15px;line-height:1.4;text-wrap:pretty">{{ c.note }}</span>
+                </div>
+              </div>
+              <button onClick="{{ c.feed }}" style="height:56px;border-radius:28px;border:none;background:{{ c.btnBg }};color:{{ c.btnFg }};font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">{{ c.btnLabel }}</button>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display:flex;justify-content:center;align-items:center;gap:6px">
+          <sc-for list="{{ dots }}" as="d" hint-placeholder-count="3"><button onClick="{{ d.go }}" aria-label="{{ d.label }}" style="width:28px;height:28px;padding:0;border:none;background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="width:{{ d.w }};height:8px;border-radius:4px;background:{{ d.bg }};transition:width .2s ease"></span></button></sc-for>
+        </div>
+        </sc-if>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="padding:0 20px;display:flex;justify-content:space-between;align-items:center;gap:10px"><span style="font:500 24px Newsreader,serif">From the circle</span><a href="#careupdate" style="height:40px;padding:0 14px 0 10px;border-radius:20px;border:1.5px solid #E2D7C6;display:flex;align-items:center;gap:6px;color:#2A1F18;font-size:14px;font-weight:700;text-decoration:none"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z" fill="none" stroke="#2A1F18" stroke-width="1.9" stroke-linejoin="round"></path><circle cx="12" cy="13" r="3.2" fill="none" stroke="#2A1F18" stroke-width="1.9"></circle></svg>Share update</a></div>
+        <sc-for list="{{ posts }}" as="p" hint-placeholder-count="2">
+          <div style="display:flex;flex-direction:column;gap:10px;padding:12px 0 16px;border-bottom:1px solid #EFE8DC">
+            <div style="display:flex;align-items:center;gap:10px;padding:0 20px">
+              <span style="width:36px;height:36px;border-radius:50%;background:#F1EADF;color:#5E4D40;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">{{ p.av }}</span>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:15px"><b>{{ p.who }}</b> fed <b>{{ p.cat }}</b></span><span style="font-size:13px;color:#7D6B5C">{{ p.time }} · {{ p.zone }}</span></div>
+            </div>
+            <div role="img" aria-label="{{ p.cat }}" style="margin:0 20px;aspect-ratio:1/1;border-radius:20px;background:#EFE7D9 center/cover url({{ p.img }});position:relative">
+              <span style="position:absolute;left:12px;bottom:12px;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(251,248,241,.94);font-size:13px;font-weight:700;color:#4A6140"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#4A6140" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>Photo taken in app · {{ p.stamp }}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;padding:0 20px">
+              <button onClick="{{ p.like }}" aria-label="Like" style="height:44px;padding:0 4px;border:none;background:transparent;display:flex;align-items:center;gap:6px;cursor:pointer;font:700 15px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="{{ p.heart }}" stroke="#9A4A26" stroke-width="2" stroke-linejoin="round"></path></svg>{{ p.likes }}</button>
+              <span style="flex:1;font-size:15px;line-height:1.4;color:#2A1F18;text-wrap:pretty">{{ p.caption }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div data-mew-navigation style="height:84px;flex:none;background:rgba(250,246,239,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid #EFE8DC;padding:8px 10px 0;display:grid;grid-template-columns:repeat(4,1fr)">
+      <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#2A1F18"><span style="width:56px;height:30px;border-radius:15px;background:#FBE7BA;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="#2A1F18" stroke-width="1.9"></circle><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none" stroke="#2A1F18" stroke-width="1.9" stroke-linecap="round"></path></svg></span><span style="font-size:12px;font-weight:700">Today</span></a>
+      <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 10V4.5l4 3h6l4-3V10a7 7 0 0 1-14 0z" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linejoin="round"></path><circle cx="9.5" cy="11.5" r="1.1" fill="#8F7E6F"></circle><circle cx="14.5" cy="11.5" r="1.1" fill="#8F7E6F"></circle></svg></span><span style="font-size:12px;font-weight:400">Cats</span></a>
+      <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4.5 5h11A2.5 2.5 0 0 1 18 7.5v5a2.5 2.5 0 0 1-2.5 2.5H10l-4 3.5V15H4.5A2.5 2.5 0 0 1 2 12.5v-5A2.5 2.5 0 0 1 4.5 5z" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linejoin="round"></path><path d="M20.5 9.5A2 2 0 0 1 22 11.4v4.1a2 2 0 0 1-2 2h-.5V20l-3-2.5" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:12px;font-weight:400">Community</span></a>
+      <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M11 3l2.1 6.2L19.5 11l-6.4 2L11 19.5 8.9 13 2.5 11l6.4-1.8z" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linejoin="round"></path><path d="M19 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#8F7E6F"></path></svg></span><span style="font-size:12px;font-weight:400">Ask Mew</span></a>
+    </div>
+
+    <sc-if value="{{ proofOpen }}" hint-placeholder-val="{{ false }}">
+      <div class="mew-feed-overlay" data-mew-feed-overlay>
+        <div class="mew-feed-backdrop" onClick="{{ closeProof }}" aria-hidden="true"></div>
+        <section class="mew-feed-sheet" data-mew-feed-dialog role="dialog" aria-modal="true" aria-labelledby="mew-feed-title" tabindex="-1">
+          <header class="mew-feed-header">
+            <div style="width:40px;height:5px;border-radius:3px;background:#DCD2C2;margin:0 auto 8px"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center"><button data-mew-feed-cancel onClick="{{ closeProof }}" style="height:44px;border:none;background:transparent;font:700 16px 'Atkinson Hyperlegible',sans-serif;color:#7A4E33;cursor:pointer;padding:0">Cancel</button><span id="mew-feed-title" style="font-size:17px;font-weight:700">Fed {{ card.name }}</span><span style="width:52px"></span></div>
+          </header>
+          <div class="mew-feed-scroll">
+            <button class="mew-feed-photo" onClick="{{ takeShot }}" style="height:220px;border-radius:20px;border:2px dashed {{ shotBd }};background:{{ shotBg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;position:relative;overflow:hidden">
+            <sc-if value="{{ noShot }}" hint-placeholder-val="{{ true }}"><svg width="36" height="36" viewBox="0 0 24 24"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z" fill="none" stroke="#7A4E33" stroke-width="1.8" stroke-linejoin="round"></path><circle cx="12" cy="13.5" r="3.5" fill="none" stroke="#7A4E33" stroke-width="1.8"></circle></svg><span>Take a photo of {{ card.name }} eating</span><span style="font-size:14px;font-weight:400;color:#7D6B5C">Camera only, no gallery uploads</span></sc-if>
+            <sc-if value="{{ shot }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:12px;bottom:12px;padding:6px 10px;border-radius:999px;background:rgba(251,248,241,.94);font-size:13px;color:#4A6140">Taken now · {{ card.zone }}</span></sc-if>
+          </button>
+            <span style="font-size:14px;line-height:1.45;color:#7D6B5C;text-wrap:pretty">The app adds the time and area to the photo, so the circle knows the feeding really happened.</span>
+            <span style="font-size:12px;color:#7D6B5C">Prototype photo capture · demo data</span>
+          </div>
+          <footer class="mew-feed-footer"><button onClick="{{ confirmFed }}" disabled="{{ noShot }}" style="height:56px;border:none;border-radius:28px;background:{{ confirmBg }};color:{{ confirmFg }};font:700 18px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Post to the circle</button></footer>
+        </section>
+      </div>
+    </sc-if>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isCommunity }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="03 Community" style="height:100%;display:flex;flex-direction:column">
+    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:14px 0 16px;display:flex;flex-direction:column;gap:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0 20px">
+        <div style="display:flex;flex-direction:column;gap:2px"><span style="font:500 30px/1.1 Newsreader,serif">Community</span><span style="font-size:14px;color:#7D6B5C">Toa Payoh circle · 18 members</span></div>
+        <a href="#me" aria-label="My profile" style="width:44px;height:44px;border-radius:50%;background:#FBE7BA;color:#7A5410;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">ML</a>
+      </div>
+      <div style="display:flex;flex-direction:column">
+        <sc-for list="{{ channels }}" as="ch" hint-placeholder-count="5">
+          <button onClick="{{ ch.open }}" style="display:flex;gap:14px;align-items:center;padding:12px 20px;border:none;background:transparent;text-align:left;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;color:#2A1F18" style-active="background:#F3ECE0">
+            <span style="width:52px;height:52px;flex:none;border-radius:16px;background:{{ ch.bg }};color:{{ ch.fg }};display:flex;align-items:center;justify-content:center;font:700 22px 'Atkinson Hyperlegible',sans-serif">#</span>
+            <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+              <span style="display:flex;justify-content:space-between;gap:8px"><span style="font-size:17px;font-weight:700">{{ ch.name }}</span><span style="flex:none;font-size:13px;color:#7D6B5C">{{ ch.time }}</span></span>
+              <span style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span style="font-size:15px;color:#5E4D40;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ch.last }}</span><span style="flex:none;min-width:22px;height:22px;padding:0 7px;border-radius:11px;background:#EFB241;color:#2A1F18;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;visibility:{{ ch.badgeVis }}">{{ ch.unread }}</span></span>
+            </span>
+          </button>
+        </sc-for>
+      </div>
+      <span style="padding:0 20px;font-size:13px;line-height:1.45;color:#7D6B5C">Only circle members can read these channels.</span>
+    </div>
+    <div style="height:84px;flex:none;background:rgba(250,246,239,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid #EFE8DC;padding:8px 10px 0;display:grid;grid-template-columns:repeat(4,1fr)">
+      <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="#8F7E6F" stroke-width="1.9"></circle><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linecap="round"></path></svg></span><span style="font-size:12px;font-weight:400">Today</span></a>
+      <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 10V4.5l4 3h6l4-3V10a7 7 0 0 1-14 0z" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linejoin="round"></path><circle cx="9.5" cy="11.5" r="1.1" fill="#8F7E6F"></circle><circle cx="14.5" cy="11.5" r="1.1" fill="#8F7E6F"></circle></svg></span><span style="font-size:12px;font-weight:400">Cats</span></a>
+      <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#2A1F18"><span style="width:56px;height:30px;border-radius:15px;background:#FBE7BA;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4.5 5h11A2.5 2.5 0 0 1 18 7.5v5a2.5 2.5 0 0 1-2.5 2.5H10l-4 3.5V15H4.5A2.5 2.5 0 0 1 2 12.5v-5A2.5 2.5 0 0 1 4.5 5z" fill="none" stroke="#2A1F18" stroke-width="1.9" stroke-linejoin="round"></path><path d="M20.5 9.5A2 2 0 0 1 22 11.4v4.1a2 2 0 0 1-2 2h-.5V20l-3-2.5" fill="none" stroke="#2A1F18" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:12px;font-weight:700">Community</span></a>
+      <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M11 3l2.1 6.2L19.5 11l-6.4 2L11 19.5 8.9 13 2.5 11l6.4-1.8z" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linejoin="round"></path><path d="M19 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#8F7E6F"></path></svg></span><span style="font-size:12px;font-weight:400">Ask Mew</span></a>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isChat }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="03b Channel" style="height:100%;display:flex;flex-direction:column;background:#F5EFE5">
+    <div style="height:60px;flex:none;display:flex;align-items:center;gap:6px;padding:0 10px;background:#FAF6EF;border-bottom:1px solid #EFE8DC">
+      <a href="#community" aria-label="Back" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:28px;color:#2A1F18">‹</a>
+      <span style="width:36px;height:36px;border-radius:11px;background:{{ chan.bg }};color:{{ chan.fg }};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px">#</span>
+      <span style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700">{{ chan.name }}</span><span style="font-size:13px;color:#7D6B5C">{{ chan.members }}</span></span>
+    </div>
+    <div ref="{{ chatRef }}" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:14px 14px 18px;display:flex;flex-direction:column;gap:12px">
+      <span style="align-self:center;padding:4px 12px;border-radius:999px;background:#EFE8DC;font-size:12px;color:#6F5E50">Today</span>
+      <sc-for list="{{ msgs }}" as="m" hint-placeholder-count="4">
+        <div style="display:flex;gap:8px;align-items:flex-end;flex-direction:{{ m.dir }}">
+          <span style="width:32px;height:32px;flex:none;border-radius:50%;background:#F1EADF;color:#5E4D40;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;visibility:{{ m.avVis }}">{{ m.av }}</span>
+          <div style="max-width:76%;display:flex;flex-direction:column;gap:4px;align-items:{{ m.align }}">
+            <span style="font-size:12px;color:#7D6B5C;padding:0 4px">{{ m.meta }}</span>
+            <sc-if value="{{ m.hasImg }}" hint-placeholder-val="{{ false }}"><span role="img" aria-label="Photo" style="width:220px;height:220px;border-radius:18px;background:#EFE7D9 center/cover url({{ m.img }})"></span></sc-if>
+            <span style="padding:10px 14px;border-radius:{{ m.radius }};background:{{ m.bg }};box-shadow:0 1px 2px rgba(42,31,24,.08);color:#2A1F18;font-size:16px;line-height:1.4;text-wrap:pretty">{{ m.text }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="flex:none;padding:10px 12px 28px;background:#FAF6EF;border-top:1px solid #EFE8DC;display:flex;gap:8px;align-items:center">
+      <input value="{{ draft }}" onChange="{{ onDraft }}" onKeyDown="{{ onDraftKey }}" placeholder="Message {{ chan.name }}" style="flex:1;min-width:0;height:46px;border-radius:23px;border:1.5px solid #E2D7C6;background:#fff;padding:0 16px;font:400 16px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;outline:none"></input>
+      <button onClick="{{ send }}" aria-label="Send" style="width:46px;height:46px;flex:none;border-radius:50%;border:none;background:{{ sendBg }};color:#2A1F18;font-size:20px;font-weight:700;cursor:pointer">↑</button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isMe }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="05 Profile" style="height:100%;display:flex;flex-direction:column">
+    <div style="height:56px;flex:none;display:flex;align-items:center;padding:0 10px">
+      <a href="#today" style="height:44px;padding:0 10px;display:flex;align-items:center;font-size:17px;font-weight:700;color:#7A4E33">‹ Today</a>
+    </div>
+    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:4px 20px 32px;display:flex;flex-direction:column;gap:24px">
+      <div style="display:flex;gap:16px;align-items:center">
+        <span style="width:84px;height:84px;flex:none;border-radius:50%;box-shadow:0 0 0 3px #FAF6EF,0 0 0 5px #EFB241;background:#FBE7BA;color:#7A5410;display:flex;align-items:center;justify-content:center;font:600 30px Newsreader,serif">ML</span>
+        <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 30px/1.1 Newsreader,serif">Mei Ling</span><span style="font-size:15px;color:#5E4D40">Toa Payoh circle · joined 12 days ago</span><span style="font-size:14px;color:#7D6B5C">Invited by Aisha</span></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06)">
+        <div style="padding:14px 12px;display:flex;flex-direction:column;gap:2px"><span style="font:600 26px Newsreader,serif">{{ meFed }}</span><span style="font-size:13px;color:#7D6B5C">Feedings</span></div>
+        <div style="padding:14px 12px;display:flex;flex-direction:column;gap:2px;border-left:1px solid #EFE8DC"><span style="font:600 26px Newsreader,serif">5</span><span style="font-size:13px;color:#7D6B5C">Cats on list</span></div>
+        <div style="padding:14px 12px;display:flex;flex-direction:column;gap:2px;border-left:1px solid #EFE8DC"><span style="font:600 26px Newsreader,serif">12/30</span><span style="font-size:13px;color:#7D6B5C">Days to exact spots</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:15px;font-weight:700;color:#6F5E50">Cats I look after</span><span style="font-size:14px;color:#7D6B5C">{{ tnrSummary }}</span></div>
+        <div style="display:flex;gap:14px;overflow-x:auto;scrollbar-width:none">
+          <sc-for list="{{ stories }}" as="c" hint-placeholder-count="5"><a href="{{ c.href }}" style="flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;color:#2A1F18"><span role="img" aria-label="{{ c.name }}" style="width:60px;height:60px;border-radius:50%;background:#EFE7D9 center/cover url({{ c.photo }})"></span><span style="font-size:13px;font-weight:700">{{ c.name }}</span><span style="margin-top:-2px;padding:2px 8px;border-radius:999px;background:{{ c.tnrBg }};color:{{ c.tnrFg }};font-size:11px;font-weight:700;white-space:nowrap">{{ c.tnr }}</span></a></sc-for>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06)">
+        <sc-for list="{{ meInfo }}" as="r" hint-placeholder-count="5">
+          <div style="display:flex;justify-content:space-between;gap:16px;padding:14px 16px;border-top:1px solid {{ r.line }}"><span style="font-size:15px;color:#6F5E50">{{ r.k }}</span><span style="font-size:15px;font-weight:700;text-align:right">{{ r.v }}</span></div>
+        </sc-for>
+      </div>
+      <div style="display:flex;flex-direction:column;border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06)">
+        <div style="display:flex;justify-content:space-between;padding:14px 16px;font-size:16px"><span>Notifications</span><span style="color:#A07A62">›</span></div>
+        <div style="display:flex;justify-content:space-between;padding:14px 16px;font-size:16px;border-top:1px solid #EFE8DC"><span>Privacy</span><span style="color:#A07A62">›</span></div>
+        <div style="display:flex;justify-content:space-between;padding:14px 16px;font-size:16px;border-top:1px solid #EFE8DC"><span>Edit my answers</span><span style="color:#A07A62">›</span></div>
+      </div>
+      <a href="#welcome" style="align-self:center;height:44px;display:flex;align-items:center;font-size:16px;font-weight:700;color:#9A4A26">Log out</a>
+    </div>
+  </div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { code: '', mode: 'invite', a: this.loadA(), help: {}, agree: false, idx: 0, dx: 0, drag: false, fed: this.loadFed(), review: false, proof: null, shot: false, why: false, liked: {}, mine: [] };
+  componentDidMount() { this.h = () => this.forceUpdate(); addEventListener('hashchange', this.h); this.startCollage(); }
+  componentWillUnmount() { removeEventListener('hashchange', this.h); clearInterval(this.tm); window.MewLinkCare.syncFeedingModal(false); }
+  route() {
+    const ok = ['welcome', 'join', 'done', 'today', 'community', 'chat', 'me'];
+    const h = (location.hash || '').slice(1);
+    const r = this.props.only || h;
+    return ok.includes(r) ? r : 'welcome';
+  }
+  img(id, w, h) { return 'https://images.unsplash.com/' + id + '?w=' + w + '&h=' + h + '&fit=crop&crop=entropy&q=72&auto=format'; }
+  deck() {
+    return [
+      { key: 'tiger', name: 'Tiger', zone: 'Zone A', pid: 'photo-1650535812141-04d564530b17', why: 'You’ve fed him 6 times', tnr: 'TNR done', tnrOk: true, status: 'Not fed yet today', statusBg: '#FBE7BA', note: 'Aisha saw a small cut near one ear yesterday. A clear photo of it would help.' },
+      { key: 'kopi', name: 'Kopi', zone: 'Zone B', pid: 'photo-1622015680443-cb4c5bec36b7', why: 'Seen in Zone B', tnr: 'TNR done', tnrOk: true, status: 'Ravi is away until Fri', statusBg: '#F7DDD0', note: 'Ravi usually feeds Kopi at 7pm. He asked the circle to cover while he travels.' },
+      { key: 'ash', name: 'Ash', zone: 'Zone C', pid: 'photo-1557408938-0f220f49bca1', why: 'Seen in Zone C', tnr: 'TNR not yet', tnrOk: false, status: 'Not seen for 3 days', statusBg: '#EFE8DC', note: 'Didn’t come out on Wei’s last round. Look out for him.' },
+      ...this.joined(),
+    ];
+  }
+  joined() {
+    let names = []; try { names = JSON.parse(localStorage.getItem('mewlink-joined-cats') || '[]'); } catch (e) {}
+    const pool = {
+      Oyen: { key: 'oyen', name: 'Oyen', zone: 'Zone A', pid: 'photo-1618222951695-cf6808375f99', tnr: 'TNR done', tnrOk: true, status: 'Evening feed due', statusBg: '#FBE7BA', note: 'Ravi fed Oyen at 7:40am. The evening feed is open.' },
+      Milo: { key: 'milo', name: 'Milo', zone: 'Zone A', pid: 'photo-1569847011465-f3d58771ec7f', tnr: 'TNR done', tnrOk: true, status: 'Evening feed due', statusBg: '#FBE7BA', note: 'Usually eats with Oyen. Finishes fast, so put his bowl a little apart.' },
+      Bubu: { key: 'bubu', name: 'Bubu', zone: 'Zone C', pid: 'photo-1514888286974-6c03e2ca1dba', tnr: 'TNR done', tnrOk: true, status: 'Only 1 caregiver', statusBg: '#F7DDD0', note: 'Wei is Bubu’s only feeder. An extra pair of hands on weekends would help.' },
+    };
+    return names.filter(n => pool[n]).map(n => ({ ...pool[n], why: 'You joined today' }));
+  }
+  down = e => { this.sx = e.clientX; this.setState({ drag: true, dx: 0 }); try { e.currentTarget.setPointerCapture(e.pointerId); } catch (_) {} };
+  move = e => { if (this.state.drag) this.setState({ dx: e.clientX - this.sx }); };
+  up = () => { const dx = this.state.dx; this.setState({ drag: false, dx: 0 }); if (dx > 90) this.openProof(); else if (dx < -90) this.skip(); };
+  skip = () => this.setState(s => ({ idx: s.idx + 1, skipped: (s.skipped || 0) + 1 }));
+  openProof = () => this.setState({ proof: true, shot: false });
+  home() {
+    const s = this.state, deck = this.deck(), card = deck[s.idx], next = deck[s.idx + 1];
+    const fedKeys = Object.keys(s.fed);
+    const stories = [...deck, ...[{ key: 'oyen', name: 'Oyen', pid: 'photo-1618222951695-cf6808375f99', pre: true, tnrOk: true }, { key: 'milo', name: 'Milo', pid: 'photo-1569847011465-f3d58771ec7f', pre: true, tnrOk: true }].filter(x => !deck.some(d => d.key === x.key))].map(c => {
+      const done = c.pre || s.fed[c.key];
+      return { name: c.name, tnrOk: c.tnrOk, tnr: c.tnrOk ? 'TNR done' : 'TNR not yet', tnrBg: c.tnrOk ? '#E2EADB' : '#F7DDD0', tnrFg: c.tnrOk ? '#3E5A36' : '#9A3F22', photo: this.img(c.pid, 160, 160), href: window.MewLinkCare.profileHref(c.key), ring: done ? '#B9CBAE' : '#EFB241', sub: done ? 'Fed' : 'Needs food', subFg: done ? '#5E7A55' : '#9A3F22' };
+    });
+    const base = [
+      { id: 'r', who: 'Ravi', av: 'RK', cat: 'Oyen and Milo', time: '7:40am', zone: 'Zone B', stamp: '7:40am', pid: 'photo-1581536678522-afcf3257d780', caption: 'Both ate well. Milo finished first again.', likes: 4 },
+      { id: 'a', who: 'Aisha', av: 'AS', cat: 'Tiger', time: 'Yesterday', zone: 'Zone A', stamp: '6:15pm', pid: 'photo-1675504661658-33940d979a6a', caption: 'Small cut near one ear. He let me come close.', likes: 7 },
+    ];
+    const posts = [...s.mine, ...base].map(p => { const on = !!s.liked[p.id]; return { ...p, img: this.img(p.pid, 720, 720), likes: p.likes + (on ? 1 : 0), heart: on ? '#C9785D' : 'none', like: () => this.setState(q => ({ liked: { ...q.liked, [p.id]: !q.liked[p.id] } })) }; });
+    const dx = s.dx, left = deck.length - s.idx;
+    const c = card || deck[0];
+    return {
+      stories, posts, why: s.why, tnrSummary: stories.filter(c => c.tnrOk).length + ' of ' + stories.length + ' TNR done',
+      collage: this.collage(), whyLabel: s.why ? 'Hide' : 'How?', toggleWhy: () => this.setState(p => ({ why: !p.why })),
+      hasCard: !!card, hasNext: !!next, deckDone: !card,
+      card: { ...c, photo: this.img(c.pid, 720, 900), tnrBg: c.tnrOk ? '#E2EADB' : '#F7DDD0', tnrFg: c.tnrOk ? '#3E5A36' : '#9A3F22' },
+      next: next ? { photo: this.img(next.pid, 600, 800) } : { photo: '' },
+      deckTitle: card ? (left === 1 ? '1 cat still needs food' : left + ' cats still need food') : 'Today’s round',
+      deckCount: card ? (s.idx + 1) + ' of ' + deck.length : '',
+      cardTf: 'translateX(' + dx + 'px) rotate(' + (dx / 18) + 'deg)', cardTr: s.drag ? 'none' : 'transform .25s ease',
+      stampOp: Math.min(Math.abs(dx) / 90, 1), stampColor: dx >= 0 ? '#4A6140' : '#8C6E5A', stampText: dx >= 0 ? 'FED' : 'NOT TODAY',
+      fedCta: 'I fed ' + c.name + ' ›', down: this.down, move: this.move, up: this.up, skip: this.skip, openProof: this.openProof,
+      doneNote: fedKeys.length ? 'You fed ' + fedKeys.length + (fedKeys.length === 1 ? ' cat' : ' cats') + '. Your photos are in the circle feed below.' : 'You skipped the rest. Other caregivers can still pick them up.',
+      restart: () => this.setState({ idx: 0 }),
+      proofOpen: !!s.proof, closeProof: () => this.setState({ proof: null }),
+      shot: s.shot, noShot: !s.shot, takeShot: () => this.setState({ shot: true }),
+      shotBg: s.shot ? '#EFE7D9 center/cover url(' + this.img(c.pid, 600, 440) + ')' : '#FFFBF3', shotBd: s.shot ? 'transparent' : '#C9B79E',
+      confirmBg: s.shot ? '#2A1F18' : '#EFE8DC', confirmFg: s.shot ? '#FFF8EC' : '#9A8877',
+      confirmFed: () => { if (!s.shot || !card) return; const id = 'm' + Date.now(); this.setState(q => ({ proof: null, shot: false, idx: q.idx + 1, fed: { ...q.fed, [card.key]: true }, mine: [{ id, who: 'You', av: 'ML', cat: card.name, time: 'Just now', zone: card.zone, stamp: 'just now', pid: card.pid, caption: 'Fed and checked in.', likes: 0 }, ...q.mine] })); },
+    };
+  }
+  tiles = [
+    ['photo-1650535812141-04d564530b17', 'photo-1569847011465-f3d58771ec7f', 'photo-1618222951695-cf6808375f99'],
+    ['photo-1631044634756-5389f870aeed', 'photo-1622015680443-cb4c5bec36b7'],
+    ['photo-1622015680443-cb4c5bec36b7', 'photo-1650535812141-04d564530b17', 'photo-1631044634756-5389f870aeed'],
+  ];
+  startCollage() {
+    if (this.tm) return;
+    this.setState({ tick: 0 });
+    this.tm = setInterval(() => { if ((location.hash || '#welcome').slice(1) === 'welcome' || !location.hash) this.setState(s => ({ tick: (s.tick || 0) + 1 })); }, 2600);
+  }
+  collage() {
+    const t = this.state.tick || 0, e = React.createElement;
+    const tile = (i, radius, extra) => {
+      const list = this.tiles[i], adv = Math.floor((t + (2 - i)) / 3), cur = adv % list.length;
+      return e('div', { key: i, style: { position: 'relative', overflow: 'hidden', borderRadius: radius, background: '#EFE7D9', animation: 'mlRise .7s ease both', animationDelay: (i * 0.12) + 's', ...extra } },
+        list.map((pid, k) => e('div', { key: pid + k, style: { position: 'absolute', inset: 0, opacity: k === cur ? 1 : 0, transition: 'opacity 1.1s ease', background: '#EFE7D9 center/cover url(' + this.img(pid, 600, 900) + ')', animation: 'mlKen 9s ease-in-out infinite alternate', animationDelay: (-(i * 3 + k * 2)) + 's' } })));
+    };
+    return e('div', { style: { flex: 1, minHeight: 0, display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1.3fr 1fr', gap: 6 } },
+      tile(0, '24px 6px 6px 6px', { gridRow: '1 / span 2' }), tile(1, '6px 24px 6px 6px'), tile(2, '6px'));
+  }
+  pagerRef = React.createRef();
+  pageEls() { const el = this.pagerRef.current; return el ? [...el.querySelectorAll('[data-page]')] : []; }
+  goTo(i) { const el = this.pagerRef.current, ps = this.pageEls(); if (!el || !ps[i]) return; el.scrollTo({ left: el.scrollLeft + ps[i].getBoundingClientRect().left - el.getBoundingClientRect().left - 20, behavior: 'smooth' }); }
+  pager() {
+    const s = this.state, deck = this.deck(), page = s.page || 0;
+    const target = deck.find(d => d.key === s.proofKey) || deck[page] || deck[0];
+    const left = deck.filter(d => !s.fed[d.key]).length;
+    const pages = deck.map(d => { const fed = !!s.fed[d.key]; return { ...d, photo: this.img(d.pid, 720, 900), tnrBg: d.tnrOk ? '#E2EADB' : '#F7DDD0', tnrFg: d.tnrOk ? '#3E5A36' : '#9A3F22',
+      statusText: fed ? 'Fed by you just now' : d.status, statusBg: fed ? '#E2EADB' : d.statusBg,
+      btnLabel: fed ? '✓ Fed today' : 'I fed ' + d.name, btnBg: fed ? '#E2EADB' : '#2A1F18', btnFg: fed ? '#3E5A36' : '#FFF8EC',
+      feed: () => { if (!fed) this.setState({ proof: true, proofKey: d.key, shot: false }); } }; });
+    return {
+      pages, pagerRef: this.pagerRef,
+      onPage: e => { const el = e.currentTarget, ps = this.pageEls(); if (!ps.length) return; const w = ps[0].offsetWidth + 12; const i = Math.max(0, Math.min(deck.length - 1, Math.round(el.scrollLeft / w))); if (i !== (this.state.page || 0)) this.setState({ page: i }); },
+      dots: deck.map((d, i) => ({ label: d.name, w: i === page ? '22px' : '8px', bg: i === page ? '#2A1F18' : '#E2D7C6', go: () => this.goTo(i) })),
+      allFedCard: !left && !s.review, showPager: !!left || s.review, reviewCards: () => this.setState({ review: true }),
+      fedCats: deck.map(d => ({ name: d.name, photo: this.img(d.pid, 160, 160) })),
+      fedSummary: (() => { const n = deck.map(d => d.name), t = n.length > 1 ? n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1] : n[0]; const last = Object.values(s.fed).slice(-1)[0]; return t + ' are fed' + (last ? ', last at ' + last : '') + '. The evening round opens at 6pm.'; })(),
+      nearby: deck.some(d => d.key === 'bubu') ? [] : [{ name: 'Bubu', zone: 'Zone C', status: 'Only 1 caregiver', photo: this.img('photo-1514888286974-6c03e2ca1dba', 160, 160) }],
+      hasNearby: !deck.some(d => d.key === 'bubu'),
+      myZone: s.a.zone || 'your zone',
+      listText: (() => { const fb = deck.filter(d => /^You’ve fed/.test(d.why)).length, j = deck.filter(d => d.why === 'You joined today').length, seen = deck.length - fb - j;
+        return [fb && fb + ' you’ve fed', j && j + ' you joined', seen && seen + ' seen near ' + (s.a.zone || 'your zone')].filter(Boolean).join(' + '); })(),
+      deckTitle: left ? (left === 1 ? '1 cat still needs food' : left + ' cats still need food') : 'All cats fed today',
+      deckCount: (page + 1) + ' of ' + deck.length,
+      card: { ...target, photo: this.img(target.pid, 720, 900) },
+      shotBg: s.shot ? '#EFE7D9 center/cover url(' + this.img(target.pid, 600, 440) + ')' : '#FFFBF3',
+      confirmFed: () => { if (!s.shot) return; const k = target.key; const fed = { ...s.fed, [k]: new Date().toLocaleTimeString('en-SG', { hour: 'numeric', minute: '2-digit' }).replace(/\s/g, '').toLowerCase() }; this.saveFed(fed); window.MewLinkCare.recordCare({catId:k,kind:'feeding'});
+        this.setState(q => ({ proof: null, shot: false, proofKey: null, fed, mine: [{ id: 'm' + Date.now(), who: 'You', av: 'ML', cat: target.name, time: 'Just now', zone: target.zone, stamp: 'just now', pid: target.pid, caption: 'Fed and checked in.', likes: 0 }, ...q.mine] }),
+          () => { const n = deck.findIndex(d => !fed[d.key]); if (n >= 0) setTimeout(() => this.goTo(n), 250); }); },
+    };
+  }
+  chatRef = React.createRef();
+  componentDidUpdate() { window.MewLinkCare.syncFeedingModal(!!this.state.proof); const el = this.chatRef.current; if (el && this.lastLen !== this.msgLen) { el.scrollTop = el.scrollHeight; this.lastLen = this.msgLen; } }
+  chanData() {
+    return [
+      { id: 'need-help', name: '#need-help', bg: '#F7DDD0', fg: '#9A3F22', members: '18 members · ask for a hand', time: '9:12am', unread: 2, msgs: [
+        { who: 'Ravi', av: 'RK', t: '8:02am', text: 'I’m flying out tonight until Friday. Can someone cover Kopi’s 7pm feed in Zone B?' },
+        { who: 'Wei', av: 'WT', t: '8:15am', text: 'I can do Wed and Thu.' },
+        { who: 'Ravi', av: 'RK', t: '8:20am', text: 'Thank you! Still need someone for tonight and Fri.' },
+        { who: 'Aisha', av: 'AS', t: '9:12am', img: 'photo-1675504661658-33940d979a6a', text: 'Tiger has a small cut near his ear. Not bleeding. Anyone free to take a closer look after 6?' },
+      ] },
+      { id: 'general', name: '#general', bg: '#FBE7BA', fg: '#7A5410', members: '18 members · everyday chat', time: '7:41am', unread: 0, msgs: [
+        { who: 'Ravi', av: 'RK', t: '7:40am', img: 'photo-1581536678522-afcf3257d780', text: 'Oyen and Milo both ate well. Milo finished first again.' },
+        { who: 'Wei', av: 'WT', t: '7:41am', text: 'Milo always wins 😄' },
+      ] },
+      { id: 'zone-a', name: '#zone-a', bg: '#E2EADB', fg: '#3E5A36', members: '6 members · Zone A feeders', time: 'Yesterday', unread: 1, msgs: [
+        { who: 'Aisha', av: 'AS', t: 'Yesterday', text: 'Bowls near the void deck were moved by cleaners. I put them back by the bench.' },
+      ] },
+      { id: 'vet-trips', name: '#vet-trips', bg: '#E4E3EF', fg: '#4A4670', members: '9 members · rides and vet bookings', time: 'Mon', unread: 0, msgs: [
+        { who: 'Wei', av: 'WT', t: 'Mon', text: 'Ash’s TNR slot is booked for next Tuesday, 10am. I can drive.' },
+      ] },
+    ];
+  }
+  chat(r) {
+    const s = this.state, data = this.chanData(), sent = s.sent || {};
+    const c = data.find(d => d.id === s.ch) || data[0];
+    const raw = [...c.msgs, ...(sent[c.id] || [])];
+    this.msgLen = r === 'chat' ? c.id + raw.length : null;
+    const msgs = raw.map((m, i) => { const me = m.who === 'You'; const prev = raw[i - 1]; const same = prev && prev.who === m.who;
+      return { text: m.text, av: m.av, meta: me ? m.t : (same ? '' : m.who + ' · ' + m.t), dir: me ? 'row-reverse' : 'row', align: me ? 'flex-end' : 'flex-start', avVis: me || same ? 'hidden' : 'visible', bg: me ? '#FBE3B0' : '#fff', radius: me ? '18px 18px 4px 18px' : '18px 18px 18px 4px', hasImg: !!m.img, img: m.img ? this.img(m.img, 440, 440) : '' }; });
+    const sendIt = () => { const t = (s.draft || '').trim(); if (!t) return; this.setState(q => ({ draft: '', sent: { ...(q.sent || {}), [c.id]: [...((q.sent || {})[c.id] || []), { who: 'You', av: 'ML', t: 'Now', text: t }] } })); };
+    const a = s.a, help = Object.keys(s.help).filter(k => s.help[k]);
+    const info = [['Area', a.zone || 'Zone A'], ['Cats at home', a.home || 'No'], ['Feeding experience', a.exp || 'Under 1 year'], ['TNR', a.tnr || 'Helped once or twice'], ['Can help with', help.length ? help.join(', ') : 'Daily feeding, Vet trips']];
+    return {
+      isCommunity: r === 'community', isChat: r === 'chat', isMe: r === 'me',
+      channels: data.map(d => ({ name: d.name, bg: d.bg, fg: d.fg, time: d.time, unread: d.unread, badgeVis: d.unread && s.ch !== d.id ? 'visible' : 'hidden', last: (() => { const all = [...d.msgs, ...(sent[d.id] || [])]; const m = all[all.length - 1]; return (m.who === 'You' ? 'You' : m.who) + ': ' + m.text; })(), open: () => { this.setState({ ch: d.id }); location.hash = 'chat'; } })),
+      chan: { name: c.name, bg: c.bg, fg: c.fg, members: c.members }, msgs, chatRef: this.chatRef,
+      draft: s.draft || '', onDraft: e => this.setState({ draft: e.target.value }), onDraftKey: e => { if (e.key === 'Enter') sendIt(); }, send: sendIt,
+      sendBg: (s.draft || '').trim() ? '#EFB241' : '#EFE8DC',
+      meFed: 14 + Object.keys(s.fed).length,
+      meInfo: info.map((x, i) => ({ k: x[0], v: x[1], line: i ? '#EFE8DC' : 'transparent' })),
+    };
+  }
+  pickSet(k, v) { if (k === 'zone') try { localStorage.setItem('mewlink-zone', v); } catch (e) {} this.setState(s => ({ a: { ...s.a, [k]: v } })); }
+  loadA() { try { const z = localStorage.getItem('mewlink-zone'); return z ? { zone: z } : {}; } catch (e) { return {}; } }
+  loadFed() { try { const o = JSON.parse(localStorage.getItem('mewlink-fed') || '{}'); return o.d === new Date().toDateString() ? (o.fed || {}) : {}; } catch (e) { return {}; } }
+  saveFed(fed) { try { localStorage.setItem('mewlink-fed', JSON.stringify({ d: new Date().toDateString(), fed })); } catch (e) {} }
+  opts(list, k) {
+    return list.map(o => { const on = this.state.a[k] === o; return { label: o, bg: on ? '#2A1F18' : '#fff', fg: on ? '#FAF6EF' : '#2A1F18', bd: on ? '#2A1F18' : '#E2D7C6', pick: () => this.pickSet(k, o) }; });
+  }
+  renderVals() {
+    const s = this.state, r = this.route(), inv = s.mode === 'invite';
+    const helpOpts = ['Daily feeding', 'Cover when others travel', 'Vet trips', 'Short-term fostering'].map(o => { const on = !!s.help[o]; return { label: o, bg: on ? '#2A1F18' : '#fff', fg: on ? '#FAF6EF' : '#2A1F18', bd: on ? '#2A1F18' : '#E2D7C6', pick: () => this.setState(p => ({ help: { ...p.help, [o]: !p.help[o] } })) }; });
+    const ready = s.agree && s.a.zone && s.a.exp;
+    return {
+      isWelcome: r === 'welcome', isJoin: r === 'join', isDone: r === 'done', isToday: r === 'today',
+      code: s.code, onCode: e => this.setState({ code: e.target.value.toUpperCase() }),
+      joinWithCode: () => { this.setState({ mode: 'invite' }); location.hash = 'join'; },
+      requestInvite: () => { this.setState({ mode: 'request' }); location.hash = 'join'; },
+      joinStepLabel: inv ? 'Invite from Mei Ling' : 'Request to join',
+      joinTitle: inv ? 'Welcome to the Toa Payoh circle' : 'Tell the circle about you',
+      joinSub: inv ? 'Mei Ling invited you. A few answers help the circle know how you’d like to help.' : 'Circles are invite only. An admin reads your answers before letting you in.',
+      zoneOpts: this.opts(['Zone A', 'Zone B', 'Zone C', 'Zone D'], 'zone'),
+      ...Object.fromEntries(['A', 'B', 'C', 'D'].map(k => { const on = this.state.a.zone === 'Zone ' + k;
+        return ['z' + k, { fill: on ? '#F3C96B' : '#F1E9DB', dot: on ? '#2A1F18' : '#FFFFFF', fg: on ? '#FAF6EF' : '#2A1F18', pick: () => this.pickSet('zone', 'Zone ' + k) }]; })),
+      zoneCaption: this.state.a.zone ? this.state.a.zone + ' selected' : 'Tap a zone on the map',
+      homeOpts: this.opts(['Yes', 'No'], 'home'),
+      expOpts: this.opts(['New to this', 'Under 1 year', '1–3 years', '3+ years'], 'exp'),
+      tnrOpts: this.opts(['Not yet', 'Helped once or twice', 'Many times'], 'tnr'),
+      helpOpts,
+      toggleAgree: () => this.setState(p => ({ agree: !p.agree })), agreeBg: s.agree ? '#2A1F18' : '#fff', agreeMark: s.agree ? '✓' : '',
+      submitBg: ready ? '#2A1F18' : '#EFE8DC', submitFg: ready ? '#FFF8EC' : '#9A8877',
+      submitLabel: inv ? 'Join the circle' : 'Send request',
+      submitHint: ready ? 'You can change these later in your profile' : 'Pick an area, your experience and tick the privacy box',
+      submitJoin: () => { if (ready) location.hash = 'done'; },
+      doneTitle: inv ? 'You’re in' : 'Request sent',
+      doneSub: inv ? 'Your list starts with cats seen in ' + (s.a.zone || 'your area') + '. Cats you feed are added to it automatically.' : 'A circle admin will read your answers, usually within two days. You can look around in the meantime.',
+      doneCta: inv ? 'See today’s cats' : 'Look around',
+      ...this.home(), ...this.pager(),
+      ...this.chat(r),
+    };
+  }
+}
+</script>
+</body>
+</html>

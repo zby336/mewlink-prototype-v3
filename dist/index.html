@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Bundled Page</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #faf9f5; display: flex; align-items: center; justify-content: center; min-height: 100vh; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    #__bundler_loading { position: fixed; bottom: 20px; right: 20px; font: 13px/1.4 -apple-system, BlinkMacSystemFont, sans-serif; color: #666; background: #fff; padding: 8px 14px; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.12); z-index: 10000; }
+    #__bundler_thumbnail { position: fixed; inset: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #faf9f5; z-index: 9999; }
+    #__bundler_thumbnail svg { width: 100%; height: 100%; object-fit: contain; }
+    #__bundler_placeholder { color: #999; font-size: 14px; }
+  </style>
+  <noscript>
+    <style>#__bundler_loading { display: none; }</style>
+    <div style="position:fixed;bottom:12px;left:12px;font:13px/1.4 -apple-system,BlinkMacSystemFont,sans-serif;color:#999;background:rgba(255,255,255,0.9);padding:6px 12px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.08);z-index:10000;">
+      This page requires JavaScript to display.
+    </div>
+  </noscript>
+</head>
+<body>
+  <div id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" sc-camel-view-box="0 0 100 100"><rect width="100" height="100" fill="#E9B44C"></rect><text x="50" y="64" font-family="Georgia,serif" font-size="44" font-weight="700" text-anchor="middle" fill="#33261D">M</text></svg></div>
+  <div id="__bundler_loading">Unpacking...</div>
+
+  <script>
+
+document.addEventListener('DOMContentLoaded', async function() {
+  const loading = document.getElementById('__bundler_loading');
+  function setStatus(msg) { if (loading) loading.textContent = msg; }
+
+  const FONT_MIME = /^(font[/]|application[/](x-)?font-|application[/]vnd\.ms-fontobject)/i;
+  const MIME_TOKEN = /^[\w.+-]+[/][\w.+-]+$/;
+  function toBase64(bytes) {
+    let bin = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+    }
+    return btoa(bin);
+  }
+
+  // Error sink persists across replaceWith since it's on window, not the DOM.
+  window.addEventListener('error', function(e) {
+    // Failed resource loads (CSP-blocked links, scripts, images) fire plain
+    // events at the element — warn only; real JS errors carry message/error.
+    if (!e.message && !e.error && e.target && e.target !== window) {
+      console.warn('[bundle] resource failed to load:',
+        e.target.tagName, String(e.target.src || e.target.href || ''));
+      return;
+    }
+    var p = document.body || document.documentElement;
+    var d = document.getElementById('__bundler_err') || p.appendChild(document.createElement('div'));
+    d.id = '__bundler_err';
+    d.style.cssText = 'position:fixed;bottom:12px;left:12px;right:12px;font:12px/1.4 ui-monospace,monospace;background:#2a1215;color:#ff8a80;padding:10px 14px;border-radius:8px;border:1px solid #5c2b2e;z-index:99999;white-space:pre-wrap;max-height:40vh;overflow:auto';
+    d.textContent = (d.textContent ? d.textContent + String.fromCharCode(10) : '') +
+      '[bundle] ' + (e.message || e.type) +
+      (e.filename ? ' (' + e.filename.slice(0, 60) + ':' + e.lineno + ')' : '');
+  }, true);
+
+  try {
+    const manifestEl = document.querySelector('script[type="__bundler/manifest"]');
+    const templateEl = document.querySelector('script[type="__bundler/template"]');
+    if (!manifestEl || !templateEl) {
+      setStatus('Error: missing bundle data');
+      console.error('[bundler] Missing script tags — manifestEl:', !!manifestEl, 'templateEl:', !!templateEl);
+      return;
+    }
+
+    const manifest = JSON.parse(manifestEl.textContent);
+    let template = JSON.parse(templateEl.textContent);
+
+    // Nested page bundles (iframe targets). Each ships ONCE, in the ROOT
+    // document's manifest; frame srcs carry an about:blank#<uuid> marker
+    // instead of a substitutable uuid. Every document mints the blobs for
+    // its OWN frames — from local text at the root, or text obtained from
+    // its DIRECT parent over the relay protocol below — so each frame
+    // navigation stays same-origin with its initiator and a deduped page
+    // loads at any depth on any host, including a file:// download's
+    // opaque origins (where a blob minted by one document cannot be
+    // navigated to by another).
+    const pageOrderEl = document.querySelector('script[type="__bundler/page_order"]');
+    const pageOrder = pageOrderEl ? JSON.parse(pageOrderEl.textContent) : [];
+    const pageSet = new Set(pageOrder);
+    const pageTexts = {};
+
+    // ── Nested-page text protocol (parent-chain relay) ──
+    // Page bundles ship once, in the ROOT document's manifest. Every
+    // document mints the blobs for its OWN frames, obtaining page text
+    // through a strict parent-chain relay: a document only ever SENDS to
+    // its direct parent (which, for every document the publisher's own
+    // runtime minted, is another publisher document) and only ACCEPTS
+    // text from that direct parent; requests from below are honored only
+    // for the document's own child frames, and the ROOT never sends
+    // upward at all. That last rule is load-bearing: the artifact host's
+    // frame-ancestors allows claude.ai (and friends) to frame an
+    // artifact, so window.top can be a FOREIGN document — a top-addressed
+    // protocol would hand page uuids to that ancestor and accept forged
+    // "page text" from it, minting attacker HTML as an artifact-origin
+    // blob document. The chain never touches the ancestor: requests stop
+    // at the root, replies are origin-addressed per hop (never '*' when
+    // an origin exists), and both directions are origin-gated (on https
+    // a foreign sender's origin can never equal this document's; in
+    // opaque contexts — file:// — everything serializes as 'null', where
+    // an embedded EXTERNAL frame still fails the gate by carrying its
+    // own real origin, and a sandboxed child of such a frame is excluded
+    // by the own-child-frames check plus uuid unguessability). Shape is
+    // deny-by-default: one request form, one reply form, no error
+    // replies.
+    // window.origin is the SERIALIZED SECURITY origin ('null' in opaque
+    // contexts such as a sandboxed preview iframe) — location.origin is
+    // computed from the URL and stays 'https://…' even when the document
+    // is sandboxed, which would misgate every opaque chain.
+    const OWN_TARGET = /^https?:[/][/]/.test(window.origin || '')
+      ? window.origin
+      : '*';
+    function trustedOrigin(e) {
+      if (e.origin === window.origin) return true; // https chains; opaque==opaque
+      // file:// trees: Chrome serializes the file document's origin as
+      // 'file://' while the blob: documents it mints serialize as 'null',
+      // so the two legitimate shapes can never string-match — accept the
+      // pair in both directions. https origins never serialize as either,
+      // and sender identity (own child frame / direct parent) is checked
+      // separately.
+      return (
+        (e.origin === 'null' &&
+          (window.origin === 'file://' ||
+            window.location.protocol === 'file:')) ||
+        (/^file:/.test(e.origin) && window.origin === 'null')
+      );
+    }
+    // Non-empty only in the root document (nested bundles ship an empty
+    // island), so it doubles as the root marker: the root answers from
+    // local text and treats a miss as authoritative — never relaying to
+    // its (possibly foreign) parent.
+    const isPageRoot = pageOrder.length > 0;
+    const blobUrls = {};
+    const resourceBlobs = {};
+    const UUID_SHAPE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+    const pendingFrames = {}; // uuid -> [{el, frag}] awaiting text for own frames
+    const pendingRelays = {}; // uuid -> [childWindow] awaiting text to pass down
+    function mountPage(el, frag, text) {
+      const pageBlob = new Blob([text], { type: 'text/html' });
+      const u = URL.createObjectURL(pageBlob);
+      resourceBlobs[u] = pageBlob;
+      el.src = u + frag;
+    }
+    function deliverPage(uuid, text) {
+      const frames = pendingFrames[uuid];
+      delete pendingFrames[uuid];
+      if (frames) for (const f of frames) mountPage(f.el, f.frag, text);
+      const relays = pendingRelays[uuid];
+      delete pendingRelays[uuid];
+      if (relays) {
+        for (const cw of relays) {
+          try { cw.postMessage({ __bundler_page: uuid, __bundler_text: text }, OWN_TARGET); } catch (err) { /* gone */ }
+        }
+      }
+    }
+    function ownFrameWindows() {
+      const out = [];
+      for (const f of Array.from(document.querySelectorAll('iframe'))) {
+        try { if (f.contentWindow) out.push(f.contentWindow); } catch (err) { /* detached */ }
+      }
+      return out;
+    }
+    window.addEventListener('message', function (e) {
+      const d = e.data;
+      if (!d || typeof d !== 'object' || !e.source) return;
+      // Origin gate first; the structural checks below (own-child-frames
+      // for requests, direct-parent + solicited-uuid for replies, the
+      // root's never-relay rule) are what hold in fully opaque chains
+      // where origin strings can't discriminate — a sandboxed root's
+      // FOREIGN wrapper still fails all three even though both serialize
+      // as real-vs-'null' rather than matching.
+      if (!trustedOrigin(e)) return;
+      if (typeof d.__bundler_need === 'string' && UUID_SHAPE.test(d.__bundler_need)) {
+        // Requests are honored only for this document's own child frames.
+        if (ownFrameWindows().indexOf(e.source) < 0) return;
+        const uuid = d.__bundler_need;
+        const text = pageTexts[uuid];
+        if (typeof text === 'string') {
+          try { e.source.postMessage({ __bundler_page: uuid, __bundler_text: text }, OWN_TARGET); } catch (err) { /* gone */ }
+          return;
+        }
+        if (isPageRoot || window.parent === window) return; // authoritative miss
+        const waiting = pendingRelays[uuid];
+        if (waiting) {
+          if (waiting.indexOf(e.source) < 0) waiting.push(e.source);
+          return;
+        }
+        // Never-answered uuids would otherwise accumulate forever under a
+        // request spray; past the cap (far above any real page count) new
+        // relays are dropped rather than remembered.
+        if (Object.keys(pendingRelays).length >= 128) return;
+        pendingRelays[uuid] = [e.source];
+        window.parent.postMessage({ __bundler_need: uuid }, OWN_TARGET);
+      } else if (
+        typeof d.__bundler_page === 'string' &&
+        UUID_SHAPE.test(d.__bundler_page) &&
+        typeof d.__bundler_text === 'string'
+      ) {
+        // The shape test is load-bearing beyond tidiness: the solicited
+        // check below uses the in operator, which matches prototype keys
+        // ('__proto__', 'constructor') — an unshaped key would reach
+        // deliverPage and throw, painting the error banner.
+        // Text is accepted only from the direct parent — the document
+        // that minted this one.
+        if (e.source !== window.parent || window.parent === window) return;
+        if (!(d.__bundler_page in pendingFrames) && !(d.__bundler_page in pendingRelays)) return;
+        deliverPage(d.__bundler_page, d.__bundler_text);
+      }
+    });
+
+    const uuids = Object.keys(manifest);
+    setStatus('Unpacking ' + uuids.length + ' assets...');
+
+    await Promise.all(uuids.map(async (uuid) => {
+      const entry = manifest[uuid];
+      try {
+        const fetchedParts = await Promise.all(entry.parts.map(async function(path) {
+          const response = await fetch(path);
+          if (!response.ok) throw new Error('Asset unavailable: ' + path);
+          return new Uint8Array(await response.arrayBuffer());
+        }));
+        const bytes = new Uint8Array(fetchedParts.reduce((sum, part) => sum + part.length, 0));
+        let resourceOffset = 0;
+        for (const part of fetchedParts) { bytes.set(part, resourceOffset); resourceOffset += part.length; }
+
+        let finalBytes = bytes;
+        if (entry.compressed) {
+          if (typeof DecompressionStream !== 'undefined') {
+            const ds = new DecompressionStream('gzip');
+            const writer = ds.writable.getWriter();
+            const reader = ds.readable.getReader();
+            writer.write(bytes);
+            writer.close();
+            const chunks = [];
+            let totalLen = 0;
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              chunks.push(value);
+              totalLen += value.length;
+            }
+            finalBytes = new Uint8Array(totalLen);
+            let offset = 0;
+            for (const chunk of chunks) { finalBytes.set(chunk, offset); offset += chunk.length; }
+          } else {
+            console.warn('DecompressionStream not available, asset ' + uuid + ' may not render');
+          }
+        }
+
+        if (pageSet.has(uuid)) {
+          pageTexts[uuid] = new TextDecoder().decode(finalBytes);
+          return;
+        }
+        if (FONT_MIME.test(entry.mime) && MIME_TOKEN.test(entry.mime)) {
+          // Strict artifact hosts allow font-src data: but not blob:.
+          blobUrls[uuid] = 'data:' + entry.mime + ';base64,' +
+            toBase64(finalBytes);
+        } else {
+          const blob = new Blob([finalBytes], { type: entry.mime });
+          blobUrls[uuid] = URL.createObjectURL(blob);
+          resourceBlobs[blobUrls[uuid]] = blob;
+        }
+      } catch (err) {
+        console.error('Failed to decode asset ' + uuid + ':', err);
+        const blob = new Blob([], { type: entry.mime });
+        blobUrls[uuid] = URL.createObjectURL(blob);
+        resourceBlobs[blobUrls[uuid]] = blob;
+      }
+    }));
+
+    const extResEl = document.querySelector('script[type="__bundler/ext_resources"]');
+    const extResources = extResEl ? JSON.parse(extResEl.textContent) : [];
+    const resourceMap = {};
+    for (const entry of extResources) {
+      if (blobUrls[entry.uuid]) resourceMap[entry.id] = blobUrls[entry.uuid];
+    }
+
+    // Artifact-host CSP (connect-src 'self') refuses fetch() of blob: URLs —
+    // consumers read these Blobs directly. Survives the swap like the error sink.
+    window.__resourceBlobs = resourceBlobs;
+
+    setStatus('Rendering...');
+    // Page uuids have no blob here — they ride inside about:blank#<uuid>
+    // frame markers the pass below resolves after the swap.
+    for (const uuid of uuids) {
+      if (pageSet.has(uuid)) continue;
+      template = template.split(uuid).join(blobUrls[uuid]);
+    }
+
+    // Strip integrity + crossorigin — blob URLs from a file:// document inherit
+    // a null origin, so crossorigin forces a CORS fetch that SRI then rejects.
+    // The manifest bytes are ours; SRI protects against CDN compromise, not this.
+    template = template.replace(/\s+integrity="[^"]*"/gi, '').replace(/\s+crossorigin="[^"]*"/gi, '');
+
+    const resourceScript = '<script>window.__resources = ' +
+      JSON.stringify(resourceMap).replace(/<\//g, '<\\/') +
+      ';</' + 'script>';
+    // Inject after <head> so the DOCTYPE stays first; prepending the script
+    // would push the parser into quirks mode. DOMParser always emits a <head>
+    // (synthesizing one if the source HTML omitted it) but may carry
+    // attributes through, so match the full opening tag. slice() rather than
+    // replace() keeps us clear of $-pattern substitution in resourceScript.
+    const headOpen = template.match(/<head[^>]*>/i);
+    if (headOpen) {
+      const i = headOpen.index + headOpen[0].length;
+      template = template.slice(0, i) + resourceScript + template.slice(i);
+    }
+
+    // Parse the template and swap the root element. Scripts inserted via
+    // DOMParser/replaceWith are inert per spec — re-create each with
+    // createElement so they execute, awaiting onload for src scripts to
+    // preserve ordering (React before ReactDOM before Babel before text/babel).
+    const doc = new DOMParser().parseFromString(template, 'text/html');
+    document.documentElement.replaceWith(doc.documentElement);
+
+    // Resolve page-frame markers: mint this document's own blob for each
+    // framed page — from local text when this is the root, otherwise by
+    // asking the direct parent over the relay protocol above. An
+    // unanswered request leaves the frame on about:blank, the same
+    // degraded state as a refused embed.
+    {
+      const MARKER = /^about:blank#([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(#.*)?$/;
+      const needed = [];
+      for (const el of Array.from(document.querySelectorAll('iframe'))) {
+        const m = MARKER.exec(el.getAttribute('src') || '');
+        if (!m) continue;
+        const text = pageTexts[m[1]];
+        if (typeof text === 'string') {
+          mountPage(el, m[2] || '', text);
+        } else if (window.parent !== window && !isPageRoot) {
+          const had = pendingFrames[m[1]];
+          (pendingFrames[m[1]] = had || []).push({ el: el, frag: m[2] || '' });
+          if (!had) needed.push(m[1]);
+        }
+      }
+      for (const uuid of needed) {
+        window.parent.postMessage({ __bundler_need: uuid }, OWN_TARGET);
+      }
+    }
+
+    const dead = Array.from(document.scripts);
+    for (const old of dead) {
+      const s = document.createElement('script');
+      for (const a of old.attributes) s.setAttribute(a.name, a.value);
+      s.textContent = old.textContent;
+      // text/babel scripts with a src: read and inline. transformScriptTags
+      // does XHR against the src, but blob:null/ from a file:// origin is
+      // silently dropped. Inlining makes it a plain inline babel script,
+      // which transformScriptTags handles unconditionally.
+      if ((s.type === 'text/babel' || s.type === 'text/jsx') && s.src) {
+        const pre = resourceBlobs[s.src.split('#')[0]];
+        s.textContent = pre ? await pre.text() : await (await fetch(s.src)).text();
+        s.removeAttribute('src');
+      }
+      const p = s.src ? new Promise(function(r) { s.onload = s.onerror = r; }) : null;
+      old.replaceWith(s);
+      if (p) await p;
+    }
+    // Babel standalone auto-transforms type=text/babel on DOMContentLoaded,
+    // which fired before we swapped the document. Trigger manually if present.
+    if (window.Babel && typeof window.Babel.transformScriptTags === 'function') {
+      window.Babel.transformScriptTags();
+    }
+  } catch (err) {
+    setStatus('Error unpacking: ' + err.message);
+    console.error('Bundle unpack error:', err);
+  }
+});
+
+  </script>
+
+  <script type="__bundler/manifest">{"8193565c-c163-467d-8bc7-238ec6a79b4d":{"mime":"text/javascript","compressed":true,"parts":["/assets/8193565c-c163-467d-8bc7-238ec6a79b4d-0.bin"]},"69a6b24f-3ce6-436d-9ffd-7bf33fbe2c12":{"mime":"text/html","compressed":true,"parts":["/assets/69a6b24f-3ce6-436d-9ffd-7bf33fbe2c12-0.bin"]},"b1dc776d-d35a-4379-9854-47e328b9b3ce":{"mime":"text/css","compressed":true,"parts":["/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-0.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-1.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-2.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-3.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-4.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-5.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-6.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-7.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-8.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-9.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-10.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-11.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-12.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-13.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-14.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-15.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-16.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-17.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-18.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-19.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-20.bin","/assets/b1dc776d-d35a-4379-9854-47e328b9b3ce-21.bin"]},"1036ed9f-3e3e-4b9a-9776-2114ce3b65b3":{"mime":"text/html","compressed":true,"parts":["/assets/1036ed9f-3e3e-4b9a-9776-2114ce3b65b3-0.bin"]},"1eb25b15-14fd-4762-9570-11e550f4e392":{"mime":"text/html","compressed":true,"parts":["/assets/1eb25b15-14fd-4762-9570-11e550f4e392-0.bin"]},"b95edfd3-1efd-4272-86e9-849a8d960e14":{"mime":"text/html","compressed":true,"parts":["/assets/b95edfd3-1efd-4272-86e9-849a8d960e14-0.bin"]},"6df2b439-670e-4bce-ae1f-656541523367":{"mime":"text/html","compressed":true,"parts":["/assets/6df2b439-670e-4bce-ae1f-656541523367-0.bin"]},"504b1907-3d9b-4f7a-a77c-bee0b12f452f":{"mime":"text/html","compressed":true,"parts":["/assets/504b1907-3d9b-4f7a-a77c-bee0b12f452f-0.bin"]},"23bf4ac2-71a9-4e57-b5e9-fb5c3df0740e":{"mime":"text/html","compressed":true,"parts":["/assets/23bf4ac2-71a9-4e57-b5e9-fb5c3df0740e-0.bin"]},"00e04bdd-0262-4225-aab5-084a7e5d63b9":{"mime":"text/javascript","compressed":true,"parts":["/assets/00e04bdd-0262-4225-aab5-084a7e5d63b9-0.bin"]},"26bc0067-6471-4d65-93ac-d6f6360add71":{"mime":"text/javascript","compressed":true,"parts":["/assets/26bc0067-6471-4d65-93ac-d6f6360add71-0.bin","/assets/26bc0067-6471-4d65-93ac-d6f6360add71-1.bin"]},"570e0863-c3b3-4d18-91c2-00a91f39bf26":{"mime":"font/woff2","compressed":false,"parts":["/assets/570e0863-c3b3-4d18-91c2-00a91f39bf26-0.bin"]},"3eab49ec-2b1c-4773-9bc2-f90de4ac48e3":{"mime":"font/woff2","compressed":false,"parts":["/assets/3eab49ec-2b1c-4773-9bc2-f90de4ac48e3-0.bin"]},"5157e57e-5aa1-425e-9025-cef4b4f19b14":{"mime":"font/woff2","compressed":false,"parts":["/assets/5157e57e-5aa1-425e-9025-cef4b4f19b14-0.bin"]},"8eba4765-e070-4821-b4ca-d43c99deab1a":{"mime":"font/woff2","compressed":false,"parts":["/assets/8eba4765-e070-4821-b4ca-d43c99deab1a-0.bin"]},"c09bea9e-e1da-4a3b-bb21-5fc66e6fb114":{"mime":"font/woff2","compressed":false,"parts":["/assets/c09bea9e-e1da-4a3b-bb21-5fc66e6fb114-0.bin","/assets/c09bea9e-e1da-4a3b-bb21-5fc66e6fb114-1.bin"]},"388ee5c9-a2e5-4e0e-903a-7524c80ed98b":{"mime":"font/woff2","compressed":false,"parts":["/assets/388ee5c9-a2e5-4e0e-903a-7524c80ed98b-0.bin","/assets/388ee5c9-a2e5-4e0e-903a-7524c80ed98b-1.bin","/assets/388ee5c9-a2e5-4e0e-903a-7524c80ed98b-2.bin","/assets/388ee5c9-a2e5-4e0e-903a-7524c80ed98b-3.bin"]},"535aeff3-ff06-4e38-ac39-1e922dc79f24":{"mime":"font/woff2","compressed":false,"parts":["/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-0.bin","/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-1.bin","/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-2.bin","/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-3.bin","/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-4.bin","/assets/535aeff3-ff06-4e38-ac39-1e922dc79f24-5.bin"]}}</script>
+
+  <script type="__bundler/ext_resources">
+[{"id":"./MewLink%20Home%20v6.dc.html","uuid":"69a6b24f-3ce6-436d-9ffd-7bf33fbe2c12"},{"id":"https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap","uuid":"b1dc776d-d35a-4379-9854-47e328b9b3ce"},{"id":"./MewLink%20App%20v4%20App.dc.html","uuid":"1036ed9f-3e3e-4b9a-9776-2114ce3b65b3"},{"id":"./CareUpdate%20App.dc.html","uuid":"1eb25b15-14fd-4762-9570-11e550f4e392"},{"id":"./PhotoUpload%20App.dc.html","uuid":"b95edfd3-1efd-4272-86e9-849a8d960e14"},{"id":"./AddCat%20App.dc.html","uuid":"6df2b439-670e-4bce-ae1f-656541523367"},{"id":"./MemoryEditor%20App.dc.html","uuid":"504b1907-3d9b-4f7a-a77c-bee0b12f452f"},{"id":"./Mew.dc.html","uuid":"23bf4ac2-71a9-4e57-b5e9-fb5c3df0740e"},{"id":"https://unpkg.com/react@18.3.1/umd/react.production.min.js","uuid":"00e04bdd-0262-4225-aab5-084a7e5d63b9"},{"id":"https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js","uuid":"26bc0067-6471-4d65-93ac-d6f6360add71"}]
+  </script>
+
+  <script type="__bundler/page_order">
+[]
+  </script>
+
+  <script type="__bundler/template">"<!DOCTYPE html>\n<html><head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<link rel=\"stylesheet\" href=\"/feature-update.css\">\n<script src=\"/caregiver-model.js\"><\/script>\n<script src=\"/caregiver-ui.js\"><\/script>\n<script src=\"8193565c-c163-467d-8bc7-238ec6a79b4d\"><\/script>\n<\/head>\n<body>\n<x-dc>\n<helmet><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=1\"><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><style>/* latin-ext */\n@font-face {\n  font-family: 'Atkinson Hyperlegible';\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"570e0863-c3b3-4d18-91c2-00a91f39bf26\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Atkinson Hyperlegible';\n  font-style: normal;\n  font-weight: 400;\n  font-display: swap;\n  src: url(\"3eab49ec-2b1c-4773-9bc2-f90de4ac48e3\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Atkinson Hyperlegible';\n  font-style: normal;\n  font-weight: 700;\n  font-display: swap;\n  src: url(\"5157e57e-5aa1-425e-9025-cef4b4f19b14\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Atkinson Hyperlegible';\n  font-style: normal;\n  font-weight: 700;\n  font-display: swap;\n  src: url(\"8eba4765-e070-4821-b4ca-d43c99deab1a\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n/* vietnamese */\n@font-face {\n  font-family: 'Newsreader';\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"c09bea9e-e1da-4a3b-bb21-5fc66e6fb114\") format('woff2');\n  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Newsreader';\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"388ee5c9-a2e5-4e0e-903a-7524c80ed98b\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Newsreader';\n  font-style: normal;\n  font-weight: 500;\n  font-display: swap;\n  src: url(\"535aeff3-ff06-4e38-ac39-1e922dc79f24\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n/* vietnamese */\n@font-face {\n  font-family: 'Newsreader';\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"c09bea9e-e1da-4a3b-bb21-5fc66e6fb114\") format('woff2');\n  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;\n}\n/* latin-ext */\n@font-face {\n  font-family: 'Newsreader';\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"388ee5c9-a2e5-4e0e-903a-7524c80ed98b\") format('woff2');\n  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;\n}\n/* latin */\n@font-face {\n  font-family: 'Newsreader';\n  font-style: normal;\n  font-weight: 600;\n  font-display: swap;\n  src: url(\"535aeff3-ff06-4e38-ac39-1e922dc79f24\") format('woff2');\n  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;\n}\n<\/style><style>html,body{margin:0;background:#EDE6DA;overscroll-behavior:none}a{color:#9A6A12}a:hover{color:#33261D}<\/style><\/helmet>\n\n<div style=\"min-height:100dvh;display:flex;justify-content:center;font-family:'Atkinson Hyperlegible',system-ui,sans-serif\">\n  <div style=\"position:relative;width:100vw;max-width:440px;height:100dvh;overflow:hidden;background:#FAF6EF\">\n    <sc-if value=\"{{ isHome }}\" hint-placeholder-val=\"{{ true }}\"><dc-import name=\"MewLink Home v6\" only=\"{{ route }}\" hint-size=\"100%,100%\"><\/dc-import><\/sc-if>\n    <sc-if value=\"{{ isCat }}\" hint-placeholder-val=\"{{ false }}\"><mew-cat-profile cat-id=\"{{ catId }}\"><\/mew-cat-profile><\/sc-if>\n    <sc-if value=\"{{ isApp }}\" hint-placeholder-val=\"{{ false }}\"><dc-import name=\"MewLink App v4 App\" only=\"{{ route }}\" hint-size=\"100%,100%\"><\/dc-import><\/sc-if>\n    <sc-if value=\"{{ isCare }}\" hint-placeholder-val=\"{{ false }}\"><dc-import name=\"CareUpdate App\" cat-id=\"{{ careCatId }}\" hint-size=\"100%,100%\"><\/dc-import><\/sc-if>\n    <sc-if value=\"{{ isUpload }}\" hint-placeholder-val=\"{{ false }}\"><dc-import name=\"PhotoUpload App\" hint-size=\"100%,100%\"><\/dc-import><\/sc-if>\n    <sc-if value=\"{{ isAddCat }}\" hint-placeholder-val=\"{{ false }}\"><dc-import name=\"AddCat App\" hint-size=\"100%,100%\"><\/dc-import><\/sc-if>\n    <sc-if value=\"{{ isMemory }}\" hint-placeholder-val=\"{{ false }}\"><dc-import name=\"MemoryEditor App\" hint-size=\"100%,100%\"><\/dc-import><\/sc-if>\n    <sc-if value=\"{{ showTabs }}\" hint-placeholder-val=\"{{ false }}\">\n      <div data-mew-navigation style=\"position:absolute;left:0;right:0;bottom:0;z-index:20;height:84px;background:#FAF6EF;border-top:1px solid #EFE8DC;padding:8px 10px 0;display:grid;grid-template-columns:repeat(4,1fr)\">\n        <sc-for list=\"{{ tabs }}\" as=\"t\" hint-placeholder-count=\"4\">\n          <a href=\"{{ t.href }}\" style=\"display:flex;flex-direction:column;align-items:center;gap:3px;color:{{ t.c }};text-decoration:none\"><span style=\"width:56px;height:30px;border-radius:15px;background:{{ t.pill }};display:flex;align-items:center;justify-content:center\">{{ t.icon }}<\/span><span style=\"font-size:12px;font-weight:{{ t.w }}\">{{ t.label }}<\/span><\/a>\n        <\/sc-for>\n      <\/div>\n    <\/sc-if>\n  <\/div>\n<\/div>\n<\/x-dc>\n<script type=\"text/x-dc\" data-dc-script=\"\">\nclass Component extends DCLogic {\n  state = { route: this.read() };\n  read() { return (location.hash || '').slice(1) || 'welcome'; }\n  componentDidMount() { this.h = () => this.setState({ route: this.read() }); addEventListener('hashchange', this.h); }\n  componentWillUnmount() { removeEventListener('hashchange', this.h); }\n  renderVals() {\n    const home = ['welcome', 'join', 'done', 'today', 'community', 'chat', 'me'];\n    const app = ['cats', 'tiger', 'diary', 'review', 'thread', 'askmew'];\n    let r = this.state.route; const catId = r.startsWith('cat/') ? decodeURIComponent(r.slice(4)) : ''; if (!catId && ![...home, ...app, 'careupdate', 'upload', 'memory', 'addcat'].includes(r)) r = 'welcome';\n    const e = React.createElement;\n    const P = (c, d) => d.map((x, i) => x.circle ? e('circle', { key: i, cx: x.circle[0], cy: x.circle[1], r: x.circle[2], fill: x.fill ? c : 'none', stroke: x.fill ? 'none' : c, strokeWidth: 1.9 }) : e('path', { key: i, d: x.d, fill: x.fill ? c : 'none', stroke: x.fill ? 'none' : c, strokeWidth: 1.9, strokeLinecap: 'round', strokeLinejoin: 'round' }));\n    const icons = {\n      today: [{ circle: [12, 12, 4] }, { d: 'M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6' }],\n      cats: [{ d: 'M5 10V4.5l4 3h6l4-3V10a7 7 0 0 1-14 0z' }, { circle: [9.5, 11.5, 1.1], fill: 1 }, { circle: [14.5, 11.5, 1.1], fill: 1 }],\n      community: [{ d: 'M4.5 5h11A2.5 2.5 0 0 1 18 7.5v5a2.5 2.5 0 0 1-2.5 2.5H10l-4 3.5V15H4.5A2.5 2.5 0 0 1 2 12.5v-5A2.5 2.5 0 0 1 4.5 5z' }, { d: 'M20.5 9.5A2 2 0 0 1 22 11.4v4.1a2 2 0 0 1-2 2h-.5V20l-3-2.5' }],\n      askmew: [{ d: 'M11 3l2.1 6.2L19.5 11l-6.4 2L11 19.5 8.9 13 2.5 11l6.4-1.8z' }, { d: 'M19 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z', fill: 1 }],\n    };\n    const labels = { today: 'Today', cats: 'Cats', community: 'Community', askmew: 'Ask Mew' };\n    const tabs = Object.keys(icons).map(k => { const on = k === r, c = on ? '#2A1F18' : '#8F7E6F';\n      return { href: '#' + k, label: labels[k], c, w: on ? 700 : 400, pill: on ? '#FBE7BA' : 'transparent', icon: e('svg', { width: 24, height: 24, viewBox: '0 0 24 24' }, P(c, icons[k])) }; });\n    return { isCat: !!catId, catId, careCatId: sessionStorage.getItem('mewlink-care-target') || 'tiger', tabs, showTabs: ['today', 'cats', 'community', 'askmew'].includes(r), route: r, isHome: home.includes(r), isApp: app.includes(r), isCare: r === 'careupdate', isUpload: r === 'upload', isMemory: r === 'memory', isAddCat: r === 'addcat' };\n  }\n}\n<\/script>\n\n\n<\/body><\/html>"</script>
+</body>
+</html>
