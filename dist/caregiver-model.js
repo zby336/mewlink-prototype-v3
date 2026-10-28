@@ -84,7 +84,7 @@
   }
   function allRecords() {
     const demo=initDemo().records, saved=read(KEYS.records,[]);
-    return [...demo,...(Array.isArray(saved)?saved:[])];
+    return [...demo,...(Array.isArray(saved)?saved:[]),...(root.MewLinkData?.savedCareRecords()||[])];
   }
   function preferences() {
     let p=read(KEYS.prefs,null);

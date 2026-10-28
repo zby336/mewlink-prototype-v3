@@ -1,0 +1,29 @@
+/* Minimal extensions to the existing mobile prototype. */
+mew-latest-observation,mew-next-care,mew-observation-log,mew-social-feed{display:block;flex-shrink:0}
+mew-next-care>button{width:100%}
+.mew-care-flow *{box-sizing:border-box}
+.mew-care-flow .care-step{overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(24px + env(safe-area-inset-bottom,0px))!important}
+.care-step>*{flex-shrink:0}
+.care-step>button:last-child,.care-actions{position:sticky;bottom:0;z-index:1}
+.care-actions{padding:8px 0;background:#FBF8F1}
+.care-field{font-size:14px;font-weight:700;display:flex;flex-direction:column;gap:6px}
+.care-field select{width:100%;min-height:46px;border:1px solid #E0D5C3;border-radius:14px;padding:8px 12px;background:#fff;font:400 16px 'Atkinson Hyperlegible',sans-serif;color:#33261D}
+.care-meta,.care-draft-label{font-size:12px;line-height:1.45;color:#776455;margin:0}
+.care-draft-label{padding:4px 22px 10px;flex:none}
+.care-error{font-size:14px;color:#9A4A26;margin:0;padding:6px 22px;flex:none}
+.care-confirm{position:absolute;inset:0;z-index:10;background:rgba(51,38,29,.28);display:flex;flex-direction:column;justify-content:flex-end}
+.care-confirm>div:last-child,.care-confirm-panel{max-height:calc(100dvh - 12px);overflow-y:auto;overscroll-behavior:contain;padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))!important}
+.care-confirm-panel{border-radius:28px 28px 0 0;background:#FBF8F1;padding:20px 22px;display:flex;flex-direction:column;gap:14px}
+.care-confirm-panel h2{font:500 24px Newsreader,serif;margin:0}
+.care-confirm-panel p{font-size:15px;line-height:1.45;margin:0}
+.care-confirm-panel textarea{width:100%;padding:12px;border:1px solid #E0D5C3;border-radius:14px;font:16px/1.45 'Atkinson Hyperlegible',sans-serif}
+.care-confirm-actions{display:flex;gap:8px}
+.care-confirm-actions button{flex:1;min-height:50px;border:0;border-radius:16px;background:#E3AE45;font:700 16px 'Atkinson Hyperlegible',sans-serif;color:#33261D}
+#askmew>div>div:nth-child(2){overflow-y:auto;overscroll-behavior:contain}
+#askmew details p{white-space:pre-wrap;margin:5px 0}
+#askmew [style-extra]{white-space:pre-wrap}
+button:disabled{cursor:default}
+
+.mew-profile-identity{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mew-identity-labels{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;min-width:0}
+.mew-profile-identity mew-caregivers[compact]{margin:0;flex:none;max-width:55%}

@@ -2,11 +2,21 @@
 
 Public prototype: https://mewlink-design-copy.vercel.app/#today
 
-Figma working copy: https://www.figma.com/design/mjKHxlL2JUoyMlluQcqZls?node-id=2018-66
+Repository: https://github.com/zby336/mewlink-prototype-v3
+
+Figma working copy: https://www.figma.com/design/mjKHxlL2JUoyMlluQcqZls
+
+The Figma file currently contains the earlier editable designs. Synchronization with the approved website is pending: the account's MCP editing quota is exhausted and its existing HTML import plugin fails to start. Do not treat the existing Figma file as the latest website design.
 
 This repository belongs to the independent working version. It does not deploy the earlier, different `mewlink` project or the original Netlify site.
 
-## Feature Update 01
+## Approved website release — 2026-10-28
+
+This source and committed `dist/` match all 56 public files in the user-approved Vercel release `dpl_7Ub1ipNbsmFuRNfouwpsciMaJ65g`. GitHub synchronization was explicitly authorized after website acceptance. The existing repository was renamed from `mewlink-design-copy` to `mewlink-prototype-v3` (repository ID 1436038417).
+
+Feature & UX Update 02 adds shared local care records, sourced rule-based Ask Mew retrieval and next-care suggestions, a Community social feed, and final-save-only feeding through the existing CareUpdate flow. The final UI polish aligns Cat profile with Like/Comment, places the caregiver stack on the right below the cat photo, removes visible demo badges and suppresses the duplicate stock observation disclaimer. See docs/approved-release.md for the accepted release and docs/feature-update-02.md for the earlier validation checkpoint.
+
+## Feature Update 01 retained
 
 - Compact caregiver avatar stacks on every available cat profile, using each person's latest valid care record and Singapore calendar dates.
 - Four fading bands: 0–7 days 98%, 8–14 days 76%, 15–21 days 54%, 22–30 days 32%. More than 30 days is excluded. Counts are deduplicated; sightings, observations alone and offers to help are excluded.
@@ -19,11 +29,11 @@ This repository belongs to the independent working version. It does not deploy t
 
 All care records are demo data or locally saved prototype actions. There is no real account system, database, verified camera capture or cross-user privacy enforcement. Initials avatars match the existing circle's style; the four named demo caregivers are Aisha, Ravi, Wei and Mei Ling.
 
-The demo fixture is timestamped once on the first visit and stored in the browser. It ages naturally instead of resetting its dates on every render. New feeding submissions append a structured `feeding` record and preserve the original local feeding/feed-post behavior.
+The demo fixture is timestamped once on the first visit and stored in the browser. It ages naturally instead of resetting its dates on every render. Only final confirmation appends a structured care record. Another cat requires an explicit selection; Not sure stores an unmatched record and does not change a cat's feeding state. Saving a note never publishes a feed post; sharing is a separate explicit action.
 
-Hiding one or all avatars changes only this viewer's display settings. The own-identity switch simulates privacy only on this browser. The interface explicitly labels these limits.
+Hiding one or all avatars changes only this viewer's display settings. The own-identity switch simulates privacy only on this browser. Visible demo badges were removed at the user's request; the data and privacy boundaries remain documented here.
 
-No new AI API or backend was added. Existing Ask Mew and care-update mock flows are preserved.
+No LLM endpoint, vector database, AI API or backend is configured. Ask Mew and next-care suggestions use deterministic local record retrieval and curated guidance with dated sources. The draft action groups the user's own sentences. None of these are a live generative AI service.
 
 ## Work locally
 
@@ -41,6 +51,9 @@ The local preview listens at http://127.0.0.1:4173.
 - `src/*.dc.html`: readable original screen logic and templates.
 - `public/caregiver-model.js`: recency, filtering, deduplication, stable order and local persistence.
 - `public/caregiver-ui.js`: avatar/details components and reusable profiles.
+- `public/care-knowledge.js`: shared saved-care store, drafts, identity confirmation, sharing, local retrieval and suggestions.
+- `public/knowledge-ui.js`: observation cards/logs, sourced suggestions and Community feed.
+- `public/update02.css`: focused Feature Update 02 styles.
 - `public/feature-update.css`: feeding-sheet layout.
 - `scripts/build.mjs`: builds the portable original runtime and assets into `dist/`.
 - `dist/`: committed static deployment output.
@@ -49,7 +62,7 @@ The original bundled runtime, fonts, React vendor files and cat photos are prese
 
 ## Validation
 
-10 model tests cover Singapore midnight, boundary days, invalid/future records, deduplication, Seen exclusion, all fade bands, identity omission, display hiding, stable order, overflow, expiry and persistence.
+27 automated tests cover caregiver recency/privacy, Singapore dates, drafts, identity selection, unmatched notes, final-save-only feeding, duplicate saves, sharing separation, knowledge retrieval, sources and failure to persist. All passed again when synchronizing this approved release to GitHub.
 
 Browser tests completed the Tiger feeding flow at 360×640, 375×667, 390×844 and 1280×720. A 360×420 case also confirmed inner scrolling with an unobstructed footer. Existing Today, Cats, Community, Ask Mew and care-entry flows are checked separately.
 

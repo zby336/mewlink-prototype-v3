@@ -106,7 +106,7 @@
   <div data-screen-label="01 Today" style="height:100%;display:flex;flex-direction:column">
     <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:22px;padding:14px 0 24px">
       <div style="display:flex;justify-content:space-between;align-items:center;padding:0 20px">
-        <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 30px/1 Newsreader,serif">MewLink</span><span style="font-size:14px;color:#7D6B5C">Tue 21 Oct · Good morning, Mei Ling</span></div>
+        <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 30px/1 Newsreader,serif">MewLink</span><span style="font-size:14px;color:#7D6B5C">{{ currentGreeting }}</span></div>
         <div style="display:flex;gap:8px;align-items:center">
           <a href="#addcat" aria-label="Add a cat" style="width:44px;height:44px;border-radius:50%;border:1.5px solid #E2D7C6;display:flex;align-items:center;justify-content:center;font-size:24px;color:#2A1F18">+</a>
           <a href="#me" aria-label="My profile" style="width:44px;height:44px;border-radius:50%;background:#FBE7BA;color:#7A5410;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">ML</a>
@@ -187,24 +187,6 @@
         </sc-if>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:6px">
-        <div style="padding:0 20px;display:flex;justify-content:space-between;align-items:center;gap:10px"><span style="font:500 24px Newsreader,serif">From the circle</span><a href="#careupdate" style="height:40px;padding:0 14px 0 10px;border-radius:20px;border:1.5px solid #E2D7C6;display:flex;align-items:center;gap:6px;color:#2A1F18;font-size:14px;font-weight:700;text-decoration:none"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M4 8h3l1.5-2h7L17 8h3v11H4z" fill="none" stroke="#2A1F18" stroke-width="1.9" stroke-linejoin="round"></path><circle cx="12" cy="13" r="3.2" fill="none" stroke="#2A1F18" stroke-width="1.9"></circle></svg>Share update</a></div>
-        <sc-for list="{{ posts }}" as="p" hint-placeholder-count="2">
-          <div style="display:flex;flex-direction:column;gap:10px;padding:12px 0 16px;border-bottom:1px solid #EFE8DC">
-            <div style="display:flex;align-items:center;gap:10px;padding:0 20px">
-              <span style="width:36px;height:36px;border-radius:50%;background:#F1EADF;color:#5E4D40;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">{{ p.av }}</span>
-              <div style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:15px"><b>{{ p.who }}</b> fed <b>{{ p.cat }}</b></span><span style="font-size:13px;color:#7D6B5C">{{ p.time }} · {{ p.zone }}</span></div>
-            </div>
-            <div role="img" aria-label="{{ p.cat }}" style="margin:0 20px;aspect-ratio:1/1;border-radius:20px;background:#EFE7D9 center/cover url({{ p.img }});position:relative">
-              <span style="position:absolute;left:12px;bottom:12px;display:flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:rgba(251,248,241,.94);font-size:13px;font-weight:700;color:#4A6140"><svg width="14" height="14" viewBox="0 0 24 24"><path d="M4 12.5l5 5L20 6.5" fill="none" stroke="#4A6140" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>Photo taken in app · {{ p.stamp }}</span>
-            </div>
-            <div style="display:flex;align-items:center;gap:14px;padding:0 20px">
-              <button onClick="{{ p.like }}" aria-label="Like" style="height:44px;padding:0 4px;border:none;background:transparent;display:flex;align-items:center;gap:6px;cursor:pointer;font:700 15px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" fill="{{ p.heart }}" stroke="#9A4A26" stroke-width="2" stroke-linejoin="round"></path></svg>{{ p.likes }}</button>
-              <span style="flex:1;font-size:15px;line-height:1.4;color:#2A1F18;text-wrap:pretty">{{ p.caption }}</span>
-            </div>
-          </div>
-        </sc-for>
-      </div>
     </div>
 
     <div data-mew-navigation style="height:84px;flex:none;background:rgba(250,246,239,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid #EFE8DC;padding:8px 10px 0;display:grid;grid-template-columns:repeat(4,1fr)">
@@ -224,13 +206,12 @@
           </header>
           <div class="mew-feed-scroll">
             <button class="mew-feed-photo" onClick="{{ takeShot }}" style="height:220px;border-radius:20px;border:2px dashed {{ shotBd }};background:{{ shotBg }};display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;position:relative;overflow:hidden">
-            <sc-if value="{{ noShot }}" hint-placeholder-val="{{ true }}"><svg width="36" height="36" viewBox="0 0 24 24"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z" fill="none" stroke="#7A4E33" stroke-width="1.8" stroke-linejoin="round"></path><circle cx="12" cy="13.5" r="3.5" fill="none" stroke="#7A4E33" stroke-width="1.8"></circle></svg><span>Take a photo of {{ card.name }} eating</span><span style="font-size:14px;font-weight:400;color:#7D6B5C">Camera only, no gallery uploads</span></sc-if>
+            <sc-if value="{{ noShot }}" hint-placeholder-val="{{ true }}"><svg width="36" height="36" viewBox="0 0 24 24"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z" fill="none" stroke="#7A4E33" stroke-width="1.8" stroke-linejoin="round"></path><circle cx="12" cy="13.5" r="3.5" fill="none" stroke="#7A4E33" stroke-width="1.8"></circle></svg><span>Take a photo of {{ card.name }} eating</span></sc-if>
             <sc-if value="{{ shot }}" hint-placeholder-val="{{ false }}"><span style="position:absolute;left:12px;bottom:12px;padding:6px 10px;border-radius:999px;background:rgba(251,248,241,.94);font-size:13px;color:#4A6140">Taken now · {{ card.zone }}</span></sc-if>
           </button>
-            <span style="font-size:14px;line-height:1.45;color:#7D6B5C;text-wrap:pretty">The app adds the time and area to the photo, so the circle knows the feeding really happened.</span>
-            <span style="font-size:12px;color:#7D6B5C">Prototype photo capture · demo data</span>
+            <span style="font-size:14px;line-height:1.45;color:#7D6B5C;text-wrap:pretty">The time, area and photo stay with your draft. Feeding is recorded only after you confirm the cat and save.</span>
           </div>
-          <footer class="mew-feed-footer"><button onClick="{{ confirmFed }}" disabled="{{ noShot }}" style="height:56px;border:none;border-radius:28px;background:{{ confirmBg }};color:{{ confirmFg }};font:700 18px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Post to the circle</button></footer>
+          <footer class="mew-feed-footer"><button onClick="{{ confirmFed }}" disabled="{{ noShot }}" style="height:56px;border:none;border-radius:28px;background:{{ confirmBg }};color:{{ confirmFg }};font:700 18px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Continue to care update</button></footer>
         </section>
       </div>
     </sc-if>
@@ -244,6 +225,8 @@
         <div style="display:flex;flex-direction:column;gap:2px"><span style="font:500 30px/1.1 Newsreader,serif">Community</span><span style="font-size:14px;color:#7D6B5C">Toa Payoh circle · 18 members</span></div>
         <a href="#me" aria-label="My profile" style="width:44px;height:44px;border-radius:50%;background:#FBE7BA;color:#7A5410;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">ML</a>
       </div>
+      <mew-social-feed></mew-social-feed>
+      <h2 style="padding:12px 20px 0;margin:0;font:500 24px Newsreader,serif">Group Chats</h2>
       <div style="display:flex;flex-direction:column">
         <sc-for list="{{ channels }}" as="ch" hint-placeholder-count="5">
           <button onClick="{{ ch.open }}" style="display:flex;gap:14px;align-items:center;padding:12px 20px;border:none;background:transparent;text-align:left;cursor:pointer;font-family:'Atkinson Hyperlegible',sans-serif;color:#2A1F18" style-active="background:#F3ECE0">
@@ -334,8 +317,8 @@
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
   state = { code: '', mode: 'invite', a: this.loadA(), help: {}, agree: false, idx: 0, dx: 0, drag: false, fed: this.loadFed(), review: false, proof: null, shot: false, why: false, liked: {}, mine: [] };
-  componentDidMount() { this.h = () => this.forceUpdate(); addEventListener('hashchange', this.h); this.startCollage(); }
-  componentWillUnmount() { removeEventListener('hashchange', this.h); clearInterval(this.tm); window.MewLinkCare.syncFeedingModal(false); }
+  componentDidMount() { this.h = () => this.forceUpdate(); for(const ev of ['hashchange','mewlink-data-changed','storage','focus'])addEventListener(ev,this.h); this.dataTimer=setInterval(this.h,60000); this.startCollage(); }
+  componentWillUnmount() { for(const ev of ['hashchange','mewlink-data-changed','storage','focus'])removeEventListener(ev,this.h); clearInterval(this.dataTimer); clearInterval(this.tm); window.MewLinkCare.syncFeedingModal(false); }
   route() {
     const ok = ['welcome', 'join', 'done', 'today', 'community', 'chat', 'me'];
     const h = (location.hash || '').slice(1);
@@ -345,7 +328,7 @@ class Component extends DCLogic {
   img(id, w, h) { return 'https://images.unsplash.com/' + id + '?w=' + w + '&h=' + h + '&fit=crop&crop=entropy&q=72&auto=format'; }
   deck() {
     return [
-      { key: 'tiger', name: 'Tiger', zone: 'Zone A', pid: 'photo-1650535812141-04d564530b17', why: 'You’ve fed him 6 times', tnr: 'TNR done', tnrOk: true, status: 'Not fed yet today', statusBg: '#FBE7BA', note: 'Aisha saw a small cut near one ear yesterday. A clear photo of it would help.' },
+      { key: 'tiger', name: 'Tiger', zone: 'Zone A', pid: 'photo-1650535812141-04d564530b17', why: 'You’ve fed him 6 times', tnr: 'TNR done', tnrOk: true, status: 'No feeding record today', statusBg: '#FBE7BA', note: 'Aisha saw a small cut near one ear yesterday. A clear photo of it would help.' },
       { key: 'kopi', name: 'Kopi', zone: 'Zone B', pid: 'photo-1622015680443-cb4c5bec36b7', why: 'Seen in Zone B', tnr: 'TNR done', tnrOk: true, status: 'Ravi is away until Fri', statusBg: '#F7DDD0', note: 'Ravi usually feeds Kopi at 7pm. He asked the circle to cover while he travels.' },
       { key: 'ash', name: 'Ash', zone: 'Zone C', pid: 'photo-1557408938-0f220f49bca1', why: 'Seen in Zone C', tnr: 'TNR not yet', tnrOk: false, status: 'Not seen for 3 days', statusBg: '#EFE8DC', note: 'Didn’t come out on Wei’s last round. Look out for him.' },
       ...this.joined(),
@@ -366,11 +349,11 @@ class Component extends DCLogic {
   skip = () => this.setState(s => ({ idx: s.idx + 1, skipped: (s.skipped || 0) + 1 }));
   openProof = () => this.setState({ proof: true, shot: false });
   home() {
-    const s = this.state, deck = this.deck(), card = deck[s.idx], next = deck[s.idx + 1];
+    const s = { ...this.state, fed: this.loadFed() }, deck = this.deck(), card = deck[s.idx], next = deck[s.idx + 1];
     const fedKeys = Object.keys(s.fed);
     const stories = [...deck, ...[{ key: 'oyen', name: 'Oyen', pid: 'photo-1618222951695-cf6808375f99', pre: true, tnrOk: true }, { key: 'milo', name: 'Milo', pid: 'photo-1569847011465-f3d58771ec7f', pre: true, tnrOk: true }].filter(x => !deck.some(d => d.key === x.key))].map(c => {
-      const done = c.pre || s.fed[c.key];
-      return { name: c.name, tnrOk: c.tnrOk, tnr: c.tnrOk ? 'TNR done' : 'TNR not yet', tnrBg: c.tnrOk ? '#E2EADB' : '#F7DDD0', tnrFg: c.tnrOk ? '#3E5A36' : '#9A3F22', photo: this.img(c.pid, 160, 160), href: window.MewLinkCare.profileHref(c.key), ring: done ? '#B9CBAE' : '#EFB241', sub: done ? 'Fed' : 'Needs food', subFg: done ? '#5E7A55' : '#9A3F22' };
+      const done = s.fed[c.key];
+      return { name: c.name, tnrOk: c.tnrOk, tnr: c.tnrOk ? 'TNR done' : 'TNR not yet', tnrBg: c.tnrOk ? '#E2EADB' : '#F7DDD0', tnrFg: c.tnrOk ? '#3E5A36' : '#9A3F22', photo: this.img(c.pid, 160, 160), href: window.MewLinkCare.profileHref(c.key), ring: done ? '#B9CBAE' : '#EFB241', sub: done ? 'Fed' : 'No record today', subFg: done ? '#5E7A55' : '#9A3F22' };
     });
     const base = [
       { id: 'r', who: 'Ravi', av: 'RK', cat: 'Oyen and Milo', time: '7:40am', zone: 'Zone B', stamp: '7:40am', pid: 'photo-1581536678522-afcf3257d780', caption: 'Both ate well. Milo finished first again.', likes: 4 },
@@ -385,18 +368,18 @@ class Component extends DCLogic {
       hasCard: !!card, hasNext: !!next, deckDone: !card,
       card: { ...c, photo: this.img(c.pid, 720, 900), tnrBg: c.tnrOk ? '#E2EADB' : '#F7DDD0', tnrFg: c.tnrOk ? '#3E5A36' : '#9A3F22' },
       next: next ? { photo: this.img(next.pid, 600, 800) } : { photo: '' },
-      deckTitle: card ? (left === 1 ? '1 cat still needs food' : left + ' cats still need food') : 'Today’s round',
+      deckTitle: card ? (left === 1 ? '1 cat needs a feeding check' : left + ' cats need a feeding check') : 'Today’s round',
       deckCount: card ? (s.idx + 1) + ' of ' + deck.length : '',
       cardTf: 'translateX(' + dx + 'px) rotate(' + (dx / 18) + 'deg)', cardTr: s.drag ? 'none' : 'transform .25s ease',
       stampOp: Math.min(Math.abs(dx) / 90, 1), stampColor: dx >= 0 ? '#4A6140' : '#8C6E5A', stampText: dx >= 0 ? 'FED' : 'NOT TODAY',
       fedCta: 'I fed ' + c.name + ' ›', down: this.down, move: this.move, up: this.up, skip: this.skip, openProof: this.openProof,
-      doneNote: fedKeys.length ? 'You fed ' + fedKeys.length + (fedKeys.length === 1 ? ' cat' : ' cats') + '. Your photos are in the circle feed below.' : 'You skipped the rest. Other caregivers can still pick them up.',
+      doneNote: fedKeys.length ? 'You fed ' + fedKeys.length + (fedKeys.length === 1 ? ' cat' : ' cats') + '. Your saved records are in the cat profiles.' : 'You skipped the rest. Other caregivers can still pick them up.',
       restart: () => this.setState({ idx: 0 }),
       proofOpen: !!s.proof, closeProof: () => this.setState({ proof: null }),
       shot: s.shot, noShot: !s.shot, takeShot: () => this.setState({ shot: true }),
       shotBg: s.shot ? '#EFE7D9 center/cover url(' + this.img(c.pid, 600, 440) + ')' : '#FFFBF3', shotBd: s.shot ? 'transparent' : '#C9B79E',
       confirmBg: s.shot ? '#2A1F18' : '#EFE8DC', confirmFg: s.shot ? '#FFF8EC' : '#9A8877',
-      confirmFed: () => { if (!s.shot || !card) return; const id = 'm' + Date.now(); this.setState(q => ({ proof: null, shot: false, idx: q.idx + 1, fed: { ...q.fed, [card.key]: true }, mine: [{ id, who: 'You', av: 'ML', cat: card.name, time: 'Just now', zone: card.zone, stamp: 'just now', pid: card.pid, caption: 'Fed and checked in.', likes: 0 }, ...q.mine] })); },
+      confirmFed: () => this.continueFeeding(c),
     };
   }
   tiles = [
@@ -419,15 +402,21 @@ class Component extends DCLogic {
     return e('div', { style: { flex: 1, minHeight: 0, display: 'grid', gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1.3fr 1fr', gap: 6 } },
       tile(0, '24px 6px 6px 6px', { gridRow: '1 / span 2' }), tile(1, '6px 24px 6px 6px'), tile(2, '6px'));
   }
+  continueFeeding(target) {
+    if(!this.state.shot)return;
+    try { window.MewLinkData.beginDraft({catId:target.key,origin:'feeding',photo:this.img(target.pid,600,440),zone:target.zone,occurredAt:new Date().toISOString()});
+      sessionStorage.setItem('mewlink-care-target',target.key);this.setState({proof:null,shot:false});location.hash='careupdate';
+    } catch(error) { window.alert(error.message); }
+  }
   pagerRef = React.createRef();
   pageEls() { const el = this.pagerRef.current; return el ? [...el.querySelectorAll('[data-page]')] : []; }
   goTo(i) { const el = this.pagerRef.current, ps = this.pageEls(); if (!el || !ps[i]) return; el.scrollTo({ left: el.scrollLeft + ps[i].getBoundingClientRect().left - el.getBoundingClientRect().left - 20, behavior: 'smooth' }); }
   pager() {
-    const s = this.state, deck = this.deck(), page = s.page || 0;
+    const s = { ...this.state, fed: this.loadFed() }, deck = this.deck(), page = s.page || 0;
     const target = deck.find(d => d.key === s.proofKey) || deck[page] || deck[0];
     const left = deck.filter(d => !s.fed[d.key]).length;
     const pages = deck.map(d => { const fed = !!s.fed[d.key]; return { ...d, photo: this.img(d.pid, 720, 900), tnrBg: d.tnrOk ? '#E2EADB' : '#F7DDD0', tnrFg: d.tnrOk ? '#3E5A36' : '#9A3F22',
-      statusText: fed ? 'Fed by you just now' : d.status, statusBg: fed ? '#E2EADB' : d.statusBg,
+      statusText: fed ? 'Feeding recorded today' : d.status, statusBg: fed ? '#E2EADB' : d.statusBg,
       btnLabel: fed ? '✓ Fed today' : 'I fed ' + d.name, btnBg: fed ? '#E2EADB' : '#2A1F18', btnFg: fed ? '#3E5A36' : '#FFF8EC',
       feed: () => { if (!fed) this.setState({ proof: true, proofKey: d.key, shot: false }); } }; });
     return {
@@ -442,13 +431,11 @@ class Component extends DCLogic {
       myZone: s.a.zone || 'your zone',
       listText: (() => { const fb = deck.filter(d => /^You’ve fed/.test(d.why)).length, j = deck.filter(d => d.why === 'You joined today').length, seen = deck.length - fb - j;
         return [fb && fb + ' you’ve fed', j && j + ' you joined', seen && seen + ' seen near ' + (s.a.zone || 'your zone')].filter(Boolean).join(' + '); })(),
-      deckTitle: left ? (left === 1 ? '1 cat still needs food' : left + ' cats still need food') : 'All cats fed today',
+      deckTitle: left ? (left === 1 ? '1 cat needs a feeding check' : left + ' cats need a feeding check') : 'All cats fed today',
       deckCount: (page + 1) + ' of ' + deck.length,
       card: { ...target, photo: this.img(target.pid, 720, 900) },
       shotBg: s.shot ? '#EFE7D9 center/cover url(' + this.img(target.pid, 600, 440) + ')' : '#FFFBF3',
-      confirmFed: () => { if (!s.shot) return; const k = target.key; const fed = { ...s.fed, [k]: new Date().toLocaleTimeString('en-SG', { hour: 'numeric', minute: '2-digit' }).replace(/\s/g, '').toLowerCase() }; this.saveFed(fed); window.MewLinkCare.recordCare({catId:k,kind:'feeding'});
-        this.setState(q => ({ proof: null, shot: false, proofKey: null, fed, mine: [{ id: 'm' + Date.now(), who: 'You', av: 'ML', cat: target.name, time: 'Just now', zone: target.zone, stamp: 'just now', pid: target.pid, caption: 'Fed and checked in.', likes: 0 }, ...q.mine] }),
-          () => { const n = deck.findIndex(d => !fed[d.key]); if (n >= 0) setTimeout(() => this.goTo(n), 250); }); },
+      confirmFed: () => this.continueFeeding(target),
     };
   }
   chatRef = React.createRef();
@@ -495,7 +482,7 @@ class Component extends DCLogic {
   }
   pickSet(k, v) { if (k === 'zone') try { localStorage.setItem('mewlink-zone', v); } catch (e) {} this.setState(s => ({ a: { ...s.a, [k]: v } })); }
   loadA() { try { const z = localStorage.getItem('mewlink-zone'); return z ? { zone: z } : {}; } catch (e) { return {}; } }
-  loadFed() { try { const o = JSON.parse(localStorage.getItem('mewlink-fed') || '{}'); return o.d === new Date().toDateString() ? (o.fed || {}) : {}; } catch (e) { return {}; } }
+  loadFed() { return Object.fromEntries(window.MewLinkCare.allCats().map(c=>[c.id,window.MewLinkData.feedingStatus(c.id)]).filter(([,s])=>s.status==='confirmed').map(([id,s])=>[id,window.MewLinkData.stamp(s.lastAt)])); }
   saveFed(fed) { try { localStorage.setItem('mewlink-fed', JSON.stringify({ d: new Date().toDateString(), fed })); } catch (e) {} }
   opts(list, k) {
     return list.map(o => { const on = this.state.a[k] === o; return { label: o, bg: on ? '#2A1F18' : '#fff', fg: on ? '#FAF6EF' : '#2A1F18', bd: on ? '#2A1F18' : '#E2D7C6', pick: () => this.pickSet(k, o) }; });
@@ -505,7 +492,7 @@ class Component extends DCLogic {
     const helpOpts = ['Daily feeding', 'Cover when others travel', 'Vet trips', 'Short-term fostering'].map(o => { const on = !!s.help[o]; return { label: o, bg: on ? '#2A1F18' : '#fff', fg: on ? '#FAF6EF' : '#2A1F18', bd: on ? '#2A1F18' : '#E2D7C6', pick: () => this.setState(p => ({ help: { ...p.help, [o]: !p.help[o] } })) }; });
     const ready = s.agree && s.a.zone && s.a.exp;
     return {
-      isWelcome: r === 'welcome', isJoin: r === 'join', isDone: r === 'done', isToday: r === 'today',
+      currentGreeting: new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore',weekday:'short',day:'numeric',month:'short'}).format(new Date())+' · Good morning, Mei Ling', isWelcome: r === 'welcome', isJoin: r === 'join', isDone: r === 'done', isToday: r === 'today',
       code: s.code, onCode: e => this.setState({ code: e.target.value.toUpperCase() }),
       joinWithCode: () => { this.setState({ mode: 'invite' }); location.hash = 'join'; },
       requestInvite: () => { this.setState({ mode: 'request' }); location.hash = 'join'; },
