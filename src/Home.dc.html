@@ -7,7 +7,7 @@
 </head>
 <body>
 <x-dc>
-<helmet><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet"><style>@keyframes mlKen{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.14) translate(-2%,-2%)}}@keyframes mlRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}body{margin:0;background:#EDE6DA;font-family:"Atkinson Hyperlegible",system-ui,sans-serif;color:#2A1F18}a{color:#9A6A12;text-decoration:none}a:hover{color:#2A1F18}*{box-sizing:border-box}</style></helmet>
+<helmet><link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet"><style>@keyframes mlKen{from{transform:scale(1.02) translate(0,0)}to{transform:scale(1.14) translate(-2%,-2%)}}@keyframes mlRise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}body{margin:0;background:#EDE6DA;font-family:"Atkinson Hyperlegible",system-ui,sans-serif;color:#2A1F18}a{color:#9A6A12;text-decoration:none}a:hover{color:#2A1F18}*{box-sizing:border-box}.ml-cat-photo{position:relative;transition:transform .16s ease,box-shadow .16s ease}.ml-cat-photo:active{transform:scale(.98);box-shadow:0 6px 16px rgba(42,31,24,.15)!important}.ml-tap-feedback{position:absolute;right:18px;top:50%;font-size:26px;opacity:0;transform:scale(.6);transition:opacity .12s,transform .18s;pointer-events:none}.ml-cat-photo:active .ml-tap-feedback{opacity:1;transform:scale(1)}@media(prefers-reduced-motion:reduce){.ml-cat-photo,.ml-tap-feedback{transition:none!important;transform:none!important}}</style></helmet>
 <div style="width:100%;max-width:440px;height:100dvh;margin:0 auto;position:relative;overflow:hidden;background:#FAF6EF;font-family:'Atkinson Hyperlegible',system-ui,sans-serif;color:#2A1F18">
 
 <sc-if value="{{ isWelcome }}" hint-placeholder-val="{{ true }}">
@@ -93,6 +93,8 @@
   </div>
 </sc-if>
 
+<sc-if value="{{ isLearn }}" hint-placeholder-val="{{ false }}"><mew-learn-basics style="display:block;height:100%"></mew-learn-basics></sc-if>
+
 <sc-if value="{{ isDone }}" hint-placeholder-val="{{ false }}">
   <div data-screen-label="00 Joined" style="height:100%;display:flex;flex-direction:column;justify-content:center;padding:32px 28px;gap:22px">
     <div role="img" aria-label="Oyen" style="width:120px;height:120px;border-radius:50%;border:4px solid #EFB241;background:#EFE7D9 center/cover url(https://images.unsplash.com/photo-1631044634756-5389f870aeed?w=300&amp;h=300&amp;fit=crop&amp;q=70&amp;auto=format)"></div>
@@ -103,8 +105,8 @@
 </sc-if>
 
 <sc-if value="{{ isToday }}" hint-placeholder-val="{{ false }}">
-  <div data-screen-label="01 Today" style="height:100%;display:flex;flex-direction:column">
-    <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:22px;padding:14px 0 24px">
+  <div data-screen-label="01 Care" style="height:100%;display:flex;flex-direction:column">
+    <div class="mew-care-scroll" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:16px;padding:14px 0 24px">
       <div style="display:flex;justify-content:space-between;align-items:center;padding:0 20px">
         <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 30px/1 Newsreader,serif">MewLink</span><span style="font-size:14px;color:#7D6B5C">{{ currentGreeting }}</span></div>
         <div style="display:flex;gap:8px;align-items:center">
@@ -113,70 +115,40 @@
         </div>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;padding:0 20px">
-          <sc-for list="{{ stories }}" as="c" hint-placeholder-count="5">
-            <a href="{{ c.href }}" style="flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;color:#2A1F18">
-              <span style="width:68px;height:68px;border-radius:50%;padding:3px;background:{{ c.ring }}"><span role="img" aria-label="{{ c.name }}" style="display:block;width:100%;height:100%;border-radius:50%;border:3px solid #FAF6EF;background:#EFE7D9 center/cover url({{ c.photo }})"></span></span>
-              <span style="font-size:13px;font-weight:700">{{ c.name }}</span>
-              <span style="font-size:12px;color:{{ c.subFg }};margin-top:-4px">{{ c.sub }}</span>
+      <div data-zone-needs style="display:flex;flex-direction:column;gap:8px">
+        <span style="padding:0 20px;font-size:14px;font-weight:700;color:#6F5E50">Needs in {{ myZone }}</span>
+        <div style="display:flex;gap:12px;overflow-x:auto;scrollbar-width:none;padding:0 20px">
+          <sc-for list="{{ stories }}" as="c" hint-placeholder-count="3">
+            <a href="{{ c.href }}" style="flex:none;width:76px;display:flex;flex-direction:column;align-items:center;gap:4px;color:#2A1F18">
+              <span title="{{ c.tnrLabel }}" style="width:64px;height:64px;border-radius:50%;padding:4px;background:{{ c.tnrBg }}"><span role="img" aria-label="{{ c.name }}" style="display:block;width:100%;height:100%;border-radius:50%;border:2px solid #FAF6EF;background:#EFE7D9 center/cover no-repeat url({{ c.photo }})"></span></span>
+              <span style="font-size:13px;font-weight:700">{{ c.name }}</span><span style="font-size:12px;line-height:1.3;text-align:center;color:#9A3F22">{{ c.sub }}</span>
             </a>
           </sc-for>
+          <sc-if value="{{ noZoneNeeds }}"><span style="font-size:14px;line-height:1.45;color:#7D6B5C">No confirmed open care need is recorded in this zone.</span></sc-if>
         </div>
-        <button onClick="{{ toggleWhy }}" style="margin:0 20px;display:flex;justify-content:space-between;align-items:center;gap:10px;text-align:left;padding:10px 14px;border-radius:14px;border:none;background:#F3ECE0;cursor:pointer;font:400 14px/1.4 'Atkinson Hyperlegible',sans-serif;color:#5E4D40"><span><b style="color:#2A1F18">Your list:</b> {{ listText }}</span><span style="flex:none;font-weight:700;color:#7A4E33">{{ whyLabel }}</span></button>
-        <sc-if value="{{ why }}" hint-placeholder-val="{{ false }}">
-          <div style="margin:0 20px;padding:14px 16px;border-radius:14px;background:#fff;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06);display:flex;flex-direction:column;gap:10px;font-size:14px;line-height:1.45;color:#5E4D40">
-            <span><b style="color:#2A1F18">You fed them before.</b> Any cat you log a feeding for joins your list.</span>
-            <span><b style="color:#2A1F18">Seen in your area.</b> Cats other caregivers log in {{ myZone }} and the zones next to it.</span>
-            <span><b style="color:#2A1F18">Area only.</b> Exact spots unlock after 30 days of regular care. You’re on day 12.</span>
-          </div>
-        </sc-if>
       </div>
 
+      <mew-important-notifications style="margin:0 20px"></mew-important-notifications>
       <div style="display:flex;flex-direction:column;gap:12px;padding:0 20px">
         <div style="display:flex;justify-content:space-between;align-items:baseline">
           <span style="font:500 24px Newsreader,serif">{{ deckTitle }}</span>
-          <span style="font-size:14px;color:#7D6B5C">{{ deckCount }}</span>
+          <button onClick="{{ refreshRecommended }}" aria-label="Refresh recommended cats" title="Refresh recommended cats" style="width:44px;height:44px;border:none;border-radius:50%;background:#F3ECE0;color:#7A4E33;font-size:25px;cursor:pointer">↻</button>
         </div>
-        <sc-if value="{{ allFedCard }}" hint-placeholder-val="{{ false }}">
-          <div style="border-radius:28px;background:#FFFFFF;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06);padding:24px 20px 14px;display:flex;flex-direction:column;gap:18px">
-            <div style="display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center">
-              <div style="display:flex;padding-left:14px">
-                <sc-for list="{{ fedCats }}" as="c" hint-placeholder-count="3"><span role="img" aria-label="{{ c.name }}" style="width:64px;height:64px;margin-left:-14px;border-radius:50%;border:3px solid #FFFFFF;box-shadow:0 0 0 2px #B9CBAE;background:#EFE7D9 center/cover url({{ c.photo }})"></span></sc-for>
-              </div>
-              <span style="font:500 26px/1.15 Newsreader,serif">Everyone on your list is fed</span>
-              <span style="font-size:15px;line-height:1.45;color:#6F5E50;text-wrap:pretty;max-width:300px">{{ fedSummary }}</span>
-            </div>
-            <sc-if value="{{ hasNearby }}" hint-placeholder-val="{{ false }}">
-              <div style="border-top:1px solid #EFE8DC;padding-top:16px;display:flex;flex-direction:column;gap:12px">
-                <span style="font-size:14px;font-weight:700;color:#6F5E50">Nearby and could use a hand</span>
-                <sc-for list="{{ nearby }}" as="n" hint-placeholder-count="1">
-                  <div style="display:flex;align-items:center;gap:12px">
-                    <span role="img" aria-label="{{ n.name }}" style="width:52px;height:52px;flex:none;border-radius:14px;background:#EFE7D9 center/cover url({{ n.photo }})"></span>
-                    <span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font:600 19px Newsreader,serif">{{ n.name }} <span style="font:400 14px 'Atkinson Hyperlegible',sans-serif;color:#7D6B5C">· {{ n.zone }}</span></span><span style="font-size:14px;font-weight:700;color:#9A3F22">{{ n.status }}</span></span>
-                    <a href="#addcat" style="flex:none;height:44px;padding:0 16px;border-radius:22px;background:#2A1F18;color:#FFF8EC;font-size:15px;font-weight:700;display:flex;align-items:center;text-decoration:none">Help feed</a>
-                  </div>
-                </sc-for>
-              </div>
-            </sc-if>
-            <button onClick="{{ reviewCards }}" style="height:44px;border:none;background:transparent;font:700 15px 'Atkinson Hyperlegible',sans-serif;color:#7A4E33;cursor:pointer">See today’s cards</button>
-          </div>
-        </sc-if>
         <sc-if value="{{ showPager }}" hint-placeholder-val="{{ true }}">
         <div ref="{{ pagerRef }}" onScroll="{{ onPage }}" style="display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin:-4px -20px -18px;padding:4px 20px 18px;scroll-padding:0 20px">
           <sc-for list="{{ pages }}" as="c" hint-placeholder-count="3">
             <div data-page="1" style="flex:none;width:calc(100% - 24px);scroll-snap-align:start;display:flex;flex-direction:column;gap:12px">
-              <div role="img" aria-label="{{ c.name }}" style="height:430px;border-radius:28px;overflow:hidden;box-shadow:0 14px 30px rgba(42,31,24,.18);background:#EFE7D9 center/cover url({{ c.photo }});display:flex;flex-direction:column;justify-content:space-between">
+              <a class="ml-cat-photo" href="{{ c.href }}" aria-label="{{ c.profileLabel }}" style="height:430px;border-radius:28px;overflow:hidden;box-shadow:0 14px 30px rgba(42,31,24,.18);background:#EFE7D9 center/cover url({{ c.photo }});display:flex;flex-direction:column;justify-content:space-between">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:14px">
                   <span style="padding:6px 12px;border-radius:999px;background:rgba(251,248,241,.94);font-size:13px;font-weight:700;color:#2A1F18">{{ c.why }}</span>
                   <span style="flex:none;padding:6px 12px;border-radius:999px;background:{{ c.tnrBg }};font-size:13px;font-weight:700;color:{{ c.tnrFg }}">{{ c.tnr }}</span>
                 </div>
-                <div style="padding:60px 18px 18px;background:linear-gradient(transparent,rgba(30,22,16,.86));color:#FFFBF3;display:flex;flex-direction:column;gap:6px">
-                  <div style="display:flex;align-items:baseline;gap:10px"><span style="font:600 32px Newsreader,serif">{{ c.name }}</span><span style="font-size:15px">{{ c.zone }}</span></div>
-                  <span style="align-self:flex-start;padding:4px 10px;border-radius:999px;background:{{ c.statusBg }};color:#2A1F18;font-size:14px;font-weight:700">{{ c.statusText }}</span>
-                  <span style="font-size:15px;line-height:1.4;text-wrap:pretty">{{ c.note }}</span>
-                </div>
-              </div>
+                <div class="mew-recommended-caption" style="padding:60px 18px 18px;background:linear-gradient(transparent,rgba(30,22,16,.86));color:#FFFBF3;display:flex;flex-direction:column;gap:6px">
+                  <div style="display:flex;align-items:baseline;gap:10px"><span class="mew-cat-title" style="font:600 32px Newsreader,serif">{{ c.name }}</span><span style="font-size:15px">{{ c.zone }}</span></div>
+                  <sc-if value="{{ c.hasStatus }}"><span style="align-self:flex-start;padding:4px 10px;border-radius:999px;background:{{ c.statusBg }};color:#2A1F18;font-size:14px;font-weight:700">{{ c.statusText }}</span></sc-if>
+                  <span class="mew-cat-note" style="font-size:15px;line-height:1.4;text-wrap:pretty">{{ c.note }}</span>
+                </div><span class="ml-tap-feedback" aria-hidden="true">✦</span>
+              </a>
               <button onClick="{{ c.feed }}" style="height:56px;border-radius:28px;border:none;background:{{ c.btnBg }};color:{{ c.btnFg }};font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">{{ c.btnLabel }}</button>
             </div>
           </sc-for>
@@ -186,11 +158,12 @@
         </div>
         </sc-if>
       </div>
+      <div style="padding:0 20px;display:flex;flex-direction:column;gap:14px"><mew-care-alerts></mew-care-alerts><mew-care-basics></mew-care-basics></div>
 
     </div>
 
     <div data-mew-navigation style="height:84px;flex:none;background:rgba(250,246,239,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid #EFE8DC;padding:8px 10px 0;display:grid;grid-template-columns:repeat(4,1fr)">
-      <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#2A1F18"><span style="width:56px;height:30px;border-radius:15px;background:#FBE7BA;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="#2A1F18" stroke-width="1.9"></circle><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none" stroke="#2A1F18" stroke-width="1.9" stroke-linecap="round"></path></svg></span><span style="font-size:12px;font-weight:700">Today</span></a>
+      <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#2A1F18"><span style="width:56px;height:30px;border-radius:15px;background:#FBE7BA;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="#2A1F18" stroke-width="1.9"></circle><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none" stroke="#2A1F18" stroke-width="1.9" stroke-linecap="round"></path></svg></span><span style="font-size:12px;font-weight:700">Care</span></a>
       <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 10V4.5l4 3h6l4-3V10a7 7 0 0 1-14 0z" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linejoin="round"></path><circle cx="9.5" cy="11.5" r="1.1" fill="#8F7E6F"></circle><circle cx="14.5" cy="11.5" r="1.1" fill="#8F7E6F"></circle></svg></span><span style="font-size:12px;font-weight:400">Cats</span></a>
       <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4.5 5h11A2.5 2.5 0 0 1 18 7.5v5a2.5 2.5 0 0 1-2.5 2.5H10l-4 3.5V15H4.5A2.5 2.5 0 0 1 2 12.5v-5A2.5 2.5 0 0 1 4.5 5z" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linejoin="round"></path><path d="M20.5 9.5A2 2 0 0 1 22 11.4v4.1a2 2 0 0 1-2 2h-.5V20l-3-2.5" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:12px;font-weight:400">Community</span></a>
       <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M11 3l2.1 6.2L19.5 11l-6.4 2L11 19.5 8.9 13 2.5 11l6.4-1.8z" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linejoin="round"></path><path d="M19 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#8F7E6F"></path></svg></span><span style="font-size:12px;font-weight:400">Ask Mew</span></a>
@@ -241,7 +214,7 @@
       <span style="padding:0 20px;font-size:13px;line-height:1.45;color:#7D6B5C">Only circle members can read these channels.</span>
     </div>
     <div style="height:84px;flex:none;background:rgba(250,246,239,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid #EFE8DC;padding:8px 10px 0;display:grid;grid-template-columns:repeat(4,1fr)">
-      <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="#8F7E6F" stroke-width="1.9"></circle><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linecap="round"></path></svg></span><span style="font-size:12px;font-weight:400">Today</span></a>
+      <a href="#today" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" fill="none" stroke="#8F7E6F" stroke-width="1.9"></circle><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linecap="round"></path></svg></span><span style="font-size:12px;font-weight:400">Care</span></a>
       <a href="#cats" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 10V4.5l4 3h6l4-3V10a7 7 0 0 1-14 0z" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linejoin="round"></path><circle cx="9.5" cy="11.5" r="1.1" fill="#8F7E6F"></circle><circle cx="14.5" cy="11.5" r="1.1" fill="#8F7E6F"></circle></svg></span><span style="font-size:12px;font-weight:400">Cats</span></a>
       <a href="#community" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#2A1F18"><span style="width:56px;height:30px;border-radius:15px;background:#FBE7BA;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4.5 5h11A2.5 2.5 0 0 1 18 7.5v5a2.5 2.5 0 0 1-2.5 2.5H10l-4 3.5V15H4.5A2.5 2.5 0 0 1 2 12.5v-5A2.5 2.5 0 0 1 4.5 5z" fill="none" stroke="#2A1F18" stroke-width="1.9" stroke-linejoin="round"></path><path d="M20.5 9.5A2 2 0 0 1 22 11.4v4.1a2 2 0 0 1-2 2h-.5V20l-3-2.5" fill="none" stroke="#2A1F18" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path></svg></span><span style="font-size:12px;font-weight:700">Community</span></a>
       <a href="#askmew" style="display:flex;flex-direction:column;align-items:center;gap:3px;color:#8F7E6F"><span style="width:56px;height:30px;border-radius:15px;background:transparent;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M11 3l2.1 6.2L19.5 11l-6.4 2L11 19.5 8.9 13 2.5 11l6.4-1.8z" fill="none" stroke="#8F7E6F" stroke-width="1.9" stroke-linejoin="round"></path><path d="M19 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z" fill="#8F7E6F"></path></svg></span><span style="font-size:12px;font-weight:400">Ask Mew</span></a>
@@ -257,7 +230,7 @@
       <span style="flex:1;min-width:0;display:flex;flex-direction:column"><span style="font-size:17px;font-weight:700">{{ chan.name }}</span><span style="font-size:13px;color:#7D6B5C">{{ chan.members }}</span></span>
     </div>
     <div ref="{{ chatRef }}" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:14px 14px 18px;display:flex;flex-direction:column;gap:12px">
-      <span style="align-self:center;padding:4px 12px;border-radius:999px;background:#EFE8DC;font-size:12px;color:#6F5E50">Today</span>
+      <span style="align-self:center;padding:4px 12px;border-radius:999px;background:#EFE8DC;font-size:12px;color:#6F5E50">Care</span>
       <sc-for list="{{ msgs }}" as="m" hint-placeholder-count="4">
         <div style="display:flex;gap:8px;align-items:flex-end;flex-direction:{{ m.dir }}">
           <span style="width:32px;height:32px;flex:none;border-radius:50%;background:#F1EADF;color:#5E4D40;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;visibility:{{ m.avVis }}">{{ m.av }}</span>
@@ -279,22 +252,22 @@
 <sc-if value="{{ isMe }}" hint-placeholder-val="{{ false }}">
   <div data-screen-label="05 Profile" style="height:100%;display:flex;flex-direction:column">
     <div style="height:56px;flex:none;display:flex;align-items:center;padding:0 10px">
-      <a href="#today" style="height:44px;padding:0 10px;display:flex;align-items:center;font-size:17px;font-weight:700;color:#7A4E33">‹ Today</a>
+      <a href="#today" style="height:44px;padding:0 10px;display:flex;align-items:center;font-size:17px;font-weight:700;color:#7A4E33">‹ Care</a>
     </div>
     <div style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:4px 20px 32px;display:flex;flex-direction:column;gap:24px">
-      <div style="display:flex;gap:16px;align-items:center">
+      <div style="display:flex;gap:16px;align-items:center;position:relative">
         <span style="width:84px;height:84px;flex:none;border-radius:50%;box-shadow:0 0 0 3px #FAF6EF,0 0 0 5px #EFB241;background:#FBE7BA;color:#7A5410;display:flex;align-items:center;justify-content:center;font:600 30px Newsreader,serif">ML</span>
         <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 30px/1.1 Newsreader,serif">Mei Ling</span><span style="font-size:15px;color:#5E4D40">Toa Payoh circle · joined 12 days ago</span><span style="font-size:14px;color:#7D6B5C">Invited by Aisha</span></div>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06)">
         <div style="padding:14px 12px;display:flex;flex-direction:column;gap:2px"><span style="font:600 26px Newsreader,serif">{{ meFed }}</span><span style="font-size:13px;color:#7D6B5C">Feedings</span></div>
-        <div style="padding:14px 12px;display:flex;flex-direction:column;gap:2px;border-left:1px solid #EFE8DC"><span style="font:600 26px Newsreader,serif">5</span><span style="font-size:13px;color:#7D6B5C">Cats on list</span></div>
-        <div style="padding:14px 12px;display:flex;flex-direction:column;gap:2px;border-left:1px solid #EFE8DC"><span style="font:600 26px Newsreader,serif">12/30</span><span style="font-size:13px;color:#7D6B5C">Days to exact spots</span></div>
+        <div style="padding:14px 12px;display:flex;flex-direction:column;gap:2px;border-left:1px solid #EFE8DC"><span style="font:600 26px Newsreader,serif">{{ meObservations }}</span><span style="font-size:13px;color:#7D6B5C">Observation notes</span></div>
+        <div style="padding:14px 12px;display:flex;flex-direction:column;gap:2px;border-left:1px solid #EFE8DC"><span style="font:600 26px Newsreader,serif">{{ meCareTotal }}</span><span style="font-size:13px;color:#7D6B5C">Care actions</span></div>
       </div>
       <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:15px;font-weight:700;color:#6F5E50">Cats I look after</span><span style="font-size:14px;color:#7D6B5C">{{ tnrSummary }}</span></div>
-        <div style="display:flex;gap:14px;overflow-x:auto;scrollbar-width:none">
-          <sc-for list="{{ stories }}" as="c" hint-placeholder-count="5"><a href="{{ c.href }}" style="flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;color:#2A1F18"><span role="img" aria-label="{{ c.name }}" style="width:60px;height:60px;border-radius:50%;background:#EFE7D9 center/cover url({{ c.photo }})"></span><span style="font-size:13px;font-weight:700">{{ c.name }}</span><span style="margin-top:-2px;padding:2px 8px;border-radius:999px;background:{{ c.tnrBg }};color:{{ c.tnrFg }};font-size:11px;font-weight:700;white-space:nowrap">{{ c.tnr }}</span></a></sc-for>
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:15px;font-weight:700;color:#6F5E50">Cats I look after</span></div>
+        <div class="mew-profile-cats">
+          <sc-for list="{{ profileCats }}" as="c" hint-placeholder-count="4"><a href="{{ c.href }}"><span class="mew-profile-cat-ring" title="{{ c.tnrLabel }}" style="background:{{ c.tnrBg }}"><span role="img" aria-label="{{ c.name }} · {{ c.tnrLabel }}" style="background-image:url({{ c.photo }})"></span></span><span style="font-size:13px;font-weight:700">{{ c.name }}</span><span style="font-size:12px;line-height:1.35;color:#6F5E50;text-align:center">{{ c.summary }}</span></a></sc-for>
         </div>
       </div>
       <div style="display:flex;flex-direction:column;border-radius:18px;background:#fff;box-shadow:0 1px 2px rgba(42,31,24,.05),0 6px 20px rgba(42,31,24,.06)">
@@ -316,23 +289,19 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 class Component extends DCLogic {
-  state = { code: '', mode: 'invite', a: this.loadA(), help: {}, agree: false, idx: 0, dx: 0, drag: false, fed: this.loadFed(), review: false, proof: null, shot: false, why: false, liked: {}, mine: [] };
+  state = { code: '', mode: 'invite', a: this.loadA(), help: this.loadHelp(), agree: false, idx: 0, dx: 0, drag: false, fed: this.loadFed(), review: false, proof: null, shot: false, why: false, liked: {}, mine: [] };
   componentDidMount() { this.h = () => this.forceUpdate(); for(const ev of ['hashchange','mewlink-data-changed','storage','focus'])addEventListener(ev,this.h); this.dataTimer=setInterval(this.h,60000); this.startCollage(); }
   componentWillUnmount() { for(const ev of ['hashchange','mewlink-data-changed','storage','focus'])removeEventListener(ev,this.h); clearInterval(this.dataTimer); clearInterval(this.tm); window.MewLinkCare.syncFeedingModal(false); }
   route() {
-    const ok = ['welcome', 'join', 'done', 'today', 'community', 'chat', 'me'];
+    const ok = ['welcome', 'join', 'learn', 'done', 'today', 'community', 'chat', 'me'];
     const h = (location.hash || '').slice(1);
     const r = this.props.only || h;
+    if(window.MewLinkRefine?.learningPending()&&!['welcome','join'].includes(r))return 'learn';
     return ok.includes(r) ? r : 'welcome';
   }
   img(id, w, h) { return 'https://images.unsplash.com/' + id + '?w=' + w + '&h=' + h + '&fit=crop&crop=entropy&q=72&auto=format'; }
   deck() {
-    return [
-      { key: 'tiger', name: 'Tiger', zone: 'Zone A', pid: 'photo-1650535812141-04d564530b17', why: 'You’ve fed him 6 times', tnr: 'TNR done', tnrOk: true, status: 'No feeding record today', statusBg: '#FBE7BA', note: 'Aisha saw a small cut near one ear yesterday. A clear photo of it would help.' },
-      { key: 'kopi', name: 'Kopi', zone: 'Zone B', pid: 'photo-1622015680443-cb4c5bec36b7', why: 'Seen in Zone B', tnr: 'TNR done', tnrOk: true, status: 'Ravi is away until Fri', statusBg: '#F7DDD0', note: 'Ravi usually feeds Kopi at 7pm. He asked the circle to cover while he travels.' },
-      { key: 'ash', name: 'Ash', zone: 'Zone C', pid: 'photo-1557408938-0f220f49bca1', why: 'Seen in Zone C', tnr: 'TNR not yet', tnrOk: false, status: 'Not seen for 3 days', statusBg: '#EFE8DC', note: 'Didn’t come out on Wei’s last round. Look out for him.' },
-      ...this.joined(),
-    ];
+    return window.MewLinkCare.allCats().map(c=>({...c,key:c.id,pid:c.photo?.match(/photo-[^?]+/)?.[0]||'',tnr:c.tnrOk?'TNR done':'TNR not yet',tnrOk:c.tnrOk===true}));
   }
   joined() {
     let names = []; try { names = JSON.parse(localStorage.getItem('mewlink-joined-cats') || '[]'); } catch (e) {}
@@ -351,10 +320,9 @@ class Component extends DCLogic {
   home() {
     const s = { ...this.state, fed: this.loadFed() }, deck = this.deck(), card = deck[s.idx], next = deck[s.idx + 1];
     const fedKeys = Object.keys(s.fed);
-    const stories = [...deck, ...[{ key: 'oyen', name: 'Oyen', pid: 'photo-1618222951695-cf6808375f99', pre: true, tnrOk: true }, { key: 'milo', name: 'Milo', pid: 'photo-1569847011465-f3d58771ec7f', pre: true, tnrOk: true }].filter(x => !deck.some(d => d.key === x.key))].map(c => {
-      const done = s.fed[c.key];
-      return { name: c.name, tnrOk: c.tnrOk, tnr: c.tnrOk ? 'TNR done' : 'TNR not yet', tnrBg: c.tnrOk ? '#E2EADB' : '#F7DDD0', tnrFg: c.tnrOk ? '#3E5A36' : '#9A3F22', photo: this.img(c.pid, 160, 160), href: window.MewLinkCare.profileHref(c.key), ring: done ? '#B9CBAE' : '#EFB241', sub: done ? 'Fed' : 'No record today', subFg: done ? '#5E7A55' : '#9A3F22' };
-    });
+    const zone=s.a.zone||'Zone A';
+    const stories=(window.MewLinkRefine?.zoneNeeds(zone)||[]).map(c=>({name:c.catName,photo:window.MewLinkCare.thumbnail(c.photo),href:window.MewLinkCare.profileHref(c.catId),tnrBg:c.tnrOk?'#E2EADB':'#F7DDD0',tnrLabel:c.tnrOk?'TNR done':'TNR not yet',sub:c.needs[0]?.label||''}));
+    const profileCats=window.MewLinkCare.allCats().map(c=>{const x=window.MewLinkRefine?.contributions(c.id)||{feeding:0,total:0,byKind:{}};const obs=x.byKind?.observation||0;const tnrOk=c.tnrOk===true;return {...c,photo:window.MewLinkCare.thumbnail(c),href:window.MewLinkCare.profileHref(c.id),tnrBg:tnrOk?'#5E7A55':'#F7DDD0',tnrLabel:tnrOk?'TNR done':'TNR not yet',summary:this.contributionSummary(x),hasCare:x.total>0||obs>0||(x.byKind?.tnr_support||0)>0};}).filter(c=>c.hasCare);
     const base = [
       { id: 'r', who: 'Ravi', av: 'RK', cat: 'Oyen and Milo', time: '7:40am', zone: 'Zone B', stamp: '7:40am', pid: 'photo-1581536678522-afcf3257d780', caption: 'Both ate well. Milo finished first again.', likes: 4 },
       { id: 'a', who: 'Aisha', av: 'AS', cat: 'Tiger', time: 'Yesterday', zone: 'Zone A', stamp: '6:15pm', pid: 'photo-1675504661658-33940d979a6a', caption: 'Small cut near one ear. He let me come close.', likes: 7 },
@@ -363,7 +331,7 @@ class Component extends DCLogic {
     const dx = s.dx, left = deck.length - s.idx;
     const c = card || deck[0];
     return {
-      stories, posts, why: s.why, tnrSummary: stories.filter(c => c.tnrOk).length + ' of ' + stories.length + ' TNR done',
+      stories, profileCats, noZoneNeeds:!stories.length, posts, why: s.why, tnrSummary:'Cat TNR status is shown by a dot',
       collage: this.collage(), whyLabel: s.why ? 'Hide' : 'How?', toggleWhy: () => this.setState(p => ({ why: !p.why })),
       hasCard: !!card, hasNext: !!next, deckDone: !card,
       card: { ...c, photo: this.img(c.pid, 720, 900), tnrBg: c.tnrOk ? '#E2EADB' : '#F7DDD0', tnrFg: c.tnrOk ? '#3E5A36' : '#9A3F22' },
@@ -381,6 +349,14 @@ class Component extends DCLogic {
       confirmBg: s.shot ? '#2A1F18' : '#EFE8DC', confirmFg: s.shot ? '#FFF8EC' : '#9A8877',
       confirmFed: () => this.continueFeeding(c),
     };
+  }
+  contributionSummary(contribution) {
+    const labels={feeding:'Feeding',water:'Water',cleaning:'Cleaning',vet_visit:'Vet support',medication:'Medication',hands_on_check:'Hands-on check'};
+    const counts=contribution.byKind||{};
+    const actions=[...window.MewLinkCare.VALID_CARE].map(kind=>{const count=counts[kind]||(kind==='feeding'?contribution.feeding:0);return count?(labels[kind]||kind.replace(/_/g,' '))+' · '+count:'';}).filter(Boolean);
+    if(counts.observation)actions.push('Observation · '+counts.observation);
+    if(counts.tnr_support)actions.push('TNR support · '+counts.tnr_support);
+    return actions.join(' / ')||(contribution.total?'Care actions · '+contribution.total:'No care by you recorded');
   }
   tiles = [
     ['photo-1650535812141-04d564530b17', 'photo-1569847011465-f3d58771ec7f', 'photo-1618222951695-cf6808375f99'],
@@ -411,32 +387,15 @@ class Component extends DCLogic {
   pagerRef = React.createRef();
   pageEls() { const el = this.pagerRef.current; return el ? [...el.querySelectorAll('[data-page]')] : []; }
   goTo(i) { const el = this.pagerRef.current, ps = this.pageEls(); if (!el || !ps[i]) return; el.scrollTo({ left: el.scrollLeft + ps[i].getBoundingClientRect().left - el.getBoundingClientRect().left - 20, behavior: 'smooth' }); }
+  addUpdate(target) {
+    try { window.MewLinkData.beginDraft({catId:target.key,origin:'profile',zone:target.zone,occurredAt:new Date().toISOString()});sessionStorage.setItem('mewlink-care-target',target.key);location.hash='careupdate'; }
+    catch(error){window.alert(error.message);}
+  }
   pager() {
-    const s = { ...this.state, fed: this.loadFed() }, deck = this.deck(), page = s.page || 0;
-    const target = deck.find(d => d.key === s.proofKey) || deck[page] || deck[0];
-    const left = deck.filter(d => !s.fed[d.key]).length;
-    const pages = deck.map(d => { const fed = !!s.fed[d.key]; return { ...d, photo: this.img(d.pid, 720, 900), tnrBg: d.tnrOk ? '#E2EADB' : '#F7DDD0', tnrFg: d.tnrOk ? '#3E5A36' : '#9A3F22',
-      statusText: fed ? 'Feeding recorded today' : d.status, statusBg: fed ? '#E2EADB' : d.statusBg,
-      btnLabel: fed ? '✓ Fed today' : 'I fed ' + d.name, btnBg: fed ? '#E2EADB' : '#2A1F18', btnFg: fed ? '#3E5A36' : '#FFF8EC',
-      feed: () => { if (!fed) this.setState({ proof: true, proofKey: d.key, shot: false }); } }; });
-    return {
-      pages, pagerRef: this.pagerRef,
-      onPage: e => { const el = e.currentTarget, ps = this.pageEls(); if (!ps.length) return; const w = ps[0].offsetWidth + 12; const i = Math.max(0, Math.min(deck.length - 1, Math.round(el.scrollLeft / w))); if (i !== (this.state.page || 0)) this.setState({ page: i }); },
-      dots: deck.map((d, i) => ({ label: d.name, w: i === page ? '22px' : '8px', bg: i === page ? '#2A1F18' : '#E2D7C6', go: () => this.goTo(i) })),
-      allFedCard: !left && !s.review, showPager: !!left || s.review, reviewCards: () => this.setState({ review: true }),
-      fedCats: deck.map(d => ({ name: d.name, photo: this.img(d.pid, 160, 160) })),
-      fedSummary: (() => { const n = deck.map(d => d.name), t = n.length > 1 ? n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1] : n[0]; const last = Object.values(s.fed).slice(-1)[0]; return t + ' are fed' + (last ? ', last at ' + last : '') + '. The evening round opens at 6pm.'; })(),
-      nearby: deck.some(d => d.key === 'bubu') ? [] : [{ name: 'Bubu', zone: 'Zone C', status: 'Only 1 caregiver', photo: this.img('photo-1514888286974-6c03e2ca1dba', 160, 160) }],
-      hasNearby: !deck.some(d => d.key === 'bubu'),
-      myZone: s.a.zone || 'your zone',
-      listText: (() => { const fb = deck.filter(d => /^You’ve fed/.test(d.why)).length, j = deck.filter(d => d.why === 'You joined today').length, seen = deck.length - fb - j;
-        return [fb && fb + ' you’ve fed', j && j + ' you joined', seen && seen + ' seen near ' + (s.a.zone || 'your zone')].filter(Boolean).join(' + '); })(),
-      deckTitle: left ? (left === 1 ? '1 cat needs a feeding check' : left + ' cats need a feeding check') : 'All cats fed today',
-      deckCount: (page + 1) + ' of ' + deck.length,
-      card: { ...target, photo: this.img(target.pid, 720, 900) },
-      shotBg: s.shot ? '#EFE7D9 center/cover url(' + this.img(target.pid, 600, 440) + ')' : '#FFFBF3',
-      confirmFed: () => this.continueFeeding(target),
-    };
+    const raw=this.deck().map(d=>({...d,zone:window.MewLinkCare.allCats().find(c=>c.id===d.key)?.zone||d.zone})),offset=(this.state.recommendation||0)%Math.max(1,raw.length),deck=[...raw.slice(offset),...raw.slice(0,offset)],page=Math.min(this.state.page||0,Math.max(0,deck.length-1));
+    const pages=deck.map(d=>{const contribution=window.MewLinkRefine?.contributions(d.key)||{feeding:0,total:0},needs=window.MewLinkRefine?.needs(d.key)||[];return {...d,href:window.MewLinkCare.profileHref(d.key),profileLabel:'View '+d.name+' profile',photo:d.pid?this.img(d.pid,720,900):d.photo,why:contribution.feeding?"You've fed "+d.name+' '+contribution.feeding+' '+(contribution.feeding===1?'time':'times'):contribution.total?"You've cared for "+d.name+' '+contribution.total+' '+(contribution.total===1?'time':'times'):'No care by you recorded yet',note:window.MewLinkRefine?.facts(d.key)||'No behaviour note has been recorded yet.',tnrBg:d.tnrOk?'#E2EADB':'#F7DDD0',tnrFg:d.tnrOk?'#3E5A36':'#9A3F22',statusText:needs[0]?.label||(window.MewLinkData.feedingStatus(d.key).status==='confirmed'?'Fed':''),hasStatus:!!needs.length||window.MewLinkData.feedingStatus(d.key).status==='confirmed',statusBg:needs.length?'#FBE7BA':'#E2EADB',btnLabel:'Add update',btnBg:'#2A1F18',btnFg:'#FFF8EC',feed:()=>this.addUpdate(d)};});
+    const target=deck.find(d=>d.key===this.state.proofKey)||deck[page]||deck[0];
+    return {pages,pagerRef:this.pagerRef,onPage:e=>{const el=e.currentTarget,ps=this.pageEls();if(!ps.length)return;const i=Math.max(0,Math.min(deck.length-1,Math.round(el.scrollLeft/(ps[0].offsetWidth+12))));if(i!==(this.state.page||0))this.setState({page:i});},dots:deck.map((d,i)=>({label:d.name,w:i===page?'22px':'8px',bg:i===page?'#2A1F18':'#E2D7C6',go:()=>this.goTo(i)})).filter((_,i)=>Math.abs(i-page)<=2),showPager:true,allFedCard:false,myZone:this.state.a.zone||'Zone A',deckTitle:'Recommended',refreshRecommended:()=>{this.setState(q=>({recommendation:(q.recommendation||0)+1,page:0}));this.pagerRef.current?.scrollTo({left:0,behavior:'auto'});},card:{...target,photo:this.img(target.pid,720,900)},shotBg:this.state.shot?'#EFE7D9 center/cover url('+this.img(target.pid,600,440)+')':'#FFFBF3',confirmFed:()=>this.continueFeeding(target)};
   }
   chatRef = React.createRef();
   componentDidUpdate() { window.MewLinkCare.syncFeedingModal(!!this.state.proof); const el = this.chatRef.current; if (el && this.lastLen !== this.msgLen) { el.scrollTop = el.scrollHeight; this.lastLen = this.msgLen; } }
@@ -469,19 +428,21 @@ class Component extends DCLogic {
       return { text: m.text, av: m.av, meta: me ? m.t : (same ? '' : m.who + ' · ' + m.t), dir: me ? 'row-reverse' : 'row', align: me ? 'flex-end' : 'flex-start', avVis: me || same ? 'hidden' : 'visible', bg: me ? '#FBE3B0' : '#fff', radius: me ? '18px 18px 4px 18px' : '18px 18px 18px 4px', hasImg: !!m.img, img: m.img ? this.img(m.img, 440, 440) : '' }; });
     const sendIt = () => { const t = (s.draft || '').trim(); if (!t) return; this.setState(q => ({ draft: '', sent: { ...(q.sent || {}), [c.id]: [...((q.sent || {})[c.id] || []), { who: 'You', av: 'ML', t: 'Now', text: t }] } })); };
     const a = s.a, help = Object.keys(s.help).filter(k => s.help[k]);
-    const info = [['Area', a.zone || 'Zone A'], ['Cats at home', a.home || 'No'], ['Feeding experience', a.exp || 'Under 1 year'], ['TNR', a.tnr || 'Helped once or twice'], ['Can help with', help.length ? help.join(', ') : 'Daily feeding, Vet trips']];
+    const info = [['Area', a.zone || 'Zone A'], ['Cats at home', a.home || 'Not provided'], ['Feeding experience', a.exp || 'Not provided'], ['TNR support experience', a.tnr || 'Not provided'], ['Can help with', help.length ? help.join(', ') : 'Not provided']];
+    const contribution=window.MewLinkRefine?.contributions(null)||{feeding:0,total:0,byKind:{}},observationCount=contribution.observation??window.MewLinkData.updates().filter(x=>x.authorId===window.MewLinkCare.CURRENT_USER&&x.identity==='confirmed'&&window.MewLinkData.accessible(x)).length;const tnrExperience=!!a.tnr&&a.tnr!=='Not yet';
     return {
       isCommunity: r === 'community', isChat: r === 'chat', isMe: r === 'me',
       channels: data.map(d => ({ name: d.name, bg: d.bg, fg: d.fg, time: d.time, unread: d.unread, badgeVis: d.unread && s.ch !== d.id ? 'visible' : 'hidden', last: (() => { const all = [...d.msgs, ...(sent[d.id] || [])]; const m = all[all.length - 1]; return (m.who === 'You' ? 'You' : m.who) + ': ' + m.text; })(), open: () => { this.setState({ ch: d.id }); location.hash = 'chat'; } })),
       chan: { name: c.name, bg: c.bg, fg: c.fg, members: c.members }, msgs, chatRef: this.chatRef,
       draft: s.draft || '', onDraft: e => this.setState({ draft: e.target.value }), onDraftKey: e => { if (e.key === 'Enter') sendIt(); }, send: sendIt,
       sendBg: (s.draft || '').trim() ? '#EFB241' : '#EFE8DC',
-      meFed: 14 + Object.keys(s.fed).length,
+      meFed: contribution.feeding, meObservations:observationCount, meCareTotal:contribution.total, meTnrColor:tnrExperience?'#5E7A55':'#A89170',meTnrLabel:'Declared TNR support experience: '+(a.tnr||'not provided'),
       meInfo: info.map((x, i) => ({ k: x[0], v: x[1], line: i ? '#EFE8DC' : 'transparent' })),
     };
   }
   pickSet(k, v) { if (k === 'zone') try { localStorage.setItem('mewlink-zone', v); } catch (e) {} this.setState(s => ({ a: { ...s.a, [k]: v } })); }
-  loadA() { try { const z = localStorage.getItem('mewlink-zone'); return z ? { zone: z } : {}; } catch (e) { return {}; } }
+  loadA() { try { const a=JSON.parse(localStorage.getItem('mewlink-profile-answers')||'{}'),z=localStorage.getItem('mewlink-zone');return {...a,...(z?{zone:z}:{})}; } catch (e) { return {}; } }
+  loadHelp() { try { const help=JSON.parse(localStorage.getItem('mewlink-profile-help')||'{}');return help&&typeof help==='object'&&!Array.isArray(help)?Object.fromEntries(Object.entries(help).filter(([,selected])=>selected===true)):{}; } catch (_) { return {}; } }
   loadFed() { return Object.fromEntries(window.MewLinkCare.allCats().map(c=>[c.id,window.MewLinkData.feedingStatus(c.id)]).filter(([,s])=>s.status==='confirmed').map(([id,s])=>[id,window.MewLinkData.stamp(s.lastAt)])); }
   saveFed(fed) { try { localStorage.setItem('mewlink-fed', JSON.stringify({ d: new Date().toDateString(), fed })); } catch (e) {} }
   opts(list, k) {
@@ -490,9 +451,9 @@ class Component extends DCLogic {
   renderVals() {
     const s = this.state, r = this.route(), inv = s.mode === 'invite';
     const helpOpts = ['Daily feeding', 'Cover when others travel', 'Vet trips', 'Short-term fostering'].map(o => { const on = !!s.help[o]; return { label: o, bg: on ? '#2A1F18' : '#fff', fg: on ? '#FAF6EF' : '#2A1F18', bd: on ? '#2A1F18' : '#E2D7C6', pick: () => this.setState(p => ({ help: { ...p.help, [o]: !p.help[o] } })) }; });
-    const ready = s.agree && s.a.zone && s.a.exp;
+    const ready = s.agree && s.a.zone && ['Yes','No'].includes(s.a.home) && s.a.exp;
     return {
-      currentGreeting: new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore',weekday:'short',day:'numeric',month:'short'}).format(new Date())+' · Good morning, Mei Ling', isWelcome: r === 'welcome', isJoin: r === 'join', isDone: r === 'done', isToday: r === 'today',
+      currentGreeting: new Intl.DateTimeFormat('en-SG',{timeZone:'Asia/Singapore',weekday:'short',day:'numeric',month:'short'}).format(new Date())+' · Good morning, Mei Ling', isWelcome: r === 'welcome', isJoin: r === 'join', isLearn:r==='learn', isDone: r === 'done', isToday: r === 'today',
       code: s.code, onCode: e => this.setState({ code: e.target.value.toUpperCase() }),
       joinWithCode: () => { this.setState({ mode: 'invite' }); location.hash = 'join'; },
       requestInvite: () => { this.setState({ mode: 'request' }); location.hash = 'join'; },
@@ -510,11 +471,11 @@ class Component extends DCLogic {
       toggleAgree: () => this.setState(p => ({ agree: !p.agree })), agreeBg: s.agree ? '#2A1F18' : '#fff', agreeMark: s.agree ? '✓' : '',
       submitBg: ready ? '#2A1F18' : '#EFE8DC', submitFg: ready ? '#FFF8EC' : '#9A8877',
       submitLabel: inv ? 'Join the circle' : 'Send request',
-      submitHint: ready ? 'You can change these later in your profile' : 'Pick an area, your experience and tick the privacy box',
-      submitJoin: () => { if (ready) location.hash = 'done'; },
+      submitHint: ready ? 'You can change these later in your profile' : 'Choose an area, answer both cat-experience questions and tick the privacy box',
+      submitJoin: () => { if (!ready)return;const learning=window.MewLinkRefine?.requiresLearning(s.a);try{localStorage.setItem('mewlink-profile-answers',JSON.stringify(s.a));localStorage.setItem('mewlink-profile-help',JSON.stringify(s.help));if(learning)localStorage.setItem('mewlink-learning-required','1');else localStorage.removeItem('mewlink-learning-required');}catch(_){}location.hash=learning?'learn':'done'; },
       doneTitle: inv ? 'You’re in' : 'Request sent',
-      doneSub: inv ? 'Your list starts with cats seen in ' + (s.a.zone || 'your area') + '. Cats you feed are added to it automatically.' : 'A circle admin will read your answers, usually within two days. You can look around in the meantime.',
-      doneCta: inv ? 'See today’s cats' : 'Look around',
+      doneSub: inv ? 'You can now explore recorded care needs in ' + (s.a.zone || 'your area') + '. Care Basics stays available on Care.' : 'A circle admin will read your answers, usually within two days. You can look around in the meantime.',
+      doneCta: inv ? 'Explore Care' : 'Look around',
       ...this.home(), ...this.pager(),
       ...this.chat(r),
     };

@@ -62,11 +62,11 @@
       </div>
       <input value="{{ title }}" onChange="{{ onTitle }}" placeholder="Add a title (optional)" style="height:50px;flex:none;border-radius:14px;border:1px solid #E0D5C3;background:#FFFFFF;padding:0 14px;font:400 17px 'Atkinson Hyperlegible',sans-serif;color:#33261D;outline:none"></input>
       <sc-if value="{{ showSuggestBtn }}" hint-placeholder-val="{{ true }}">
-        <button onClick="{{ suggest }}" style="align-self:flex-start;height:44px;padding:0;border:none;background:transparent;display:flex;align-items:center;gap:6px;font:400 15px 'Atkinson Hyperlegible',sans-serif;color:#6B5847;cursor:pointer"><dc-import name="Mew" mood="thinking" size="{{ 26 }}" hint-size="26px,26px"></dc-import>Suggest with Mew</button>
+        <button onClick="{{ suggest }}" style="align-self:flex-start;height:44px;padding:0;border:none;background:transparent;display:flex;align-items:center;gap:6px;font:400 15px 'Atkinson Hyperlegible',sans-serif;color:#6B5847;cursor:pointer"><dc-import name="Mew" mood="thinking" size="{{ 26 }}" hint-size="26px,26px"></dc-import>Suggest with MewAI</button>
       </sc-if>
       <sc-if value="{{ suggestOpen }}" hint-placeholder-val="{{ false }}">
         <div style="background:#F1ECE2;border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px">
-          <span style="font-size:13px;color:#776455">Mew · from your saved note only</span>
+          <span style="font-size:13px;color:#776455">MewAI · from your saved note only</span>
           <span style="font-size:15px;line-height:1.45;color:#33261D">Title: “Half his dinner, 12 Oct” · Sticker: date label</span>
           <div style="display:flex;gap:18px"><button onClick="{{ useSuggest }}" style="height:40px;padding:0;border:none;background:transparent;font:700 15px 'Atkinson Hyperlegible',sans-serif;color:#33261D;cursor:pointer">Use</button><button onClick="{{ ignoreSuggest }}" style="height:40px;padding:0;border:none;background:transparent;font:400 15px 'Atkinson Hyperlegible',sans-serif;color:#6B5847;cursor:pointer">Ignore</button></div>
         </div>

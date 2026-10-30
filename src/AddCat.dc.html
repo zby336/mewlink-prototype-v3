@@ -23,7 +23,7 @@
       <div style="display:flex;flex-direction:column;gap:12px">
         <button onClick="{{ pickJoin }}" style="text-align:left;padding:18px;border-radius:20px;border:1px solid #EFE8DC;background:#FFFFFF;box-shadow:0 2px 10px rgba(80,50,20,0.06);display:flex;gap:14px;align-items:flex-start;cursor:pointer;font-family:inherit;color:inherit" style-active="background:#FBF3E4">
           <span style="width:48px;height:48px;flex:none;border-radius:14px;background:#FBE7BA;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24"><path d="M5 10V4.5l4 3h6l4-3V10a7 7 0 0 1-14 0z" fill="none" stroke="#8A6418" stroke-width="1.9" stroke-linejoin="round"></path><path d="M12 14.5v3M10.5 16h3" stroke="#8A6418" stroke-width="1.9" stroke-linecap="round"></path></svg></span>
-          <span style="display:flex;flex-direction:column;gap:4px"><span style="font:600 21px/1.2 Newsreader,serif">A cat in my area I’d like to feed</span><span style="font-size:15px;line-height:1.45;color:#6B5B4E;text-wrap:pretty">Pick from cats the circle already knows. They’ll show up in your Today cards.</span></span>
+          <span style="display:flex;flex-direction:column;gap:4px"><span style="font:600 21px/1.2 Newsreader,serif">A cat in my area I’d like to feed</span><span style="font-size:15px;line-height:1.45;color:#6B5B4E;text-wrap:pretty">Pick from cats the circle already knows. They’ll show up in your Care cards.</span></span>
         </button>
         <button onClick="{{ pickSpot }}" style="text-align:left;padding:18px;border-radius:20px;border:1px solid #EFE8DC;background:#FFFFFF;box-shadow:0 2px 10px rgba(80,50,20,0.06);display:flex;gap:14px;align-items:flex-start;cursor:pointer;font-family:inherit;color:inherit" style-active="background:#FBF3E4">
           <span style="width:48px;height:48px;flex:none;border-radius:14px;background:#F6E1D5;display:flex;align-items:center;justify-content:center"><svg width="26" height="26" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="#9A4A26" stroke-width="1.9"></circle><path d="M15 15l5 5" stroke="#9A4A26" stroke-width="2.1" stroke-linecap="round"></path></svg></span>
@@ -177,7 +177,7 @@
       <span style="flex:none;height:32px;padding:0 14px;border-radius:16px;background:{{ doneTagBg }};color:{{ doneTagFg }};font-size:14px;font-weight:700;display:flex;align-items:center">{{ doneTag }}</span>
       <div style="flex:1 0 0"></div>
       <div style="flex:none;width:100%;display:flex;flex-direction:column;gap:10px">
-        <a href="#today" style="height:54px;border-radius:16px;background:#33261D;color:#FFFFFF;font-size:17px;font-weight:700;text-decoration:none;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(51,38,29,0.18)">Back to Today</a>
+        <a href="#today" style="height:54px;border-radius:16px;background:#33261D;color:#FFFFFF;font-size:17px;font-weight:700;text-decoration:none;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(51,38,29,0.18)">Back to Care</a>
         <button onClick="{{ restart }}" style="height:50px;border-radius:16px;border:1px solid #E0D6C6;background:transparent;font:700 16px 'Atkinson Hyperlegible',sans-serif;color:#2A1F18;cursor:pointer">Add another cat</button>
       </div>
     </div>
@@ -259,7 +259,7 @@ class Component extends DCLogic {
       confirmNew: finish,
       donePhoto: s.kind === 'join' ? (known.find(k => k.name === pk[0]) || {}).photo : m ? m.photo : s.photo,
       doneTitle: s.kind === 'join' ? 'You’re feeding ' + pkName : m ? 'Sighting added to ' + m.name : (spot ? 'Thanks for reporting' : name + ' is in the circle'),
-      doneBody: s.kind === 'join' ? 'They’ll appear in your Today cards when a feed is due. Exact spots unlock after 30 days of regular care.' : m ? 'Your photo and notes are on ' + m.name + '’s record. Caregivers will see it next time they check in.' : spot ? 'Members in ' + s.zone + ' will see this sighting. Once someone else sees the same cat, it becomes a full profile.' + (injured ? ' Because you marked them injured, it’s also posted to #need-help.' : '') : 'You’re listed as a caregiver. Others in ' + s.zone + ' can now see ' + name + ' and help with feeding.',
+      doneBody: s.kind === 'join' ? 'They’ll appear in your Care cards when a feed is due. Exact spots unlock after 30 days of regular care.' : m ? 'Your photo and notes are on ' + m.name + '’s record. Caregivers will see it next time they check in.' : spot ? 'Members in ' + s.zone + ' will see this sighting. Once someone else sees the same cat, it becomes a full profile.' + (injured ? ' Because you marked them injured, it’s also posted to #need-help.' : '') : 'You’re listed as a caregiver. Others in ' + s.zone + ' can now see ' + name + ' and help with feeding.',
       doneTag: s.kind === 'join' ? 'Caregiver · You' : m ? 'Updated' : (spot ? 'New sighting · 1 of 2 confirmations' : 'Caregiver · You'),
       doneTagBg: spot && !m && s.kind !== 'join' ? '#F7E9C4' : '#E3EBDA', doneTagFg: spot && !m && s.kind !== 'join' ? '#7A5A12' : '#4A6140',
       restart: () => this.setState(reset),

@@ -1,5 +1,9 @@
 # MewLink — independent working copy
 
+This version was approved for GitHub synchronization on 2026-10-30. The source and committed `dist/` match all 60 files in production deployment `dpl_G7w2fPbaZ1fZk7S5AZHg2cZguow3`. See [the approved release and synchronization record](docs/github-sync-2026-10-30.md) and [the latest feature verification report](docs/ux06-delivery.md). Mandatory Care Basics now depend on the two experience answers; full-screen confetti uses two prerendered layers.
+
+Earlier development reports describe the synchronization status at their respective checkpoints. This approved release supersedes their “not yet pushed” status.
+
 Public prototype: https://mewlink-design-copy.vercel.app/#today
 
 Repository: https://github.com/zby336/mewlink-prototype-v3

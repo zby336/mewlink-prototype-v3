@@ -5,9 +5,13 @@
 <link rel="stylesheet" href="/feature-update.css">
 <script src="/caregiver-model.js"></script>
 <script src="/care-knowledge.js"></script>
+<script src="/refinement-model.js"></script>
+<script src="/home-refinement-ui.js"></script>
+<script src="/refinement-ui.js"></script>
 <script src="/knowledge-ui.js"></script>
 <script src="/caregiver-ui.js"></script>
 <link rel="stylesheet" href="/update02.css">
+<link rel="stylesheet" href="/refinement.css">
 <script src="8193565c-c163-467d-8bc7-238ec6a79b4d"></script>
 </head>
 <body>
@@ -126,11 +130,11 @@
 <script type="text/x-dc" data-dc-script="">
 class Component extends DCLogic {
   state = { route: this.read() };
-  read() { return (location.hash || '').slice(1) || 'welcome'; }
+  read() { const raw=(location.hash || '').slice(1),r=raw==='care'?'today':raw==='askmewai'?'askmew':raw||'welcome'; if(window.MewLinkRefine?.learningPending()&&!['welcome','join','learn'].includes(r))return 'learn'; return r; }
   componentDidMount() { this.h = () => this.setState({ route: this.read() }); addEventListener('hashchange', this.h); }
   componentWillUnmount() { removeEventListener('hashchange', this.h); }
   renderVals() {
-    const home = ['welcome', 'join', 'done', 'today', 'community', 'chat', 'me'];
+    const home = ['welcome', 'join', 'learn', 'done', 'today', 'community', 'chat', 'me'];
     const app = ['cats', 'tiger', 'diary', 'review', 'thread', 'askmew'];
     let r = this.state.route; const catId = r.startsWith('cat/') ? decodeURIComponent(r.slice(4)) : ''; if (!catId && ![...home, ...app, 'careupdate', 'upload', 'memory', 'addcat'].includes(r)) r = 'welcome';
     const e = React.createElement;
@@ -141,7 +145,7 @@ class Component extends DCLogic {
       community: [{ d: 'M4.5 5h11A2.5 2.5 0 0 1 18 7.5v5a2.5 2.5 0 0 1-2.5 2.5H10l-4 3.5V15H4.5A2.5 2.5 0 0 1 2 12.5v-5A2.5 2.5 0 0 1 4.5 5z' }, { d: 'M20.5 9.5A2 2 0 0 1 22 11.4v4.1a2 2 0 0 1-2 2h-.5V20l-3-2.5' }],
       askmew: [{ d: 'M11 3l2.1 6.2L19.5 11l-6.4 2L11 19.5 8.9 13 2.5 11l6.4-1.8z' }, { d: 'M19 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z', fill: 1 }],
     };
-    const labels = { today: 'Today', cats: 'Cats', community: 'Community', askmew: 'Ask Mew' };
+    const labels = { today: 'Care', cats: 'Cats', community: 'Community', askmew: 'Ask Mew' };
     const tabs = Object.keys(icons).map(k => { const on = k === r, c = on ? '#2A1F18' : '#8F7E6F';
       return { href: '#' + k, label: labels[k], c, w: on ? 700 : 400, pill: on ? '#FBE7BA' : 'transparent', icon: e('svg', { width: 24, height: 24, viewBox: '0 0 24 24' }, P(c, icons[k])) }; });
     return { isCat: !!catId, catId, careCatId: sessionStorage.getItem('mewlink-care-target') || 'tiger', tabs, showTabs: ['today', 'cats', 'community', 'askmew'].includes(r), route: r, isHome: home.includes(r), isApp: app.includes(r), isCare: r === 'careupdate', isUpload: r === 'upload', isMemory: r === 'memory', isAddCat: r === 'addcat' };

@@ -64,3 +64,60 @@ test('demo fixtures stay fixed; local care updates persist and Seen is rejected'
  M.savePreferences({hideAll:true,selfPrivate:true});assert.equal(M.preferences().hideAll,true);assert.equal(M.preferences().selfPrivate,true);
  assert.deepEqual(M.allRecords().slice(0,before.length),before);
 });
+
+test('care counts count distinct qualifying records and retain latest fading date',()=>{
+ const first=rec('aisha',6,'feeding',{id:'first'});
+ const rows=[first,{...first},rec('aisha',1,'water',{id:'second'}),rec('aisha',0,'seen',{id:'sighting'}),rec('aisha',0,'feeding',{id:'invalid',valid:false}),rec('aisha',31,'feeding',{id:'expired'}),rec('ravi',2,'feeding',{id:'other'})];
+ const result=M.activity(rows,'tiger',{now});
+ assert.equal(result.rows.find(r=>r.id==='aisha').careCount,2);
+ assert.equal(result.rows.find(r=>r.id==='aisha').days,1);
+ assert.equal(result.rows.find(r=>r.id==='aisha').crown,true);
+ assert.equal(result.rows.find(r=>r.id==='ravi').crown,false);
+});
+
+test('equal most-active counts crown ties without sorting by count',()=>{
+ const rows=[rec('aisha',1,'feeding',{id:'a1'}),rec('aisha',2,'water',{id:'a2'}),rec('ravi',3,'feeding',{id:'r1'}),rec('ravi',4,'feeding',{id:'r2'}),rec('wei',1,'water',{id:'w1'})];
+ const result=M.activity(rows,'tiger',{now,prefs:{seed:'shared-view'}});
+ assert.deepEqual(result.rows.filter(r=>r.crown).map(r=>r.id).sort(),['aisha','ravi']);
+ const changed=M.activity([...rows,rec('wei',2,'water',{id:'w2'}),rec('wei',3,'feeding',{id:'w3'})],'tiger',{now,prefs:{seed:'shared-view'}});
+ assert.deepEqual(changed.rows.map(r=>r.id),result.rows.map(r=>r.id));
+ assert.deepEqual(changed.rows.filter(r=>r.crown).map(r=>r.id),['wei']);
+});
+
+test('circle and note visibility filters apply before care counts or crowns',()=>{
+ const rows=[rec('aisha',1,'feeding',{id:'public',circleId:'our-circle',visibility:'circle'}),rec('ravi',1,'feeding',{id:'foreign',circleId:'another-circle',visibility:'circle'}),rec('ravi',2,'feeding',{id:'private',circleId:'our-circle',visibility:'private'}),rec(M.CURRENT_USER,1,'water',{id:'own-private',circleId:'our-circle',visibility:'private'})];
+ const result=M.activity(rows,'tiger',{now,circleId:'our-circle'});
+ assert.equal(result.count,2);assert.equal(result.rows.some(r=>r.id==='ravi'),false);
+ assert.equal(result.rows.find(r=>r.id===M.CURRENT_USER).careCount,1);
+});
+
+test('private and hidden leaders never expose identities or promote another public avatar',()=>{
+ const rows=[rec('aisha',1,'feeding',{id:'a1'}),rec('aisha',2,'water',{id:'a2'}),rec('ravi',3,'feeding',{id:'r1'})];
+ const hidden=M.activity(rows,'tiger',{now,prefs:{hiddenIds:['aisha']}});
+ assert.equal(hidden.count,2);assert.equal(hidden.rows.length,1);assert.equal(hidden.rows[0].crown,false);
+ assert(!JSON.stringify(hidden).includes('Aisha'));
+ const priv=M.activity([...rows,...[1,2,3].map((d,i)=>rec('private-1',d,'water',{id:'p'+i}))],'tiger',{now});
+ assert.equal(priv.privateCount,1);assert.equal(priv.rows.filter(r=>r.crown).length,0);
+ assert(!JSON.stringify(priv).includes('private-1'));
+ const self=M.activity([rec('mei-ling',1,'feeding',{id:'m1'}),rec('mei-ling',2,'water',{id:'m2'}),rec('ravi',1,'feeding',{id:'r1'})],'tiger',{now,prefs:{selfPrivate:true}});
+ assert(!JSON.stringify(self).includes('Mei Ling'));assert.equal(self.rows[0].crown,false);
+});
+
+test('observation history uses Singapore day groups and preserves all note contents',()=>{
+ const fs=require('node:fs'),vm=require('node:vm'),registry=new Map();
+ const rows=[
+  {occurredAt:'2026-10-27T15:59:00Z',authorId:'private-1',observed:'Earlier <note>',details:'Earlier <note> with original additional detail.',uncertain:'Could not assess',next:'Please check next',photo:'https://example.org/photo.jpg',careKind:'feeding',careOutcome:'not_provided'},
+  {occurredAt:'2026-10-27T16:01:00Z',authorId:'aisha',observed:'Newer note',careKind:'water',careOutcome:'provided'},
+  {occurredAt:'2026-10-27T16:02:00Z',authorId:'ravi',observed:'Newest note'}
+ ];
+ class Element{constructor(){this.shadowRoot={innerHTML:''};}attachShadow(){return this.shadowRoot;}getAttribute(){return 'tiger';}hasAttribute(){return false;}}
+ const context={window:{MewLinkCare:M,MewLinkData:{observations:()=>rows,author:id=>id==='private-1'?'Anonymous caregiver':M.PEOPLE[id].name}},HTMLElement:Element,customElements:{get:name=>registry.get(name),define:(name,cls)=>registry.set(name,cls)},Intl,Date,Map,Set};
+ vm.runInNewContext(fs.readFileSync(require.resolve('../public/knowledge-ui.js'),'utf8'),context);
+ const Log=registry.get('mew-observation-log'),view=new Log();view.render();const html=view.shadowRoot.innerHTML;
+ assert.equal((html.match(/class="log-day"/g)||[]).length,2);
+ assert.equal((html.match(/class="log-date"/g)||[]).length,2);
+ assert(html.indexOf('Newest note')<html.indexOf('Newer note'));assert(html.indexOf('Newer note')<html.indexOf('Earlier &lt;note&gt;'));
+ assert.match(html,/Anonymous caregiver/);assert.match(html,/Could not assess/);assert.match(html,/Please check next/);assert.match(html,/Feeding not provided/);assert.match(html,/Water recorded/);assert.match(html,/https:\/\/example.org\/photo.jpg/);
+ assert(!html.includes('private-1'));assert(!html.includes('<note>'));
+ assert.match(html,/with original additional detail/);
+});

@@ -1,0 +1,20 @@
+/* Focused second-round additions, using the existing MewLink palette. */
+mew-ai-mark{display:inline-block;vertical-align:-2px;width:16px;height:16px;margin-left:3px;background:currentColor;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11 3l2.1 6.2L19.5 11l-6.4 2L11 19.5 8.9 13 2.5 11l6.4-1.8zM19 2.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z' fill='black'/%3E%3C/svg%3E") center/contain no-repeat}
+#askmew input[aria-label="Ask Mew a question"]{font-size:16px!important}
+#askmew input[aria-label="Ask Mew a question"]::placeholder{font-size:12px;letter-spacing:-.1px;color:#817466;opacity:1}
+mew-save-celebration{position:fixed;inset:0;width:min(100vw,440px);height:100dvh;margin:0 auto;overflow:hidden;contain:strict;z-index:1000;pointer-events:none}
+mew-save-celebration canvas{position:absolute;top:-12%;left:0;display:block;width:100%;height:120%;pointer-events:none;will-change:transform,opacity;animation:mewConfettiLayer 3s linear both}
+mew-save-celebration canvas:nth-child(2){animation-name:mewConfettiLayerBack;animation-duration:3.4s;animation-delay:.12s}
+@keyframes mewConfettiLayer{0%{opacity:0;transform:translate3d(-8px,-14%,0) rotate(-3deg)}8%{opacity:1}72%{opacity:.95}100%{opacity:0;transform:translate3d(18px,100%,0) rotate(4deg)}}
+@keyframes mewConfettiLayerBack{0%{opacity:0;transform:translate3d(10px,-20%,0) rotate(3deg)}10%{opacity:.9}70%{opacity:.9}100%{opacity:0;transform:translate3d(-14px,100%,0) rotate(-4deg)}}
+.mew-care-scroll{gap:12px!important}
+.mew-care-scroll [data-zone-needs] a>span:last-child{white-space:nowrap}
+.mew-care-scroll .ml-cat-photo{height:clamp(160px,calc(100dvh - 484px - env(safe-area-inset-bottom,0px)),430px)!important}
+.mew-profile-cats{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 36px)/4);gap:12px;overflow-x:auto;scrollbar-width:none;padding:4px 0;scroll-padding:0}
+.mew-profile-cats>a{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;color:#2A1F18;text-decoration:none}
+.mew-profile-cat-ring{width:64px;height:64px;border-radius:50%;padding:3px;flex:none}
+.mew-profile-cat-ring>[role=img]{display:block;width:100%;height:100%;border:2px solid #FAF6EF;border-radius:50%;background-position:center;background-size:cover;background-repeat:no-repeat}
+/* Oyen's existing group photo needs a closer crop around the cat on the left. */
+.mew-profile-cat-ring>[aria-label^="Oyen"],#cats [role=img][aria-label="Oyen"]{background-size:220%!important;background-position:20% 65%!important}
+@media(max-height:700px){.mew-care-scroll{gap:10px!important;padding-top:12px!important}.mew-care-scroll [data-zone-needs] a>span:first-child{width:56px!important;height:56px!important}.mew-care-scroll .mew-recommended-caption{padding:10px!important;gap:4px!important}.mew-care-scroll .mew-cat-title{font-size:24px!important}.mew-care-scroll .mew-cat-note{font-size:12px!important}.mew-care-scroll .ml-cat-photo>div:first-child{padding:10px!important}.mew-care-scroll .ml-cat-photo>div:first-child>span{font-size:11px!important;padding:5px 8px!important}}
+@media(prefers-reduced-motion:reduce){mew-save-celebration{display:none}a,button{scroll-behavior:auto!important;animation:none!important;transition:none!important}}

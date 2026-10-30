@@ -13,10 +13,46 @@
   const GENERAL=[
     {id:'guide-cws',title:'Cat Welfare Society · Responsible Caregiving',url:'https://www.catwelfare.org/responsible-caregiving/',text:'Offer cat food in containers, clear leftovers within two hours, and provide fresh water daily. Clean the water container when changing water. Arrange veterinary attention for signs of medical distress.',topics:['feeding','water','bowl','clean','care','food','喂','水','照护'],reviewedAt:'2026-10-28'},
     {id:'guide-cornell',title:'Cornell Feline Health Center · Anorexia',url:'https://www.vet.cornell.edu/departments-centers-and-institutes/cornell-feline-health-center/health-information/feline-health-topics/anorexia',text:'Loss of appetite has many possible causes. Contact a veterinarian promptly when a cat stops eating; do not diagnose the cause from a note or force food into its mouth.',topics:['appetite','eating','eat','health','vet','sick','诊断','不吃','健康'],reviewedAt:'2026-10-28'},
-    {id:'guide-avs',title:'AVS · Community Cat Caregiving Guidelines',url:'https://www.nparks.gov.sg/-/media/avs/cat-management-framework/avs-handbook-for-cat-caregiving-guidelines.pdf',text:'Coordinate a regular feeding schedule with other caregivers to avoid overfeeding. Agree on suitable feeding areas with the relevant community partners.',topics:['schedule','handover','feeding','neighbour','coordinate','交接','安排'],reviewedAt:'2026-10-28'}
+    {id:'guide-avs',title:'AVS · Living harmoniously with community cats',url:'https://avs.nparks.gov.sg/community-animals/living-harmoniously-with-community-animals/community-cats/',text:'Keep calm and quiet, maintain a respectful distance, and let a community cat approach at its own pace. Do not chase, corner or stare at it. Avoid sudden movement and supervise children.',topics:['approach','behaviour','behavior','shy','接近','行为'],reviewedAt:'2026-10-29'},
+    {id:'guide-avs-schedule',title:'AVS · Community Cat Caregiving Guidelines',url:'https://isomer-user-content.by.gov.sg/30/652a0a76-5f27-4353-b5db-9caa36603abd/AVS_Cat%20Caregiving%20Guidelines_Handbook_FA%2030072026.pdf',text:'Agree on a regular feeding schedule with other caregivers to avoid overfeeding. Work with community partners to identify suitable feeding spaces. Clean up food and feeding points after cats finish eating or before leaving.',topics:['schedule','handover','feeding','neighbour','coordinate','交接','安排'],reviewedAt:'2026-10-29'}
   ];
+  function upgradeProfiles(data){
+    if(data.version>=3)return data;
+    const anchor=Date.parse(data.anchor)||Date.now();
+    const extra=[
+      ['mochi','aisha',3,'Mochi watched from the ledge, then stepped back when I approached.','The reason is unknown.','Give Mochi space and let her approach next visit.'],
+      ['biscuit','ravi',5,'Biscuit left the food untouched during my visit.','I do not know whether he ate elsewhere.','Check how much Biscuit eats at the next visit.'],
+      ['pepper','wei',2,'Pepper gave a slow blink. His water bowl was nearly empty.','','Check and refill the water bowl next visit.'],
+      ['nori','ravi',6,'Nori watched quietly from a few steps away.','','Check the water bowl on the next round.'],
+      ['luna','wei',8,'Luna came closer after I waited quietly.','','Coordinate the next feeding round.'],
+      ['tofu','aisha',10,'Tofu stretched beside the bench after eating.','','Clean and refill the water bowl next visit.']
+    ];
+    for(const [catId,authorId,hours,observed,uncertain,next] of extra){
+      const id='fixture-observation-'+catId;if(data.observations.some(r=>r.id===id))continue;
+      const occurredAt=new Date(anchor-hours*3600000).toISOString();
+      data.observations.push({id,catId,authorId,occurredAt,createdAt:occurredAt,observed,uncertain,next,visibility:'circle',circleId:CIRCLE,source:'demo',identity:'confirmed'});
+    }
+    data.version=3;write(KEYS.demo,data);return data;
+  }
+  function upgradeDemo(data){
+    if(data.version>=2)return upgradeProfiles(data);
+    const anchor=Date.parse(data.anchor)||Date.now();
+    const full={
+      'obs-tiger-aisha':'I noticed what looked like a small cut near one ear. He let me come fairly close and ate most of his food. I didn’t try to touch it.',
+      'obs-tiger-wei':'I couldn’t assess the ear in the low light, and he kept his distance. Tiger ate about half his usual amount, then walked off calmly.'
+    };
+    for(const r of data.observations)if(full[r.id]&&!r.details)r.details=full[r.id];
+    const weekday=new Date(anchor+8*3600000).getUTCDay();
+    const previous=day=>new Date(anchor-((weekday-day+7)%7||7)*M.DAY).toISOString();
+    const extra=[
+      {id:'obs-tiger-ravi-older',authorId:'ravi',occurredAt:previous(6),observed:'Fed at the usual time. Coat and eyes looked normal to me.',photo:'https://images.unsplash.com/photo-1675504661658-33940d979a6a?w=720&h=440&fit=crop&q=75&auto=format'},
+      {id:'obs-tiger-meiling-older',authorId:'mei-ling',occurredAt:previous(4),observed:'Updated his ID photo and added “ear-tipped”.'}
+    ];
+    for(const r of extra)if(!data.observations.some(x=>x.id===r.id))data.observations.push({...r,catId:'tiger',createdAt:r.occurredAt,uncertain:'',next:'',visibility:'circle',circleId:CIRCLE,source:'demo',identity:'confirmed'});
+    data.version=2;return upgradeProfiles(data);
+  }
   function demo(){
-    let data=read(KEYS.demo,null);if(data?.observations)return data;
+    let data=read(KEYS.demo,null);if(data?.observations)return upgradeDemo(data);
     M.allRecords();const anchor=Date.parse(read(M.KEYS.demo,{}).anchor)||Date.now();
     const at=hours=>new Date(anchor-hours*3600000).toISOString();
     const row=(id,catId,authorId,hours,observed,uncertain,next)=>({id,catId,authorId,occurredAt:at(hours),createdAt:at(hours),observed,uncertain,next,visibility:'circle',circleId:CIRCLE,source:'demo',identity:'confirmed'});
@@ -28,7 +64,7 @@
       row('obs-milo-ravi','milo','ravi',3,'Milo finished his food first.','','Place his bowl a little apart and record what he eats.'),
       row('obs-ash-wei','ash','wei',72,'Ash did not come out on the evening round.','His current whereabouts are not confirmed.','Look out for Ash and record the time of any sighting.'),
       row('obs-bubu-wei','bubu','wei',48,'An extra pair of hands on weekends would help.','','Coordinate weekend cover with the circle.')
-    ]};write(KEYS.demo,data);return data;
+    ]};return upgradeDemo(data);
   }
   function updates(){const a=read(KEYS.updates,[]);return Array.isArray(a)?a:[];}
   function accessible(r,viewer=M.CURRENT_USER){return r.circleId===CIRCLE&&(r.visibility==='circle'||r.authorId===viewer);}
@@ -38,7 +74,7 @@
   }
   function author(id){const p=M.PEOPLE[id];return !p||p.publicIdentity===false||(id===M.CURRENT_USER&&M.preferences().selfPrivate)?'Anonymous caregiver':p.name;}
   function sourceFor(r,type='observation'){
-    return {id:r.id,title:(cat(r.catId)?.name||'Unconfirmed cat')+' · '+type,when:stamp(r.occurredAt),at:r.occurredAt,text:[r.observed,r.uncertain&&'Uncertain: '+r.uncertain,r.next&&'Next visit: '+r.next].filter(Boolean).join(' '),author:author(r.authorId||r.caregiverId),url:M.profileHref(r.catId),demo:true};
+    return {id:r.id,title:(cat(r.catId)?.name||'Unconfirmed cat')+' · '+type,when:stamp(r.occurredAt),at:r.occurredAt,text:[r.details||r.observed,r.uncertain&&'Uncertain: '+r.uncertain,r.next&&'Next visit: '+r.next].filter(Boolean).join(' '),author:author(r.authorId||r.caregiverId),url:M.profileHref(r.catId),demo:r.source==='demo'};
   }
   const guideSource=g=>({id:g.id,title:g.title,when:'Reviewed '+g.reviewedAt,text:g.text,url:g.url,external:true});
   function savedCareRecords(){return updates().filter(r=>accessible(r)&&r.identity==='confirmed'&&r.catId&&M.VALID_CARE.has(r.careKind)&&r.careOutcome==='provided').map(r=>({id:'care-'+r.id,updateId:r.id,catId:r.catId,caregiverId:r.authorId,occurredAt:r.occurredAt,kind:r.careKind,valid:true,source:'prototype-action',circleId:r.circleId,visibility:r.visibility,authorId:r.authorId}));}
@@ -83,7 +119,7 @@
   function answer(question,options={}){
     const q=String(question||'').trim(),lower=q.toLowerCase(),now=options.now??Date.now();
     const matches=M.allCats().filter(c=>new RegExp('(^|[^a-z])'+c.name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'([^a-z]|$)').test(lower));
-    const base={mode:'Local knowledge demo · rule-based retrieval, no LLM',generatedAt:new Date(now).toISOString(),sources:[],status:'information'};
+    const base={mode:'Local knowledge · rule-based retrieval, no LLM',generatedAt:new Date(now).toISOString(),sources:[],status:'information'};
     if(!q)return {...base,status:'unconfirmed',text:'Ask about a cat, a recorded visit, feeding or a handover.'};
     const day=M.sgDay(now)-(/yesterday|昨天/i.test(q)?1:0),dayLabel=day===M.sgDay(now)?'today':'yesterday';
     if(matches.length&&/\bfed\b|feed(?:ing)?\s+(?:record|today|status)|has .*eat|喂过|喂了|喂食记录/i.test(q)){
@@ -105,12 +141,25 @@
     return {...base,status:'unconfirmed',text:'No relevant source found in this small local knowledge base. Try a cat name with feeding, recent observations or next visit. I will not guess at missing records.'};
   }
   function suggestions(id,options={}){
-    const now=options.now??Date.now(),rows=observations(id,{...options,now}),recent=rows.filter(r=>M.daysSince(r.occurredAt,now)<=30),items=[],used=[];
-    for(const r of recent.filter(r=>r.next).slice(0,3)){const text=r.next.trim();if(!items.some(x=>x.text===text)){items.push({text,sourceIds:[r.id]});used.push(r);}}
-    if(recent.some(r=>/cut|ear|wound|swollen|mark|injur|伤|肿/i.test(r.observed+' '+r.uncertain))&&items.length<4){items.push({text:'Record what has changed in the reported concern; if there are signs of distress, arrange veterinary attention. Do not infer a diagnosis.',sourceIds:['guide-cws']});}
-    if(!recent.length){items.push({text:'There are not enough recent notes to personalise this handover. Ask the circle what still needs checking.',sourceIds:[]});}
-    if(items.length<2){const r=recent[0];items.push({text:r?'Add a time-stamped observation at your next visit, including anything still uncertain.':'Record a clear observation, the time, and a confirmed cat identity after the next visit.',sourceIds:r?[r.id]:[]});if(r)used.push(r);}
-    return {items:items.slice(0,4),sources:[...new Map(used.map(r=>[r.id,sourceFor(r)])).values(),...(items.some(i=>i.sourceIds.includes('guide-cws'))?[guideSource(GENERAL[0])]:[])],updatedAt:rows[0]?.createdAt||rows[0]?.occurredAt||null,generatedAt:new Date(now).toISOString(),limited:!recent.length};
+    const now=options.now??Date.now(),rows=observations(id,{...options,now}),recent=rows.filter(r=>M.daysSince(r.occurredAt,now)<=30),items=[],used=new Map();
+    const add=(text,sourceIds=[],type='guidance')=>{if(items.length<4&&!items.some(x=>x.text===text)){items.push({text,sourceIds,type});sourceIds.forEach(key=>{const r=recent.find(r=>r.id===key),g=GENERAL.find(g=>g.id===key);if(r)used.set(key,sourceFor(r));else if(g)used.set(key,guideSource(g));});}};
+    const openNeeds=root.MewLinkRefine?.needs(id,{...options,now});
+    const request=openNeeds?recent.find(r=>openNeeds.some(n=>n.sourceIds.includes(r.id))):recent.find(r=>r.next);
+    if(request)add('Recorded next visit: '+request.next.trim(),[request.id],'recorded-request');
+    else if(!recent.length)add('Recent care details are unknown. Ask the circle what needs checking before you visit.',[],'unknown');
+    const food=recent.find(r=>{const text=r.details||r.observed||'';return /\b(prefers?|usually eats?|favourite food is|favorite food is|usual food is|food preference:)\b|喜欢吃|平时吃/i.test(text)&&!(/\b(unknown|unconfirmed|not recorded|not known|not sure|ask|confirm|whether|does not|doesn't)\b|不确定|未知|未记录/.test(text.toLowerCase()));});
+    if(food)add('Food note: '+(food.details||food.observed||food.next).trim()+' Confirm this is still current before feeding.',[food.id],'recorded-fact');
+    else add('Food preference is not recorded. General guidance: check with the circle and use cat food, not a guessed special diet.',['guide-cws'],'unknown-and-guidance');
+    const water=recent.find(r=>/\bwater\b|水碗|补水|饮水/i.test((r.observed||'')+' '+(r.next||'')));
+    if(water&&water.id!==request?.id)add('Water record: '+(water.observed||water.next)+' Check the bowl at the next visit; its current level is unconfirmed.',[water.id,'guide-cws'],'record-and-guidance');
+    else if(!water)add('Water level is unknown. Check for fresh water and clean the bowl when changing it.',['guide-cws'],'unknown-and-guidance');
+    const concern=recent.find(r=>/\b(cut|ear|wound|swollen|injur|mark)\b|伤|肿/i.test((r.details||r.observed)+' '+(r.uncertain||'')));
+    const behaviourSentence=r=>(String(r.details||r.observed||'').match(/[^.!?\n]+[.!?]?/g)||[]).map(s=>s.trim()).find(s=>/\b(calm(?:ly)?|shy|hiding|hid|hiss(?:ing|ed)?|kept (?:his |her |their |its )?distance|approach(?:ed|es|ing)?|come (?:fairly |very )?close|nervous|purr(?:ing|ed)?)\b|紧张|躲|亲近/i.test(s));
+    const behaviour=recent.find(r=>behaviourSentence(r));
+    if(concern&&concern.id!==request?.id)add('Reported concern: '+concern.observed+' Observe what changes and add a clear note or photo; this is not a diagnosis.',[concern.id],'record-and-guidance');
+    else if(behaviour)add('Behaviour note: '+behaviourSentence(behaviour)+' General guidance: let the cat choose whether to approach.',[behaviour.id,'guide-avs'],'record-and-guidance');
+    else add('No recent interaction preference is recorded. Give the cat space and let it approach at its own pace.',['guide-avs'],'unknown-and-guidance');
+    return {items,sources:[...used.values()],updatedAt:rows[0]?.createdAt||rows[0]?.occurredAt||null,generatedAt:new Date(now).toISOString(),limited:!recent.length};
   }
   function social(){const s=read(KEYS.social,{});return {posts:s.posts||[],likes:s.likes||{},comments:s.comments||{}};}
   function basePosts(){const obs=demo().observations;return [

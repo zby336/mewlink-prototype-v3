@@ -22,6 +22,30 @@
     {id:'ash',name:'Ash',zone:'Zone C',photo:CAT_PHOTO('photo-1557408938-0f220f49bca1'),when:'3 days ago',last:'Wei: didn’t come out on the evening round.',tag:'Not seen recently',next:'Look out for him on your round.'},
     {id:'bubu',name:'Bubu',zone:'Zone C',photo:CAT_PHOTO('photo-1514888286974-6c03e2ca1dba'),when:'Recently',last:'An extra pair of hands on weekends would help.',tag:'Recorded by caregivers',next:'Join the weekend care round.'}
   ];
+  // Presentation fixtures; these are not verified animals or real-world care events.
+  const profileExtras = {
+    tiger:{tnrOk:true,funFact:'A shy hello, then a little tabby charm.'},
+    kopi:{tnrOk:true,funFact:'Clean bowl. Full belly. Kopi understood the assignment.'},
+    oyen:{tnrOk:true,funFact:'Dinner tastes better with his buddy Milo.'},
+    milo:{tnrOk:true,funFact:'First to finish, every dinner is a speed round.'},
+    ash:{tnrOk:false,funFact:'The neighbourhood’s elusive grey guest.'},
+    bubu:{tnrOk:true,funFact:'Weekend rounds could use a little more Bubu.'}
+  };
+  for(const c of CATS)Object.assign(c,profileExtras[c.id]);
+  CATS.push(
+    {id:'mochi',name:'Mochi',zone:'Zone A',photo:CAT_PHOTO('photo-1513360371669-4adf3dd7dff8'),tnrOk:true,funFact:'A window-seat fan with a strict no-rush policy.',tag:'Likes quiet visits',last:'Aisha: watched from the ledge, then stepped back.',next:'Give Mochi space on the next visit.'},
+    {id:'biscuit',name:'Biscuit',zone:'Zone A',photo:CAT_PHOTO('photo-1573865526739-10659fec78a5'),tnrOk:false,funFact:'A tiny loaf with a very serious dinner face.',tag:'Quiet at mealtimes',last:'Ravi: food was left untouched at the last visit.',next:'Check how much Biscuit eats next visit.'},
+    {id:'pepper',name:'Pepper',zone:'Zone A',photo:CAT_PHOTO('photo-1518791841217-8f162f1e1131'),tnrOk:true,funFact:'One slow blink and Pepper has your attention.',tag:'Slow-blink greeter',last:'Wei: water bowl was nearly empty.',next:'Check and refill Pepper’s water bowl.'},
+    {id:'nori',name:'Nori',zone:'Zone B',photo:CAT_PHOTO('photo-1533738363-b7f9aef128ce'),tnrOk:false,funFact:'The quiet spectator of every evening round.',tag:'Keeps a little distance',last:'Ravi: watched the round from a few steps away.',next:'Check the water bowl on the next round.'},
+    {id:'luna',name:'Luna',zone:'Zone C',photo:CAT_PHOTO('photo-1526336024174-e58f5cdd8e13'),tnrOk:true,funFact:'A gentle hello, always on her own schedule.',tag:'Gentle approach',last:'Wei: came closer after a quiet wait.',next:'Coordinate the next feeding round.'},
+    {id:'tofu',name:'Tofu',zone:'Zone D',photo:CAT_PHOTO('photo-1511044568932-338cba0ad803'),tnrOk:false,funFact:'A master of the unhurried, dramatic stretch.',tag:'Enjoys a quiet visit',last:'Aisha: stretched beside the bench after a meal.',next:'Clean and refill the water bowl next visit.'}
+  );
+  function thumbnail(value,size=180){
+    const photo=typeof value==='string'?value:value?.photo||'';
+    if(!/^https:\/\/images\.unsplash\.com\/photo-[^/?]+(?:\?|$)/.test(photo))return photo;
+    const edge=Math.round(Math.max(80,Math.min(400,Number(size)||180)));
+    return photo.split('?')[0]+'?w='+edge+'&h='+edge+'&fit=crop&crop=entropy&q=80&auto=format';
+  }
   function sgDay(value) {
     const ms = new Date(value).getTime();
     return Number.isFinite(ms) ? Math.floor((ms+SG_OFFSET)/DAY) : NaN;
@@ -39,21 +63,28 @@
     return hash>>>0;
   }
   function activity(records,catId,options={}) {
-    const now=Number(options.now??Date.now()), prefs=options.prefs||{}, people=options.people||PEOPLE, latest=new Map();
+    const now=Number(options.now??Date.now()), prefs=options.prefs||{}, people=options.people||PEOPLE, latest=new Map(), counts=new Map(), seenRecords=new Set();
     for(const r of records){
       const time=new Date(r.occurredAt).getTime();
       const age=daysSince(time,now);
       if(r.catId!==catId || r.valid!==true || !VALID_CARE.has(r.kind) || !r.caregiverId || !Number.isFinite(time) || time>now || age<0 || age>30) continue;
+      const circle=options.circleId||root.MewLinkData?.CIRCLE,viewer=options.viewer||CURRENT_USER;
+      if(r.circleId&&r.circleId!==circle)continue;
+      if(r.visibility==='private'&&(r.authorId||r.caregiverId)!==viewer)continue;
+      // One saved care event must not count twice when stores are merged.
+      if(r.id){if(seenRecords.has(r.id))continue;seenRecords.add(r.id);}
+      counts.set(r.caregiverId,(counts.get(r.caregiverId)||0)+1);
       if(!latest.has(r.caregiverId)||time>latest.get(r.caregiverId)) latest.set(r.caregiverId,time);
     }
     const hidden=new Set(prefs.hiddenIds||[]);
     const publicRows=[]; let privateCount=0,hiddenCount=0;
+    const mostRecords=Math.max(0,...counts.values());
     for(const [id,time] of latest){
       const p=people[id];
       if(!p || p.publicIdentity===false || (id===CURRENT_USER && prefs.selfPrivate)){ privateCount++; continue; }
       if(prefs.hideAll || hidden.has(id)){hiddenCount++;continue;}
       const days=daysSince(time,now);
-      publicRows.push({id,name:p.name,initials:p.initials,color:p.color,lastAt:new Date(time).toISOString(),days,relative:relativeTime(time,now),opacity:opacityForDays(days)});
+      publicRows.push({id,name:p.name,initials:p.initials,color:p.color,lastAt:new Date(time).toISOString(),days,relative:relativeTime(time,now),opacity:opacityForDays(days),careCount:counts.get(id),crown:counts.get(id)===mostRecords});
     }
     publicRows.sort((a,b)=>stableHash((prefs.seed||'demo')+catId+a.id)-stableHash((prefs.seed||'demo')+catId+b.id)||a.id.localeCompare(b.id));
     const avatars=publicRows.slice(0,5);
@@ -79,6 +110,14 @@
     if(!demo || !Array.isArray(demo.records)){
       demo={version:1,anchor:new Date().toISOString(),records:demoRecords(Date.now())};
       write(KEYS.demo,demo);
+    }
+    if(demo.version<2){
+      const anchor=Date.parse(demo.anchor)||Date.now();
+      for(const [i,c] of CATS.slice(6).entries()){
+        const id='fixture-care-'+c.id;
+        if(!demo.records.some(r=>r.id===id))demo.records.push({id,catId:c.id,caregiverId:i%2?'ravi':'aisha',occurredAt:new Date(anchor-(i+2)*DAY).toISOString(),kind:i===2?'water':'feeding',valid:true,source:'demo'});
+      }
+      demo.version=2;write(KEYS.demo,demo);
     }
     return demo;
   }
@@ -125,7 +164,7 @@
     if(event.shiftKey && root.document.activeElement===first){event.preventDefault();last?.focus();}
     if(!event.shiftKey && root.document.activeElement===last){event.preventDefault();first?.focus();}
   });
-  const api={DAY,KEYS,PEOPLE,CATS,CURRENT_USER,VALID_CARE,sgDay,daysSince,opacityForDays,relativeTime,stableHash,activity,demoRecords,allRecords,preferences,savePreferences,recordCare,allCats,catIdForName,profileHref,syncFeedingModal};
+  const api={DAY,KEYS,PEOPLE,CATS,CURRENT_USER,VALID_CARE,sgDay,daysSince,opacityForDays,relativeTime,stableHash,activity,demoRecords,allRecords,preferences,savePreferences,recordCare,allCats,catIdForName,profileHref,syncFeedingModal,thumbnail};
   root.MewLinkCare=api;
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof window!=='undefined'?window:globalThis);

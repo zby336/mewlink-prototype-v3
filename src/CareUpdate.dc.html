@@ -19,7 +19,7 @@
   <sc-if value="{{ isLiveDraft }}"><div class="care-draft-label">{{ draftHint }}</div></sc-if>
   <sc-if value="{{ s0 }}" hint-placeholder-val="{{ true }}">
     <div class="care-step" style="flex:1;min-height:0;padding:4px 22px 30px;display:flex;flex-direction:column;gap:16px">
-      <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 28px/1.15 Newsreader,serif">Add care update</span><span style="font-size:15px;color:#6B5847">Use any of these. None are required.</span></div>
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 28px/1.15 Newsreader,serif">Add update</span><span style="font-size:15px;color:#6B5847">Use any of these. None are required.</span></div>
       <button onClick="{{ goRecord }}" style="min-height:76px;border-radius:18px;background:#FFFFFF;border:1px solid #E0D5C3;display:flex;align-items:center;gap:14px;padding:0 16px;cursor:pointer;text-align:left">
         <span style="width:44px;height:44px;flex:none;border-radius:50%;background:#F4E6C3;display:flex;align-items:center;justify-content:center"><span style="width:12px;height:18px;border-radius:6px;border:2px solid #5C4636"></span></span>
         <span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:700 17px 'Atkinson Hyperlegible',sans-serif;color:#33261D">Record your voice</span><span style="font:400 14px 'Atkinson Hyperlegible',sans-serif;color:#776455">{{ voiceSub }}</span></span>
@@ -70,7 +70,7 @@
       <sc-if value="{{ hasCareActivity }}"><label class="care-field">Care outcome<select aria-label="Care outcome" value="{{ careOutcome }}" onChange="{{ onCareOutcome }}"><option value="unknown">Not confirmed</option><option value="provided">I provided this care</option><option value="not_provided">I did not provide this care on this visit</option></select></label></sc-if>
       <p class="care-meta">{{ careContext }}</p>
       <div class="care-actions" style="margin-top:auto;display:flex;flex-direction:column;gap:8px">
-        <button onClick="{{ makeDraft }}" style="height:56px;border:none;border-radius:16px;background:#E3AE45;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-active="background:#CF9A32">Create draft with Mew</button>
+        <button onClick="{{ makeDraft }}" style="height:56px;border:none;border-radius:16px;background:#E3AE45;color:#33261D;font:700 17px 'Atkinson Hyperlegible',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px" style-active="background:#CF9A32">Create draft with MewAI <mew-ai-mark aria-hidden="true"></mew-ai-mark></button>
         <button onClick="{{ skipDraft }}" style="height:48px;border:none;background:transparent;color:#5C4636;font:700 16px 'Atkinson Hyperlegible',sans-serif;cursor:pointer">Write it myself instead</button>
       </div>
     </div>
@@ -79,7 +79,7 @@
   <sc-if value="{{ s3 }}" hint-placeholder-val="{{ false }}">
     <div class="care-step" style="flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;padding:4px 22px 30px;display:flex;flex-direction:column;gap:14px">
       <sc-if value="{{ drafting }}" hint-placeholder-val="{{ false }}">
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding-top:120px"><dc-import name="Mew" mood="thinking" size="{{ 72 }}" hint-size="72px,72px"></dc-import><span style="font-size:16px;color:#6B5847">Mew is sorting your words…</span></div>
+        <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding-top:120px"><dc-import name="Mew" mood="thinking" size="{{ 72 }}" hint-size="72px,72px"></dc-import><span style="font-size:16px;color:#6B5847">MewAI is sorting your words…</span></div>
       </sc-if>
       <sc-if value="{{ draftReady }}" hint-placeholder-val="{{ false }}">
         <div style="display:flex;align-items:center;gap:10px"><dc-import name="Mew" mood="source" size="{{ 30 }}" hint-size="30px,30px"></dc-import><span style="flex:1;font-size:14px;font-weight:700;color:#7A5A12">{{ draftLabel }}</span><button onClick="{{ regen }}" style="height:40px;padding:0;border:none;background:transparent;font:700 14px 'Atkinson Hyperlegible',sans-serif;color:#5C4636;cursor:pointer;visibility:{{ regenVis }}">Regenerate</button></div>
@@ -129,7 +129,7 @@
     </div>
   </sc-if>
 
-  <sc-if value="{{ s6 }}" hint-placeholder-val="{{ false }}">
+  <sc-if value="{{ s6 }}" hint-placeholder-val="{{ false }}"><mew-save-celebration record-id="{{ celebrationRecord }}"></mew-save-celebration>
     <div class="care-step" style="flex:1;min-height:0;padding:30px 22px 30px;display:flex;flex-direction:column;gap:18px">
       <div style="width:56px;height:56px;border-radius:50%;background:#E3EBDA;display:flex;align-items:center;justify-content:center"><div style="width:11px;height:20px;border:solid #4A6140;border-width:0 3px 3px 0;transform:translateY(-3px) rotate(45deg)"></div></div>
       <span style="font:500 26px/1.25 Newsreader,serif">{{ savedTitle }}</span>
@@ -191,11 +191,11 @@ class Component extends DCLogic {
     const labels = { 1: 'Step 1 of 4', 2: 'Step 2 of 4', 3: 'Step 2 of 4', 4: 'Step 3 of 4', 5: 'Step 4 of 4' };
     const whoMap = { yes: 'Yes, it’s ' + this.targetName, another: 'Another cat', unsure: 'Not sure' };
     const resolvedId=st.who==='yes'?this.targetId:st.who==='another'?st.selectedCatId:null; const resolved=window.MewLinkCare.allCats().find(c=>c.id===resolvedId); const canReview=st.who==='unsure'||!!resolved;
-    const fieldDefs = [['observed', 'Observed', '#4A6140'], ['uncertain', 'Uncertain', '#9A4A26'], ['next', 'For the next visit', '#7A5A12']];
+    const fieldDefs = [['observed', 'Observed // Done', '#4A6140'], ['uncertain', 'Uncertain', '#9A4A26'], ['next', 'For the next visit', '#7A5A12']];
     const hasInput = done || st.photo || st.typed.trim();
     const startDraft=()=>{const arranged=this.D.arrangeWords(st.transcript);this.setState({step:3,drafting:false,draftReady:true,manual:false,...arranged});};
     return {
-      targetName:this.targetName,targetPhoto:this.targetPhoto,attachedPhoto:st.photo||this.targetPhoto,
+      celebrationRecord:this.live&&st.savedId?st.savedId:'',targetName:this.targetName,targetPhoto:this.targetPhoto,attachedPhoto:st.photo||this.targetPhoto,
       hasError:!!st.error,error:st.error,isLiveDraft:this.live&&s<6,draftHint:'Draft for '+this.targetName+' · saved on this device; Cancel keeps it',
       careKind:st.careKind,careOutcome:st.careOutcome,hasCareActivity:st.careKind!=='observation',onCareKind:e=>this.setState({careKind:e.target.value,careOutcome:'unknown'}),onCareOutcome:e=>this.setState({careOutcome:e.target.value}),
       careContext:(st.occurredAt?this.D.stamp(st.occurredAt):'Time not recorded')+' · '+(st.zone||'Area not recorded')+' · '+st.careKind+(st.careKind!=='observation'?' — '+st.careOutcome.replaceAll('_',' '):''),
