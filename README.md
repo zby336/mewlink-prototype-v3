@@ -4,7 +4,7 @@ This version was approved for GitHub synchronization on 2026-10-30. The source a
 
 Earlier development reports describe the synchronization status at their respective checkpoints. This approved release supersedes their “not yet pushed” status.
 
-Public prototype: https://mewlink-design-copy.vercel.app/#today
+Public prototype: https://mewlink-design-copy.vercel.app/
 
 Repository: https://github.com/zby336/mewlink-prototype-v3
 
